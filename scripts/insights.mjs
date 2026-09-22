@@ -140,7 +140,7 @@ async function scanExecutions(files) {
     const rec = symbolRec(symbol, ccy);
     rec.fills += 1;
     rec.notional += notional;
-    rec.feesSatoshi += fee;
+    rec.feesSatoshi += Math.abs(fee);
     if (dir > 0) rec.buy += 1; else rec.sell += 1;
     if (liquidity === 'AddedLiquidity') rec.maker += 1;
     else if (liquidity === 'RemovedLiquidity') rec.taker += 1;
@@ -159,11 +159,12 @@ async function scanExecutions(files) {
     if (!dayOrders.has(day)) dayOrders.set(day, new Set());
     if (f.orderid) dayOrders.get(day).add(f.orderid);
     dayNotional.set(day, (dayNotional.get(day) ?? 0) + notional);
-    feesByDay.set(day, (feesByDay.get(day) ?? 0) + fee);
-    if (fee !== 0) {
-      if (liquidity === 'AddedLiquidity') makerRebateSatoshi -= fee;
-      else if (liquidity === 'RemovedLiquidity') takerFeeSatoshi += fee;
-    }
+    feesByDay.set(day, (feesByDay.get(day) ?? 0) + Math.abs(fee));
+    // Split by the sign of the cash flow, not by lastliquidityind: the flag and
+    // the sign disagree on a small number of fills, and the sign is what the
+    // account actually paid or received.
+    if (fee < 0) makerRebateSatoshi += fee;
+    else if (fee > 0) takerFeeSatoshi += fee;
     // XBt-equivalent notional is only well defined for inverse contracts quoted
     // in USD (XBTUSD, ETHUSD, XRPUSD, LTCUSD, BCHUSD), where homeNotional is
     // denominated in XBt. For quanto altcoin futures homeNotional is denominated
@@ -226,7 +227,7 @@ async function scanExecutions(files) {
         xbtNotional: Math.abs(num(r[EXEC_COL.homeNotional])),
         orderid: r[EXEC_COL.orderid] || '',
         dir: r[EXEC_COL.side] === 'Buy' ? 1 : -1,
-        fee: Math.abs(num(r[EXEC_COL.execComm])),
+        fee: num(r[EXEC_COL.execComm]),
         liquidity: r[EXEC_COL.liquidity],
       };
       if (!pending.has(utcDay)) pending.set(utcDay, []);
@@ -497,10 +498,15 @@ async function main() {
     ['1-3d', 86400e3, 259200e3], ['3-7d', 259200e3, 604800e3], ['7-30d', 604800e3, 2592000e3],
     ['>30d', 2592000e3, Infinity],
   ];
-  const holdHistogram = HOLD_BUCKETS.map(([label, lo, hi]) => ({
+  const negativeDurations = durationsMs.filter((m) => m < 0).length;
+  const holdHistogram = HOLD_BUCKETS.map(([label, lo, hi], i) => ({
     label,
-    trips: durationsMs.filter((m) => m >= lo && m < hi).length,
+    // Negative durations are a residual of near-simultaneous fills whose export
+    // order is not their timestamp order. They are counted in the shortest
+    // bucket rather than dropped, so the buckets always sum to the trip count.
+    trips: durationsMs.filter((m) => (i === 0 ? m < hi : m >= lo && m < hi)).length,
   }));
+  const holdHistogramTotal = holdHistogram.reduce((a, b) => a + b.trips, 0);
 
   // Daily activity: answers "when did he trade" directly, and drives the
   // calendar heatmap on the site.
@@ -612,6 +618,8 @@ async function main() {
       },
       bySymbol: holdBySymbol.slice(0, 10),
       histogram: holdHistogram,
+      negativeDurationTrips: negativeDurations,
+      histogramTotal: holdHistogramTotal,
     },
     withdrawalDiscipline: {
       withdrawals: withdrawals.length,

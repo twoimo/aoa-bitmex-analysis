@@ -214,7 +214,9 @@ async function analyzeExecutions(files) {
       const comm = num(r[EXEC_COL.execComm]);
       const orderid = r[EXEC_COL.orderid];
 
-      if (orderid) {
+      if (orderid && orderid !== '00000000-0000-0000-0000-000000000000') {
+        // The all-zero UUID is a placeholder on liquidations and a few other
+        // rows; counting it as an order inflates the count by one.
         out.orders.add(orderid);
         if (!monthOrders.has(month)) monthOrders.set(month, new Set());
         monthOrders.get(month).add(orderid);

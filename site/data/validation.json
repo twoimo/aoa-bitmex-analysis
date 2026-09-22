@@ -1,0 +1,105 @@
+{
+ "checks": [
+  {
+   "check": "Ledger reconciles to the final balance",
+   "result": "0 XBt difference",
+   "verdict": "pass",
+   "note": "deposits + withdrawals + realised PnL = final balance, to the satoshi"
+  },
+  {
+   "check": "Duplicate execution ids",
+   "result": "0 of 1,444,583",
+   "verdict": "pass",
+   "note": "every execid is unique"
+  },
+  {
+   "check": "Duplicate trade match ids",
+   "result": "3 repeats of 1,439,207",
+   "verdict": "note",
+   "note": "single repeated rows, not maker/taker pairs; needs market-side comparison to interpret"
+  },
+  {
+   "check": "Order quantity vs fills",
+   "result": "0 mismatches of 23416 orders",
+   "verdict": "pass",
+   "note": "sum(lastqty) equals max(cumqty) for every order with a real id"
+  },
+  {
+   "check": "Funding rows match the reconstructed position",
+   "result": "5368/5368",
+   "verdict": "pass",
+   "note": "the funded quantity equals the position that existed at that instant"
+  },
+  {
+   "check": "Settlements zero the position",
+   "result": "8/8",
+   "verdict": "pass",
+   "note": "every expiry settlement drives the reconstructed position to exactly zero"
+  },
+  {
+   "check": "Open position at end of data",
+   "result": "XBTUSD −29,080,100 contracts",
+   "verdict": "note",
+   "note": "the period does not end flat, so no closing trade can be assumed"
+  },
+  {
+   "check": "Execution timestamps out of order",
+   "result": "4320 of 1,444,583",
+   "verdict": "note",
+   "note": "~0.3%; fills are buffered per day and sorted before any position work"
+  },
+  {
+   "check": "Wallet rows out of date order",
+   "result": "5",
+   "verdict": "note",
+   "note": "the wallet file is not date-sorted"
+  },
+  {
+   "check": "Wallet balance is a running balance",
+   "result": "946 rows disagree",
+   "verdict": "fail",
+   "note": "it is a rounded day-level snapshot repeated on every row of that day"
+  },
+  {
+   "check": "Days whose end-of-day balance disagrees",
+   "result": "154 of 1,380",
+   "verdict": "note",
+   "note": "152 are rounding (≤0.0045 XBt); 2018-04-27 and 2018-04-28 are off by 0.546 and 1.001 XBt"
+  },
+  {
+   "check": "Liquidation rows",
+   "result": "59",
+   "verdict": "note",
+   "note": "28 of them use the zero order id; neither \"none\" nor \"59\" summarises this correctly"
+  },
+  {
+   "check": "External market-tick comparison",
+   "result": "not performed",
+   "verdict": "open",
+   "note": "no fill has been matched against public tick data"
+  },
+  {
+   "check": "Publisher and exchange issuance verified",
+   "result": "not performed",
+   "verdict": "open",
+   "note": "internal consistency is not authenticity"
+  }
+ ],
+ "summary": {
+  "execIdDuplicates": 0,
+  "trdmatchidDuplicatePairs": 3,
+  "orderQtyMismatches": 0,
+  "ordersChecked": 23416,
+  "timeInversions": 4320,
+  "fundingQtyMatched": "5368/5368",
+  "settlementsZeroed": "8/8",
+  "liquidationRows": 59,
+  "liquidationRowsWithZeroOrderId": 28,
+  "walletTransactidDuplicates": 0,
+  "walletDateInversionsInFileOrder": 5,
+  "walletRowLevelBalanceMismatches": 946,
+  "walletDayEndBalanceMismatches": 154,
+  "walletDaysWithSingleBalanceValue": "1302/1380",
+  "walletLedgerDiffXbt": 0
+ }
+}

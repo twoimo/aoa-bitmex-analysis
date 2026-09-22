@@ -1,0 +1,416 @@
+[
+ {
+  "symbol": "XBTUSD",
+  "closes": 1377,
+  "pnlXBt": 2007.0846,
+  "shareOfPnl": 0.5674,
+  "winRate": 0.6296,
+  "bestXBt": 141.7365,
+  "worstXBt": -146.1262
+ },
+ {
+  "symbol": "ETHUSD",
+  "closes": 312,
+  "pnlXBt": 830.3645,
+  "shareOfPnl": 0.2347,
+  "winRate": 0.6731,
+  "bestXBt": 107.8406,
+  "worstXBt": -147.7397
+ },
+ {
+  "symbol": "XBTU21",
+  "closes": 11,
+  "pnlXBt": 246.3337,
+  "shareOfPnl": 0.0696,
+  "winRate": 0.7273,
+  "bestXBt": 125.6941,
+  "worstXBt": -26.9473
+ },
+ {
+  "symbol": "XRPUSD",
+  "closes": 109,
+  "pnlXBt": 173.8614,
+  "shareOfPnl": 0.0492,
+  "winRate": 0.8991,
+  "bestXBt": 45.0907,
+  "worstXBt": -8.1003
+ },
+ {
+  "symbol": "ETHUSDM21",
+  "closes": 5,
+  "pnlXBt": 140.9343,
+  "shareOfPnl": 0.0398,
+  "winRate": 0.8,
+  "bestXBt": 139.9202,
+  "worstXBt": -0.0188
+ },
+ {
+  "symbol": "XBTH20",
+  "closes": 14,
+  "pnlXBt": 119.2016,
+  "shareOfPnl": 0.0337,
+  "winRate": 0.7857,
+  "bestXBt": 133.8014,
+  "worstXBt": -23.7354
+ },
+ {
+  "symbol": "DOGEUSDT",
+  "closes": 19,
+  "pnlXBt": 52.607,
+  "shareOfPnl": 0.0149,
+  "winRate": 0.8947,
+  "bestXBt": 17.4086,
+  "worstXBt": -0.0022
+ },
+ {
+  "symbol": "BNBUSDT",
+  "closes": 9,
+  "pnlXBt": 19.1529,
+  "shareOfPnl": 0.0054,
+  "winRate": 1,
+  "bestXBt": 11.9295,
+  "worstXBt": 0.0197
+ },
+ {
+  "symbol": "LTCUSD",
+  "closes": 35,
+  "pnlXBt": 16.8653,
+  "shareOfPnl": 0.0048,
+  "winRate": 0.9429,
+  "bestXBt": 15.715,
+  "worstXBt": -30.5784
+ },
+ {
+  "symbol": "DOTUSDT",
+  "closes": 23,
+  "pnlXBt": 16.4092,
+  "shareOfPnl": 0.0046,
+  "winRate": 0.8261,
+  "bestXBt": 9.4195,
+  "worstXBt": -5.5258
+ },
+ {
+  "symbol": "XBTZ18",
+  "closes": 4,
+  "pnlXBt": 12.3231,
+  "shareOfPnl": 0.0035,
+  "winRate": 0.75,
+  "bestXBt": 6.2305,
+  "worstXBt": 0
+ },
+ {
+  "symbol": "XBTH19",
+  "closes": 4,
+  "pnlXBt": 8.1673,
+  "shareOfPnl": 0.0023,
+  "winRate": 0.25,
+  "bestXBt": 15.3689,
+  "worstXBt": -7.185
+ },
+ {
+  "symbol": "EOSH21",
+  "closes": 3,
+  "pnlXBt": 6.8589,
+  "shareOfPnl": 0.0019,
+  "winRate": 0.6667,
+  "bestXBt": 5.1671,
+  "worstXBt": -0.0204
+ },
+ {
+  "symbol": "TRXU18",
+  "closes": 18,
+  "pnlXBt": 3.8845,
+  "shareOfPnl": 0.0011,
+  "winRate": 0.9444,
+  "bestXBt": 0.7138,
+  "worstXBt": 0
+ },
+ {
+  "symbol": "XBTU18",
+  "closes": 3,
+  "pnlXBt": 3.832,
+  "shareOfPnl": 0.0011,
+  "winRate": 0.6667,
+  "bestXBt": 3.8879,
+  "worstXBt": -0.0596
+ },
+ {
+  "symbol": "XRPH21",
+  "closes": 2,
+  "pnlXBt": 3.7393,
+  "shareOfPnl": 0.0011,
+  "winRate": 0.5,
+  "bestXBt": 5.6388,
+  "worstXBt": -1.8995
+ },
+ {
+  "symbol": "BCHZ18",
+  "closes": 15,
+  "pnlXBt": 2.3688,
+  "shareOfPnl": 0.0007,
+  "winRate": 0.7333,
+  "bestXBt": 2.4176,
+  "worstXBt": -3.9713
+ },
+ {
+  "symbol": "EOSU18",
+  "closes": 38,
+  "pnlXBt": 1.929,
+  "shareOfPnl": 0.0005,
+  "winRate": 0.6842,
+  "bestXBt": 1.1781,
+  "worstXBt": -1.2359
+ },
+ {
+  "symbol": "EOSM18",
+  "closes": 7,
+  "pnlXBt": 1.1928,
+  "shareOfPnl": 0.0003,
+  "winRate": 0.7143,
+  "bestXBt": 1.195,
+  "worstXBt": -0.978
+ },
+ {
+  "symbol": "EOSZ18",
+  "closes": 4,
+  "pnlXBt": 1.0345,
+  "shareOfPnl": 0.0003,
+  "winRate": 0.75,
+  "bestXBt": 1.2472,
+  "worstXBt": -0.6915
+ },
+ {
+  "symbol": "TRXZ18",
+  "closes": 3,
+  "pnlXBt": 0.5906,
+  "shareOfPnl": 0.0002,
+  "winRate": 1,
+  "bestXBt": 0.3514,
+  "worstXBt": 0.0511
+ },
+ {
+  "symbol": "XRPM19",
+  "closes": 1,
+  "pnlXBt": 0.4216,
+  "shareOfPnl": 0.0001,
+  "winRate": 1,
+  "bestXBt": 0.4216,
+  "worstXBt": 0.4216
+ },
+ {
+  "symbol": "XRPZ18",
+  "closes": 12,
+  "pnlXBt": 0.4204,
+  "shareOfPnl": 0.0001,
+  "winRate": 0.6667,
+  "bestXBt": 1.1353,
+  "worstXBt": -1.468
+ },
+ {
+  "symbol": "XRPM18",
+  "closes": 3,
+  "pnlXBt": 0.3191,
+  "shareOfPnl": 0.0001,
+  "winRate": 1,
+  "bestXBt": 0.1576,
+  "worstXBt": 0.0056
+ },
+ {
+  "symbol": "BCHM18",
+  "closes": 3,
+  "pnlXBt": 0.175,
+  "shareOfPnl": 0,
+  "winRate": 1,
+  "bestXBt": 0.0742,
+  "worstXBt": 0.0383
+ },
+ {
+  "symbol": "BCHU18",
+  "closes": 2,
+  "pnlXBt": 0.1619,
+  "shareOfPnl": 0,
+  "winRate": 1,
+  "bestXBt": 0.1554,
+  "worstXBt": 0.0065
+ },
+ {
+  "symbol": "XRPH19",
+  "closes": 2,
+  "pnlXBt": 0.1564,
+  "shareOfPnl": 0,
+  "winRate": 1,
+  "bestXBt": 0.1452,
+  "worstXBt": 0.0111
+ },
+ {
+  "symbol": "LTCU18",
+  "closes": 1,
+  "pnlXBt": 0.124,
+  "shareOfPnl": 0,
+  "winRate": 1,
+  "bestXBt": 0.124,
+  "worstXBt": 0.124
+ },
+ {
+  "symbol": "YFIUSDTZ20",
+  "closes": 1,
+  "pnlXBt": 0.1069,
+  "shareOfPnl": 0,
+  "winRate": 1,
+  "bestXBt": 0.1069,
+  "worstXBt": 0.1069
+ },
+ {
+  "symbol": "ADAUSDT",
+  "closes": 2,
+  "pnlXBt": 0.0221,
+  "shareOfPnl": 0,
+  "winRate": 0.5,
+  "bestXBt": 0.0319,
+  "worstXBt": -0.0098
+ },
+ {
+  "symbol": "ETHM18",
+  "closes": 1,
+  "pnlXBt": -0.0029,
+  "shareOfPnl": 0,
+  "winRate": 0,
+  "bestXBt": -0.0029,
+  "worstXBt": -0.0029
+ },
+ {
+  "symbol": "XBT7D_U110",
+  "closes": 1,
+  "pnlXBt": -0.0091,
+  "shareOfPnl": 0,
+  "winRate": 0,
+  "bestXBt": -0.0091,
+  "worstXBt": -0.0091
+ },
+ {
+  "symbol": "ADAM19",
+  "closes": 1,
+  "pnlXBt": -0.0647,
+  "shareOfPnl": 0,
+  "winRate": 0,
+  "bestXBt": -0.0647,
+  "worstXBt": -0.0647
+ },
+ {
+  "symbol": "LTCH19",
+  "closes": 2,
+  "pnlXBt": -0.0758,
+  "shareOfPnl": 0,
+  "winRate": 0.5,
+  "bestXBt": 0.743,
+  "worstXBt": -0.8187
+ },
+ {
+  "symbol": "ADAZ18",
+  "closes": 2,
+  "pnlXBt": -0.0975,
+  "shareOfPnl": 0,
+  "winRate": 0.5,
+  "bestXBt": 0.0882,
+  "worstXBt": -0.1857
+ },
+ {
+  "symbol": "ADAM18",
+  "closes": 15,
+  "pnlXBt": -0.1924,
+  "shareOfPnl": -0.0001,
+  "winRate": 0.8667,
+  "bestXBt": 0.45,
+  "worstXBt": -1.9183
+ },
+ {
+  "symbol": "XBTM18",
+  "closes": 11,
+  "pnlXBt": -0.4167,
+  "shareOfPnl": -0.0001,
+  "winRate": 0.6364,
+  "bestXBt": 0.0601,
+  "worstXBt": -0.274
+ },
+ {
+  "symbol": "TRXH19",
+  "closes": 1,
+  "pnlXBt": -0.555,
+  "shareOfPnl": -0.0002,
+  "winRate": 0,
+  "bestXBt": -0.555,
+  "worstXBt": -0.555
+ },
+ {
+  "symbol": "BCHM19",
+  "closes": 1,
+  "pnlXBt": -1.2877,
+  "shareOfPnl": -0.0004,
+  "winRate": 0,
+  "bestXBt": -1.2877,
+  "worstXBt": -1.2877
+ },
+ {
+  "symbol": "ADAU18",
+  "closes": 27,
+  "pnlXBt": -1.4863,
+  "shareOfPnl": -0.0004,
+  "winRate": 0.6667,
+  "bestXBt": 0.169,
+  "worstXBt": -0.7484
+ },
+ {
+  "symbol": "ETHU18",
+  "closes": 11,
+  "pnlXBt": -2.5915,
+  "shareOfPnl": -0.0007,
+  "winRate": 0.3636,
+  "bestXBt": 0.0788,
+  "worstXBt": -1.1137
+ },
+ {
+  "symbol": "TRXU19",
+  "closes": 2,
+  "pnlXBt": -6.2596,
+  "shareOfPnl": -0.0018,
+  "winRate": 0.5,
+  "bestXBt": 0.0341,
+  "worstXBt": -6.2937
+ },
+ {
+  "symbol": "XBTM19",
+  "closes": 3,
+  "pnlXBt": -14.7575,
+  "shareOfPnl": -0.0042,
+  "winRate": 0.6667,
+  "bestXBt": 0.0414,
+  "worstXBt": -14.7995
+ },
+ {
+  "symbol": "XRPU18",
+  "closes": 14,
+  "pnlXBt": -17.7415,
+  "shareOfPnl": -0.005,
+  "winRate": 0.7143,
+  "bestXBt": 1.0575,
+  "worstXBt": -15.2576
+ },
+ {
+  "symbol": "LINKUSDT",
+  "closes": 18,
+  "pnlXBt": -17.8463,
+  "shareOfPnl": -0.005,
+  "winRate": 0.7778,
+  "bestXBt": 2.7638,
+  "worstXBt": -15.9562
+ },
+ {
+  "symbol": "BCHUSD",
+  "closes": 20,
+  "pnlXBt": -69.935,
+  "shareOfPnl": -0.0198,
+  "winRate": 0.6,
+  "bestXBt": 6.964,
+  "worstXBt": -63.1428
+ }
+]

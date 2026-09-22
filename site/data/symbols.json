@@ -1,0 +1,142 @@
+[
+ {
+  "symbol": "XBTUSD",
+  "fills": 941007,
+  "notionalUsd": 23574456258,
+  "makerFills": 504390,
+  "takerFills": 436617
+ },
+ {
+  "symbol": "ETHUSD",
+  "fills": 327428,
+  "notionalUsd": 3938842492.06,
+  "makerFills": 301437,
+  "takerFills": 25991
+ },
+ {
+  "symbol": "XRPUSD",
+  "fills": 55495,
+  "notionalUsd": 176111869.01,
+  "makerFills": 53592,
+  "takerFills": 1903
+ },
+ {
+  "symbol": "XBTU21",
+  "fills": 25747,
+  "notionalUsd": 147283600,
+  "makerFills": 24318,
+  "takerFills": 1429
+ },
+ {
+  "symbol": "LTCUSD",
+  "fills": 17201,
+  "notionalUsd": 49669317.28,
+  "makerFills": 16489,
+  "takerFills": 712
+ },
+ {
+  "symbol": "XBTH20",
+  "fills": 5922,
+  "notionalUsd": 39131325,
+  "makerFills": 5652,
+  "takerFills": 270
+ },
+ {
+  "symbol": "BCHUSD",
+  "fills": 9217,
+  "notionalUsd": 35080265.51,
+  "makerFills": 8943,
+  "takerFills": 274
+ },
+ {
+  "symbol": "LINKUSDT",
+  "fills": 6381,
+  "notionalUsd": 29790133.59,
+  "makerFills": 6166,
+  "takerFills": 215
+ },
+ {
+  "symbol": "DOTUSDT",
+  "fills": 11351,
+  "notionalUsd": 28196196.85,
+  "makerFills": 11275,
+  "takerFills": 76
+ },
+ {
+  "symbol": "DOGEUSDT",
+  "fills": 11183,
+  "notionalUsd": 25237246.92,
+  "makerFills": 10744,
+  "takerFills": 439
+ },
+ {
+  "symbol": "ETHUSDM21",
+  "fills": 5356,
+  "notionalUsd": 16579593.56,
+  "makerFills": 5221,
+  "takerFills": 135
+ },
+ {
+  "symbol": "BNBUSDT",
+  "fills": 4785,
+  "notionalUsd": 8029998.96,
+  "makerFills": 4768,
+  "takerFills": 17
+ },
+ {
+  "symbol": "ADAUSDT",
+  "fills": 485,
+  "notionalUsd": 2626346.36,
+  "makerFills": 463,
+  "takerFills": 22
+ },
+ {
+  "symbol": "XBTZ18",
+  "fills": 179,
+  "notionalUsd": 2202679,
+  "makerFills": 147,
+  "takerFills": 32
+ },
+ {
+  "symbol": "XBTH19",
+  "fills": 531,
+  "notionalUsd": 1810661,
+  "makerFills": 297,
+  "takerFills": 234
+ },
+ {
+  "symbol": "XBTM19",
+  "fills": 169,
+  "notionalUsd": 1805600,
+  "makerFills": 169,
+  "takerFills": 0
+ },
+ {
+  "symbol": "XBTM18",
+  "fills": 212,
+  "notionalUsd": 841388,
+  "makerFills": 54,
+  "takerFills": 158
+ },
+ {
+  "symbol": "XBTU18",
+  "fills": 36,
+  "notionalUsd": 240000,
+  "makerFills": 11,
+  "takerFills": 25
+ },
+ {
+  "symbol": "YFIUSDTZ20",
+  "fills": 11,
+  "notionalUsd": 164460.18,
+  "makerFills": 8,
+  "takerFills": 3
+ },
+ {
+  "symbol": "BCHZ18",
+  "fills": 2467,
+  "notionalUsd": 3317.45,
+  "makerFills": 1583,
+  "takerFills": 884
+ }
+]

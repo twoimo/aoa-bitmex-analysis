@@ -68,3 +68,23 @@ about them.
 The code in this repository is MIT (`LICENSE`). The dataset, the author's letter, and any
 quoted material are **not** covered by that license and remain the property of their
 respective owners.
+
+## Static site
+
+`site/` is a self-contained static report: `index.html`, `styles.css`, `app.js` and
+`site/data/*.json`. No framework, no build step, no external fonts or CDNs. It renders from
+`file://` as well as over HTTP, and falls back to a labelled offline snapshot if the JSON cannot
+be fetched.
+
+```bash
+npm run site                         # regenerate site/data from results/
+python3 -m http.server -d site 8899  # then open http://127.0.0.1:8899
+```
+
+`site/.qa/verify.mjs` is a 38-check harness (charts, data fields, responsive widths, keyboard
+navigation, table sorting, reduced motion, offline mode) and `site/.qa/verification.json` holds
+its last result. Both are local-only, not part of the published site.
+
+The site deliberately excludes the raw CSVs, every execution/order/transaction identifier, and
+the day-by-day withdrawal ledger (`results/withdrawals-daily.csv`). Those stay in this
+repository.

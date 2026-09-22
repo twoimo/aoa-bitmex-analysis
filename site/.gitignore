@@ -1,0 +1,6 @@
+# Keep the public aggregates in Git; the root data/ remains private.
+!data/
+!data/*.json
+
+# Local browser verification artifacts are not part of the published site.
+.qa/

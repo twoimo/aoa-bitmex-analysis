@@ -1,0 +1,149 @@
+{
+ "announcement": {
+  "stated": {
+   "cumulativeDepositsBTC": 14.4,
+   "cumulativeRealisedPnlBTC": 3537,
+   "cumulativeReturnPct": 24400,
+   "orders": 23000,
+   "fills": 1400000,
+   "positions": 3200
+  },
+  "measured": {
+   "cumulativeDepositsXBt": 14.48925714,
+   "cumulativeRealisedPnlXBt": 3537.32369404,
+   "cumulativeReturnPct": 24413,
+   "orders": 23416,
+   "fills": 1439207,
+   "positions": 3185,
+   "positionsBreakdown": {
+    "flatToOpen": 1184,
+    "longShortReversals": 2001,
+    "returnsToFlat": 1183
+   }
+  }
+ },
+ "ledgerVsClaims": [
+  {
+   "date": "2019-05-06",
+   "label": "16빗 → 345빗 (158빗 출금)",
+   "statedTotal": 345,
+   "statedWithdrawn": 158,
+   "balanceXBt": 171.056,
+   "cumulativeWithdrawnXBt": 201.038,
+   "cumulativeDepositedXBt": 14.4893,
+   "cumulativeRealisedXBt": 357.6048,
+   "impliedBalanceFromClaim": 187,
+   "statedWithdrawnVsLedgerXBt": -43.038,
+   "bitmexShareOfStatedTotal": 0.4958
+  },
+  {
+   "date": "2019-11-26",
+   "label": "16빗 → 600빗 (298빗 출금)",
+   "statedTotal": 600,
+   "statedWithdrawn": 298,
+   "balanceXBt": 300.9973,
+   "cumulativeWithdrawnXBt": 341.125,
+   "cumulativeDepositedXBt": 14.4893,
+   "cumulativeRealisedXBt": 627.6331,
+   "impliedBalanceFromClaim": 302,
+   "statedWithdrawnVsLedgerXBt": -43.125,
+   "bitmexShareOfStatedTotal": 0.5017
+  },
+  {
+   "date": "2021-05-31",
+   "label": "비트 환산 2,290 btc",
+   "statedTotal": 2290,
+   "statedWithdrawn": null,
+   "balanceXBt": 795.6462,
+   "cumulativeWithdrawnXBt": 1214.3222,
+   "cumulativeDepositedXBt": 14.4893,
+   "cumulativeRealisedXBt": 1995.4792,
+   "impliedBalanceFromClaim": null,
+   "statedWithdrawnVsLedgerXBt": null,
+   "bitmexShareOfStatedTotal": 0.3474
+  },
+  {
+   "date": "2021-06-30",
+   "label": "비트 환산 2,870 btc",
+   "statedTotal": 2870,
+   "statedWithdrawn": null,
+   "balanceXBt": 1139.87,
+   "cumulativeWithdrawnXBt": 1514.3432,
+   "cumulativeDepositedXBt": 14.4893,
+   "cumulativeRealisedXBt": 2639.7265,
+   "impliedBalanceFromClaim": null,
+   "statedWithdrawnVsLedgerXBt": null,
+   "bitmexShareOfStatedTotal": 0.3972
+  },
+  {
+   "date": "2021-07-31",
+   "label": "비트 환산 3,270 btc",
+   "statedTotal": 3270,
+   "statedWithdrawn": null,
+   "balanceXBt": 987.4911,
+   "cumulativeWithdrawnXBt": 1814.3932,
+   "cumulativeDepositedXBt": 14.4893,
+   "cumulativeRealisedXBt": 2787.3951,
+   "impliedBalanceFromClaim": null,
+   "statedWithdrawnVsLedgerXBt": null,
+   "bitmexShareOfStatedTotal": 0.302
+  }
+ ],
+ "riskProfile": {
+  "losingCloses": 717,
+  "medianPct": 0.213,
+  "p90Pct": 6.396,
+  "p99Pct": 63.399,
+  "maxPct": 521.49,
+  "shareLosingMoreThan20PctOfEquity": 0.0432,
+  "shareLosingMoreThan30PctOfEquity": 0.0251,
+  "note": "Equity is the day-end wallet balance (rounded, day-level snapshot) and the loss is a ledger close event, not the risk taken at entry."
+ },
+ "principles": [
+  {
+   "stated": "“출금해라”, and stop re-depositing after a loss",
+   "measured": "79.6% of ledger realised profit withdrawn in 56 completed events; total deposits 14.49 BTC. Withdrawal motives and a no-redeposit rule are not established.",
+   "verdict": "note"
+  },
+  {
+   "stated": "“보통 하루 정도 들고 있음” (holds about a day)",
+   "measured": "FIFO quantity-match median hold 13.2 h; this is not an exchange-reported position lifetime.",
+   "verdict": "note"
+  },
+  {
+   "stated": "“승률에 더 신경 써라” (prefer hit rate over payoff ratio)",
+   "measured": "Positive ledger-entry share 66.99%, profit factor 1.70, payoff ratio 0.84; entry priorities cannot be inferred.",
+   "verdict": "note"
+  },
+  {
+   "stated": "“시총이 큰 코인 위주로 매매” (trade the large caps)",
+   "measured": "XBTUSD + ETHUSD produced 80.2% of ledger profit; this is profit concentration, not evidence of a selection rule or its causal effect.",
+   "verdict": "note"
+  },
+  {
+   "stated": "“자본의 최대 30% 이상을 잃지 않도록” (never risk more than ~30% of capital)",
+   "measured": "97.5% of negative ledger entries were below 30% of the day-end book balance (20% threshold: 95.7%). This does not measure risk taken at entry.",
+   "verdict": "note"
+  },
+  {
+   "stated": "“선물 4 : 현물 4 : 현금 2” (allocation)",
+   "measured": "The BitMEX ledger balance was 30–40% of published total-asset estimates at three dates. Other venues and the stated allocation cannot be verified here.",
+   "verdict": "open"
+  },
+  {
+   "stated": "“최대 1.5~2배 레버리지” (BitMEX interview)",
+   "measured": "not recoverable: margin mode and leverage are not in a fill export",
+   "verdict": "open"
+  },
+  {
+   "stated": "“별다른 보조지표를 보지 않고 캔들과 거래량만”",
+   "measured": "not recoverable: entry reasoning is not in the file",
+   "verdict": "open"
+  }
+ ],
+ "openDiscrepancy": {
+  "what": "Two 2019 posts state cumulative withdrawals roughly 43 BTC below the ledger. The two differences are similar, not identical.",
+  "detail": "2019-05-06: stated 158 BTC, ledger 201.03800000 BTC, ledger-minus-stated 43.03800000 BTC. 2019-11-26: stated 298 BTC, ledger 341.12500000 BTC, ledger-minus-stated 43.12500000 BTC.",
+  "reading": "An internal transfer, a definition difference, or an error are possible explanations. These files do not establish which explanation is correct."
+ }
+}

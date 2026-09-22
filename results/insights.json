@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-22T10:31:52.854Z",
+  "generatedAt": "2026-09-22T11:55:50.094Z",
   "definitions": {
     "holdingPeriod": "FIFO queue matching of fills; time between opening and closing exposure, not an exchange-reported position lifetime.",
     "exposureRatio": "daily traded notional (sum of |foreignNotional|) divided by that day's closing wallet equity.",
@@ -18,12 +18,12 @@
     "withdrawnShareOfProfit": 0.7957,
     "feesXBt": 682.61737401,
     "feesNote": "gross of rebates: |maker rebate| + taker fee",
-    "netTradeFeeXBt": 75.04546939,
+    "netTradeFeeXBt": 78.00012971,
     "fundingXBt": -149.57544093,
     "fundingNote": "negative execComm on funding rows means the account received it",
     "fundingReceivedXBt": 149.57544093,
-    "netFeePlusFundingXBt": -74.52997154,
-    "netFeePlusFundingShareOfProfit": -0.0211,
+    "netFeePlusFundingXBt": -71.57531122,
+    "netFeePlusFundingShareOfProfit": -0.0202,
     "maxDrawdownPct": 1.6196,
     "maxDrawdownXBt": 2.7676,
     "maxDrawdownByAbsoluteXBt": {
@@ -559,7 +559,7 @@
     "histogram": [
       {
         "label": "<1m",
-        "trips": 11997
+        "trips": 12485
       },
       {
         "label": "1-5m",
@@ -597,7 +597,9 @@
         "label": ">30d",
         "trips": 62859
       }
-    ]
+    ],
+    "negativeDurationTrips": 488,
+    "histogramTotal": 1417925
   },
   "withdrawalDiscipline": {
     "withdrawals": 56,

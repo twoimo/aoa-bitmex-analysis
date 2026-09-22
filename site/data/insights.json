@@ -1,0 +1,224 @@
+{
+ "holdingPeriod": {
+  "trips": 1417925,
+  "median": "13.2h",
+  "p10": "15.6m",
+  "p25": "1.8h",
+  "p75": "3.0d",
+  "p90": "9.3d",
+  "shareUnder1h": 0.1982,
+  "shareUnder1d": 0.5995,
+  "long": {
+   "trips": 402351,
+   "notionalUsd": 4356059627,
+   "median": "4.7h"
+  },
+  "short": {
+   "trips": 1015574,
+   "notionalUsd": 9625779679,
+   "median": "20.3h"
+  },
+  "bySymbol": [
+   {
+    "symbol": "XBTUSD",
+    "trips": 938141,
+    "medianHold": "5.1h",
+    "p10": "8.9m",
+    "p90": "2.2d"
+   },
+   {
+    "symbol": "ETHUSD",
+    "trips": 323759,
+    "medianHold": "4.1d",
+    "p10": "3.1h",
+    "p90": "28.3d"
+   },
+   {
+    "symbol": "XRPUSD",
+    "trips": 52824,
+    "medianHold": "28.7d",
+    "p10": "1.1d",
+    "p90": "57.3d"
+   },
+   {
+    "symbol": "XBTU21",
+    "trips": 25504,
+    "medianHold": "2.8d",
+    "p10": "2.4d",
+    "p90": "53.5d"
+   },
+   {
+    "symbol": "LTCUSD",
+    "trips": 16303,
+    "medianHold": "8.0d",
+    "p10": "6.4d",
+    "p90": "9.9d"
+   },
+   {
+    "symbol": "DOTUSDT",
+    "trips": 9941,
+    "medianHold": "8.9d",
+    "p10": "6.0d",
+    "p90": "10.1d"
+   },
+   {
+    "symbol": "DOGEUSDT",
+    "trips": 9868,
+    "medianHold": "8.0d",
+    "p10": "5.2d",
+    "p90": "96.1d"
+   },
+   {
+    "symbol": "BCHUSD",
+    "trips": 7741,
+    "medianHold": "5.1d",
+    "p10": "4.5d",
+    "p90": "5.2d"
+   },
+   {
+    "symbol": "LINKUSDT",
+    "trips": 6209,
+    "medianHold": "7.4d",
+    "p10": "2.1d",
+    "p90": "10.0d"
+   },
+   {
+    "symbol": "XBTH20",
+    "trips": 5912,
+    "medianHold": "7.7h",
+    "p10": "6.0h",
+    "p90": "10.5d"
+   }
+  ],
+  "histogram": [
+   {
+    "label": "<1m",
+    "trips": 12485
+   },
+   {
+    "label": "1-5m",
+    "trips": 49156
+   },
+   {
+    "label": "5-30m",
+    "trips": 146986
+   },
+   {
+    "label": "30m-2h",
+    "trips": 161213
+   },
+   {
+    "label": "2-6h",
+    "trips": 186929
+   },
+   {
+    "label": "6-24h",
+    "trips": 293287
+   },
+   {
+    "label": "1-3d",
+    "trips": 213633
+   },
+   {
+    "label": "3-7d",
+    "trips": 138769
+   },
+   {
+    "label": "7-30d",
+    "trips": 152608
+   },
+   {
+    "label": ">30d",
+    "trips": 62859
+   }
+  ],
+  "negativeDurationTrips": 488,
+  "histogramTotal": 1417925,
+  "histogramCoverage": {
+   "classifiedTrips": 1417925,
+   "unclassifiedTrips": 0
+  }
+ },
+ "exposure": {
+  "days": 1067,
+  "excludedDaysWithEquityUnder1Xbt": 15,
+  "unit": "XBt-equivalent traded notional per day divided by that day's closing wallet equity",
+  "median": 5.321,
+  "p90": 110.668,
+  "p99": 8405.442,
+  "max": 86790.876,
+  "maxDay": "2020-12-24"
+ },
+ "concentration": {
+  "closes": 2172,
+  "top10Share": 0.1366,
+  "top1pctShare": 0.2311,
+  "top5pctShare": 0.5817,
+  "grossProfitXBt": 8585.9411
+ },
+ "behaviour": {
+  "daysAfterWin": 727,
+  "medianExposureRatioAfterWin": 6.119,
+  "daysAfterLoss": 346,
+  "medianExposureRatioAfterLoss": 3.876
+ },
+ "drawdowns": [
+  {
+   "drawdownPct": 1.6196,
+   "basis": "cumulative ledger profit",
+   "peakXBt": 1.7088,
+   "troughXBt": -1.0588,
+   "peakDay": "2018-03-20",
+   "troughDay": "2018-04-03",
+   "recoveredDay": null
+  },
+  {
+   "drawdownPct": 0.6439,
+   "basis": "cumulative ledger profit",
+   "peakXBt": 43.9355,
+   "troughXBt": 15.646,
+   "peakDay": "2018-09-05",
+   "troughDay": "2018-09-22",
+   "recoveredDay": null
+  },
+  {
+   "drawdownPct": 0.6036,
+   "basis": "cumulative ledger profit",
+   "peakXBt": 1.9975,
+   "troughXBt": 0.7918,
+   "peakDay": "2018-04-18",
+   "troughDay": "2018-04-19",
+   "recoveredDay": null
+  },
+  {
+   "drawdownPct": 0.5289,
+   "basis": "cumulative ledger profit",
+   "peakXBt": 10.3074,
+   "troughXBt": 4.8553,
+   "peakDay": "2018-05-22",
+   "troughDay": "2018-05-24",
+   "recoveredDay": null
+  },
+  {
+   "drawdownPct": 0.292,
+   "basis": "cumulative ledger profit",
+   "peakXBt": 28.4842,
+   "troughXBt": 20.1682,
+   "peakDay": "2018-07-31",
+   "troughDay": "2018-08-05",
+   "recoveredDay": null
+  }
+ ],
+ "feeComponents": {
+  "makerRebateXBt": -302.30862215,
+  "takerFeeXBt": 380.30875186,
+  "netTradeFeeXBt": 78.00012971,
+  "fundingReceivedXBt": 149.57544093
+ },
+ "notes": {
+  "holdingPeriod": "FIFO queue matching of fills; time between opening and closing exposure, not an exchange-reported position lifetime.",
+  "exposureRatio": "daily traded notional (sum of |foreignNotional|) divided by that day's closing wallet equity.",
+  "winRate": "share of profitable RealisedPNL ledger entries (position-close events), not orders.",
+  "kst": "execution timestamps are UTC; day/hour buckets are KST (UTC+9)."
+ }
+}

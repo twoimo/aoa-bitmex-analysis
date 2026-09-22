@@ -1,0 +1,886 @@
+{
+ "summary": {
+  "generatedAt": "2026-09-22T10:27:42.395Z",
+  "window": {
+   "firstDay": "2018-03-05",
+   "lastDay": "2021-12-31",
+   "days": 1398
+  },
+  "completedWithdrawals": 56,
+  "totalWithdrawnXBt": 2814.54321713,
+  "cumulativeRealisedXBt": 3537.32369404,
+  "withdrawnShareOfRealised": 0.7957,
+  "withdrawalSizeXBt": {
+   "min": 0.011,
+   "p25": 6.2593,
+   "median": 20.012,
+   "p75": 50.012,
+   "max": 400.05
+  },
+  "shareOfEquityAtWithdrawal": {
+   "median": 0.1033,
+   "p10": 0.0551,
+   "p90": 0.2361,
+   "max": 1,
+   "note": "withdrawal amount divided by the wallet balance immediately before it"
+  },
+  "spacingDays": {
+   "median": 15,
+   "p10": 2,
+   "p90": 65
+  },
+  "timingVsProfitPeak": {
+   "within5Days": 44,
+   "within30Days": 51,
+   "medianDaysAfterPeak": 0,
+   "note": "days between a high-water mark in cumulative realised PnL and the withdrawal"
+  },
+  "cancelledWithdrawals": 7,
+  "depositsXBt": 14.48925714,
+  "roundLotPattern": {
+   "note": "Amounts are round BTC lots plus the exchange withdrawal fee, so the intended lot size is recoverable.",
+   "withdrawalsMatchingARoundLot": 47,
+   "ofWithdrawals": 56,
+   "distinctLotSizes": 21,
+   "ladder": [
+    {
+     "baseXBt": 0.011,
+     "count": 1,
+     "firstDate": "2019-12-10",
+     "lastDate": "2019-12-10"
+    },
+    {
+     "baseXBt": 0.2,
+     "count": 2,
+     "firstDate": "2018-03-30",
+     "lastDate": "2018-03-31"
+    },
+    {
+     "baseXBt": 0.5004,
+     "count": 1,
+     "firstDate": "2018-08-13",
+     "lastDate": "2018-08-13"
+    },
+    {
+     "baseXBt": 0.5016,
+     "count": 1,
+     "firstDate": "2018-04-25",
+     "lastDate": "2018-04-25"
+    },
+    {
+     "baseXBt": 1,
+     "count": 5,
+     "firstDate": "2018-04-18",
+     "lastDate": "2019-12-11"
+    },
+    {
+     "baseXBt": 1.96801713,
+     "count": 1,
+     "firstDate": "2018-03-22",
+     "lastDate": "2018-03-22"
+    },
+    {
+     "baseXBt": 2,
+     "count": 1,
+     "firstDate": "2018-05-12",
+     "lastDate": "2018-05-12"
+    },
+    {
+     "baseXBt": 2.5,
+     "count": 1,
+     "firstDate": "2018-08-10",
+     "lastDate": "2018-08-10"
+    },
+    {
+     "baseXBt": 4,
+     "count": 1,
+     "firstDate": "2018-07-28",
+     "lastDate": "2018-07-28"
+    },
+    {
+     "baseXBt": 7,
+     "count": 1,
+     "firstDate": "2018-09-05",
+     "lastDate": "2018-09-05"
+    },
+    {
+     "baseXBt": 8,
+     "count": 1,
+     "firstDate": "2019-03-08",
+     "lastDate": "2019-03-08"
+    },
+    {
+     "baseXBt": 10,
+     "count": 7,
+     "firstDate": "2018-11-28",
+     "lastDate": "2019-04-18"
+    },
+    {
+     "baseXBt": 20,
+     "count": 13,
+     "firstDate": "2018-12-29",
+     "lastDate": "2020-01-08"
+    },
+    {
+     "baseXBt": 30,
+     "count": 1,
+     "firstDate": "2020-01-11",
+     "lastDate": "2020-01-11"
+    },
+    {
+     "baseXBt": 49.99,
+     "count": 1,
+     "firstDate": "2020-08-24",
+     "lastDate": "2020-08-24"
+    },
+    {
+     "baseXBt": 50,
+     "count": 10,
+     "firstDate": "2020-01-17",
+     "lastDate": "2021-03-08"
+    },
+    {
+     "baseXBt": 72,
+     "count": 1,
+     "firstDate": "2020-08-02",
+     "lastDate": "2020-08-02"
+    },
+    {
+     "baseXBt": 100,
+     "count": 2,
+     "firstDate": "2021-01-29",
+     "lastDate": "2021-04-05"
+    },
+    {
+     "baseXBt": 300,
+     "count": 3,
+     "firstDate": "2021-07-27",
+     "lastDate": "2021-09-23"
+    },
+    {
+     "baseXBt": 300.021,
+     "count": 1,
+     "firstDate": "2021-06-20",
+     "lastDate": "2021-06-20"
+    },
+    {
+     "baseXBt": 400,
+     "count": 1,
+     "firstDate": "2021-08-19",
+     "lastDate": "2021-08-19"
+    }
+   ]
+  }
+ },
+ "ladder": [
+  {
+   "baseXBt": 0.011,
+   "count": 1,
+   "firstDate": "2019-12-10",
+   "lastDate": "2019-12-10",
+   "round": false
+  },
+  {
+   "baseXBt": 0.2,
+   "count": 2,
+   "firstDate": "2018-03-30",
+   "lastDate": "2018-03-31",
+   "round": false
+  },
+  {
+   "baseXBt": 0.5004,
+   "count": 1,
+   "firstDate": "2018-08-13",
+   "lastDate": "2018-08-13",
+   "round": false
+  },
+  {
+   "baseXBt": 0.5016,
+   "count": 1,
+   "firstDate": "2018-04-25",
+   "lastDate": "2018-04-25",
+   "round": false
+  },
+  {
+   "baseXBt": 1,
+   "count": 5,
+   "firstDate": "2018-04-18",
+   "lastDate": "2019-12-11",
+   "round": true
+  },
+  {
+   "baseXBt": 1.96801713,
+   "count": 1,
+   "firstDate": "2018-03-22",
+   "lastDate": "2018-03-22",
+   "round": false
+  },
+  {
+   "baseXBt": 2,
+   "count": 1,
+   "firstDate": "2018-05-12",
+   "lastDate": "2018-05-12",
+   "round": true
+  },
+  {
+   "baseXBt": 2.5,
+   "count": 1,
+   "firstDate": "2018-08-10",
+   "lastDate": "2018-08-10",
+   "round": false
+  },
+  {
+   "baseXBt": 4,
+   "count": 1,
+   "firstDate": "2018-07-28",
+   "lastDate": "2018-07-28",
+   "round": true
+  },
+  {
+   "baseXBt": 7,
+   "count": 1,
+   "firstDate": "2018-09-05",
+   "lastDate": "2018-09-05",
+   "round": true
+  },
+  {
+   "baseXBt": 8,
+   "count": 1,
+   "firstDate": "2019-03-08",
+   "lastDate": "2019-03-08",
+   "round": true
+  },
+  {
+   "baseXBt": 10,
+   "count": 7,
+   "firstDate": "2018-11-28",
+   "lastDate": "2019-04-18",
+   "round": true
+  },
+  {
+   "baseXBt": 20,
+   "count": 13,
+   "firstDate": "2018-12-29",
+   "lastDate": "2020-01-08",
+   "round": true
+  },
+  {
+   "baseXBt": 30,
+   "count": 1,
+   "firstDate": "2020-01-11",
+   "lastDate": "2020-01-11",
+   "round": true
+  },
+  {
+   "baseXBt": 49.99,
+   "count": 1,
+   "firstDate": "2020-08-24",
+   "lastDate": "2020-08-24",
+   "round": false
+  },
+  {
+   "baseXBt": 50,
+   "count": 10,
+   "firstDate": "2020-01-17",
+   "lastDate": "2021-03-08",
+   "round": true
+  },
+  {
+   "baseXBt": 72,
+   "count": 1,
+   "firstDate": "2020-08-02",
+   "lastDate": "2020-08-02",
+   "round": true
+  },
+  {
+   "baseXBt": 100,
+   "count": 2,
+   "firstDate": "2021-01-29",
+   "lastDate": "2021-04-05",
+   "round": true
+  },
+  {
+   "baseXBt": 300,
+   "count": 3,
+   "firstDate": "2021-07-27",
+   "lastDate": "2021-09-23",
+   "round": true
+  },
+  {
+   "baseXBt": 300.021,
+   "count": 1,
+   "firstDate": "2021-06-20",
+   "lastDate": "2021-06-20",
+   "round": false
+  },
+  {
+   "baseXBt": 400,
+   "count": 1,
+   "firstDate": "2021-08-19",
+   "lastDate": "2021-08-19",
+   "round": true
+  }
+ ],
+ "events": [
+  {
+   "date": "2018-03-22",
+   "amountXBt": 1.96801713,
+   "shareOfEquityBefore": 1,
+   "daysSinceProfitPeak": 2,
+   "cumulativeWithdrawnXBt": 1.96801713,
+   "baseXBt": 1.96801713,
+   "feeXBt": null,
+   "round": false
+  },
+  {
+   "date": "2018-03-30",
+   "amountXBt": 0.2012,
+   "shareOfEquityBefore": 0.0834,
+   "daysSinceProfitPeak": 10,
+   "cumulativeWithdrawnXBt": 2.16921713,
+   "baseXBt": 0.2,
+   "feeXBt": 0.0012,
+   "round": false
+  },
+  {
+   "date": "2018-03-31",
+   "amountXBt": 0.2012,
+   "shareOfEquityBefore": 0.0785,
+   "daysSinceProfitPeak": 11,
+   "cumulativeWithdrawnXBt": 2.37041713,
+   "baseXBt": 0.2,
+   "feeXBt": 0.0012,
+   "round": false
+  },
+  {
+   "date": "2018-04-18",
+   "amountXBt": 1.0012,
+   "shareOfEquityBefore": 0.2307,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 3.37161713,
+   "baseXBt": 1,
+   "feeXBt": 0.0012,
+   "round": true
+  },
+  {
+   "date": "2018-04-24",
+   "amountXBt": 1.0012,
+   "shareOfEquityBefore": 0.2486,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 4.37281713,
+   "baseXBt": 1,
+   "feeXBt": 0.0012,
+   "round": true
+  },
+  {
+   "date": "2018-04-25",
+   "amountXBt": 0.5016,
+   "shareOfEquityBefore": 0.1646,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 4.87441713,
+   "baseXBt": 0.5016,
+   "feeXBt": null,
+   "round": false
+  },
+  {
+   "date": "2018-04-27",
+   "amountXBt": 1.0012,
+   "shareOfEquityBefore": 0.2348,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 5.87561713,
+   "baseXBt": 1,
+   "feeXBt": 0.0012,
+   "round": true
+  },
+  {
+   "date": "2018-05-12",
+   "amountXBt": 2.0012,
+   "shareOfEquityBefore": 0.2612,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 7.87681713,
+   "baseXBt": 2,
+   "feeXBt": 0.0012,
+   "round": true
+  },
+  {
+   "date": "2018-07-28",
+   "amountXBt": 4.0012,
+   "shareOfEquityBefore": 0.1488,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 11.87801713,
+   "baseXBt": 4,
+   "feeXBt": 0.0012,
+   "round": true
+  },
+  {
+   "date": "2018-08-10",
+   "amountXBt": 2.5012,
+   "shareOfEquityBefore": 0.091,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 14.37921713,
+   "baseXBt": 2.5,
+   "feeXBt": 0.0012,
+   "round": false
+  },
+  {
+   "date": "2018-08-13",
+   "amountXBt": 0.5004,
+   "shareOfEquityBefore": 0.0184,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 14.87961713,
+   "baseXBt": 0.5004,
+   "feeXBt": null,
+   "round": false
+  },
+  {
+   "date": "2018-09-05",
+   "amountXBt": 7.012,
+   "shareOfEquityBefore": 0.1884,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 21.89161713,
+   "baseXBt": 7,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2018-11-25",
+   "amountXBt": 1.0012,
+   "shareOfEquityBefore": 0.0141,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 22.89281713,
+   "baseXBt": 1,
+   "feeXBt": 0.0012,
+   "round": true
+  },
+  {
+   "date": "2018-11-28",
+   "amountXBt": 10.012,
+   "shareOfEquityBefore": 0.1168,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 32.90481713,
+   "baseXBt": 10,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2018-11-29",
+   "amountXBt": 10.012,
+   "shareOfEquityBefore": 0.1269,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 42.91681713,
+   "baseXBt": 10,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2018-12-07",
+   "amountXBt": 10.012,
+   "shareOfEquityBefore": 0.0926,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 52.92881713,
+   "baseXBt": 10,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2018-12-23",
+   "amountXBt": 10.012,
+   "shareOfEquityBefore": 0.0838,
+   "daysSinceProfitPeak": 6,
+   "cumulativeWithdrawnXBt": 62.94081713,
+   "baseXBt": 10,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2018-12-29",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.1442,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 82.95281713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-01-11",
+   "amountXBt": 10.012,
+   "shareOfEquityBefore": 0.082,
+   "daysSinceProfitPeak": 3,
+   "cumulativeWithdrawnXBt": 92.96481713,
+   "baseXBt": 10,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-01-15",
+   "amountXBt": 10.012,
+   "shareOfEquityBefore": 0.068,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 102.97681713,
+   "baseXBt": 10,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-02-09",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.1159,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 122.98881713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-03-08",
+   "amountXBt": 8.0012,
+   "shareOfEquityBefore": 0.044,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 130.99001713,
+   "baseXBt": 8,
+   "feeXBt": 0.0012,
+   "round": true
+  },
+  {
+   "date": "2019-04-10",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.1175,
+   "daysSinceProfitPeak": 11,
+   "cumulativeWithdrawnXBt": 151.00201713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-04-18",
+   "amountXBt": 10.012,
+   "shareOfEquityBefore": 0.0601,
+   "daysSinceProfitPeak": 19,
+   "cumulativeWithdrawnXBt": 161.01401713,
+   "baseXBt": 10,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-04-23",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.112,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 181.02601713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-05-06",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.1047,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 201.03801713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-05-12",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.1122,
+   "daysSinceProfitPeak": 1,
+   "cumulativeWithdrawnXBt": 221.05001713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-05-27",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.1019,
+   "daysSinceProfitPeak": 4,
+   "cumulativeWithdrawnXBt": 241.06201713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-06-16",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.1063,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 261.07401713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-06-26",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.1122,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 281.08601713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-07-18",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.0903,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 301.09801713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-07-19",
+   "amountXBt": 20.015,
+   "shareOfEquityBefore": 0.1015,
+   "daysSinceProfitPeak": 1,
+   "cumulativeWithdrawnXBt": 321.11301713,
+   "baseXBt": 20,
+   "feeXBt": 0.015,
+   "round": true
+  },
+  {
+   "date": "2019-09-06",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.0907,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 341.12501713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2019-12-10",
+   "amountXBt": 0.011,
+   "shareOfEquityBefore": 0,
+   "daysSinceProfitPeak": 5,
+   "cumulativeWithdrawnXBt": 341.13601713,
+   "baseXBt": 0.011,
+   "feeXBt": null,
+   "round": false
+  },
+  {
+   "date": "2019-12-11",
+   "amountXBt": 1.0012,
+   "shareOfEquityBefore": 0.0028,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 342.13721713,
+   "baseXBt": 1,
+   "feeXBt": 0.0012,
+   "round": true
+  },
+  {
+   "date": "2020-01-08",
+   "amountXBt": 20.012,
+   "shareOfEquityBefore": 0.0501,
+   "daysSinceProfitPeak": 2,
+   "cumulativeWithdrawnXBt": 362.14921713,
+   "baseXBt": 20,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-01-11",
+   "amountXBt": 30.012,
+   "shareOfEquityBefore": 0.0697,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 392.16121713,
+   "baseXBt": 30,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-01-17",
+   "amountXBt": 50.012,
+   "shareOfEquityBefore": 0.1232,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 442.17321713,
+   "baseXBt": 50,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-02-15",
+   "amountXBt": 50.012,
+   "shareOfEquityBefore": 0.1106,
+   "daysSinceProfitPeak": 2,
+   "cumulativeWithdrawnXBt": 492.18521713,
+   "baseXBt": 50,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-03-13",
+   "amountXBt": 50.012,
+   "shareOfEquityBefore": 0.0733,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 542.19721713,
+   "baseXBt": 50,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-03-24",
+   "amountXBt": 50.012,
+   "shareOfEquityBefore": 0.0868,
+   "daysSinceProfitPeak": 11,
+   "cumulativeWithdrawnXBt": 592.20921713,
+   "baseXBt": 50,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-05-02",
+   "amountXBt": 50.012,
+   "shareOfEquityBefore": 0.0848,
+   "daysSinceProfitPeak": 31,
+   "cumulativeWithdrawnXBt": 642.22121713,
+   "baseXBt": 50,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-05-11",
+   "amountXBt": 50.015,
+   "shareOfEquityBefore": 0.0836,
+   "daysSinceProfitPeak": 1,
+   "cumulativeWithdrawnXBt": 692.23621713,
+   "baseXBt": 50,
+   "feeXBt": 0.015,
+   "round": true
+  },
+  {
+   "date": "2020-08-02",
+   "amountXBt": 72.012,
+   "shareOfEquityBefore": 0.108,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 764.24821713,
+   "baseXBt": 72,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-08-19",
+   "amountXBt": 50.012,
+   "shareOfEquityBefore": 0.0745,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 814.26021713,
+   "baseXBt": 50,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-08-24",
+   "amountXBt": 50.002,
+   "shareOfEquityBefore": 0.078,
+   "daysSinceProfitPeak": 3,
+   "cumulativeWithdrawnXBt": 864.26221713,
+   "baseXBt": 49.99,
+   "feeXBt": 0.012,
+   "round": false
+  },
+  {
+   "date": "2020-10-02",
+   "amountXBt": 50.012,
+   "shareOfEquityBefore": 0.0721,
+   "daysSinceProfitPeak": 24,
+   "cumulativeWithdrawnXBt": 914.27421713,
+   "baseXBt": 50,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2020-12-20",
+   "amountXBt": 50.012,
+   "shareOfEquityBefore": 0.0803,
+   "daysSinceProfitPeak": 103,
+   "cumulativeWithdrawnXBt": 964.28621713,
+   "baseXBt": 50,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2021-01-29",
+   "amountXBt": 100.012,
+   "shareOfEquityBefore": 0.1173,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 1064.29821713,
+   "baseXBt": 100,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2021-03-08",
+   "amountXBt": 50.012,
+   "shareOfEquityBefore": 0.0664,
+   "daysSinceProfitPeak": 33,
+   "cumulativeWithdrawnXBt": 1114.31021713,
+   "baseXBt": 50,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2021-04-05",
+   "amountXBt": 100.012,
+   "shareOfEquityBefore": 0.1448,
+   "daysSinceProfitPeak": 61,
+   "cumulativeWithdrawnXBt": 1214.32221713,
+   "baseXBt": 100,
+   "feeXBt": 0.012,
+   "round": true
+  },
+  {
+   "date": "2021-06-20",
+   "amountXBt": 300.021,
+   "shareOfEquityBefore": 0.2034,
+   "daysSinceProfitPeak": 1,
+   "cumulativeWithdrawnXBt": 1514.34321713,
+   "baseXBt": 300.021,
+   "feeXBt": null,
+   "round": false
+  },
+  {
+   "date": "2021-07-27",
+   "amountXBt": 300.05,
+   "shareOfEquityBefore": 0.2373,
+   "daysSinceProfitPeak": 32,
+   "cumulativeWithdrawnXBt": 1814.39321713,
+   "baseXBt": 300,
+   "feeXBt": 0.05,
+   "round": true
+  },
+  {
+   "date": "2021-08-19",
+   "amountXBt": 400.05,
+   "shareOfEquityBefore": 0.2721,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 2214.44321713,
+   "baseXBt": 400,
+   "feeXBt": 0.05,
+   "round": true
+  },
+  {
+   "date": "2021-09-03",
+   "amountXBt": 300.05,
+   "shareOfEquityBefore": 0.244,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 2514.49321713,
+   "baseXBt": 300,
+   "feeXBt": 0.05,
+   "round": true
+  },
+  {
+   "date": "2021-09-23",
+   "amountXBt": 300.05,
+   "shareOfEquityBefore": 0.2151,
+   "daysSinceProfitPeak": 0,
+   "cumulativeWithdrawnXBt": 2814.54321713,
+   "baseXBt": 300,
+   "feeXBt": 0.05,
+   "round": true
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-22T10:02:19.747Z",
+  "generatedAt": "2026-09-22T11:55:38.291Z",
   "source": {
     "post": "https://gall.dcinside.com/mgallery/board/view/?id=chartanalysis&no=5051684",
     "driveFileId": "1XDwxbriz_kOq44iH-mHcjsYTBklMnMW3",
@@ -30,7 +30,7 @@
     "tradeFills": 1439207,
     "fundingRows": 5368,
     "settlementRows": 8,
-    "uniqueOrders": 23417,
+    "uniqueOrders": 23416,
     "notionalByCurrency": {
       "USD": 27984055048.42323,
       "XBT": 10634.715124039847,
@@ -139,7 +139,7 @@
     {
       "month": "2018-03",
       "fills": 6006,
-      "orders": 1407,
+      "orders": 1406,
       "notionalUsd": 55713456,
       "realisedXBt": 0.7537533,
       "fundingXBt": -0.02630443,
@@ -151,7 +151,7 @@
     {
       "month": "2018-04",
       "fills": 13179,
-      "orders": 1622,
+      "orders": 1621,
       "notionalUsd": 150298121.27,
       "realisedXBt": 4.54668307,
       "fundingXBt": 0.04268082,
@@ -163,7 +163,7 @@
     {
       "month": "2018-05",
       "fills": 5146,
-      "orders": 593,
+      "orders": 592,
       "notionalUsd": 94078733.43,
       "realisedXBt": 2.09836688,
       "fundingXBt": 0.06027604,
@@ -175,7 +175,7 @@
     {
       "month": "2018-06",
       "fills": 6854,
-      "orders": 761,
+      "orders": 760,
       "notionalUsd": 100278242.84,
       "realisedXBt": 5.75734346,
       "fundingXBt": 0.0529344,
@@ -187,7 +187,7 @@
     {
       "month": "2018-07",
       "fills": 10105,
-      "orders": 1210,
+      "orders": 1209,
       "notionalUsd": 178476713.66,
       "realisedXBt": 15.32807846,
       "fundingXBt": 0.37909279,
@@ -211,7 +211,7 @@
     {
       "month": "2018-09",
       "fills": 17263,
-      "orders": 1371,
+      "orders": 1370,
       "notionalUsd": 141553330.33,
       "realisedXBt": -18.83721327,
       "fundingXBt": 0.17160537,
@@ -235,7 +235,7 @@
     {
       "month": "2018-11",
       "fills": 34866,
-      "orders": 1922,
+      "orders": 1921,
       "notionalUsd": 249312006.82,
       "realisedXBt": 82.63703558,
       "fundingXBt": 2.03927635,
@@ -355,7 +355,7 @@
     {
       "month": "2019-09",
       "fills": 12085,
-      "orders": 132,
+      "orders": 131,
       "notionalUsd": 184470894.6,
       "realisedXBt": 26.95072443,
       "fundingXBt": -0.22617,
@@ -427,7 +427,7 @@
     {
       "month": "2020-03",
       "fills": 35132,
-      "orders": 735,
+      "orders": 734,
       "notionalUsd": 549821608,
       "realisedXBt": 299.34071637,
       "fundingXBt": 20.83185524,

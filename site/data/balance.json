@@ -1,0 +1,326 @@
+{
+ "monthly": [
+  {
+   "month": "2018-03",
+   "endBalanceXBt": 2.36217277,
+   "realisedXBt": 0.7537533,
+   "withdrawalsXBt": -2.37041713,
+   "depositsXBt": 3.9788366
+  },
+  {
+   "month": "2018-04",
+   "endBalanceXBt": 4.13716248,
+   "realisedXBt": 4.54668307,
+   "withdrawalsXBt": -3.5052,
+   "depositsXBt": 0.73350664
+  },
+  {
+   "month": "2018-05",
+   "endBalanceXBt": 7.69388037,
+   "realisedXBt": 2.09836688,
+   "withdrawalsXBt": -2.0012,
+   "depositsXBt": 3.45955101
+  },
+  {
+   "month": "2018-06",
+   "endBalanceXBt": 13.45122383,
+   "realisedXBt": 5.75734346,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2018-07",
+   "endBalanceXBt": 24.77810229,
+   "realisedXBt": 15.32807846,
+   "withdrawalsXBt": -4.0012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2018-08",
+   "endBalanceXBt": 29.70234828,
+   "realisedXBt": 7.92584599,
+   "withdrawalsXBt": -3.0016,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2018-09",
+   "endBalanceXBt": 5.49625703,
+   "realisedXBt": -18.83721327,
+   "withdrawalsXBt": -7.012,
+   "depositsXBt": 1.64312202
+  },
+  {
+   "month": "2018-10",
+   "endBalanceXBt": 18.22330276,
+   "realisedXBt": 8.19618724,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 4.53085849
+  },
+  {
+   "month": "2018-11",
+   "endBalanceXBt": 79.97852072,
+   "realisedXBt": 82.63703558,
+   "withdrawalsXBt": -21.0252,
+   "depositsXBt": 0.14338238
+  },
+  {
+   "month": "2018-12",
+   "endBalanceXBt": 119.96216233,
+   "realisedXBt": 80.01964161,
+   "withdrawalsXBt": -40.036,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-01",
+   "endBalanceXBt": 167.50379209,
+   "realisedXBt": 67.56562976,
+   "withdrawalsXBt": -20.024,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-02",
+   "endBalanceXBt": 166.88316776,
+   "realisedXBt": 19.39137567,
+   "withdrawalsXBt": -20.012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-03",
+   "endBalanceXBt": 192.14566503,
+   "realisedXBt": 33.26369727,
+   "withdrawalsXBt": -8.0012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-04",
+   "endBalanceXBt": 173.96634557,
+   "realisedXBt": 31.85668054,
+   "withdrawalsXBt": -50.036,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-05",
+   "endBalanceXBt": 174.04429502,
+   "realisedXBt": 60.11394945,
+   "withdrawalsXBt": -60.036,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-06",
+   "endBalanceXBt": 170.09382499,
+   "realisedXBt": 36.07352997,
+   "withdrawalsXBt": -40.024,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-07",
+   "endBalanceXBt": 177.60420693,
+   "realisedXBt": 47.53738194,
+   "withdrawalsXBt": -40.027,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-08",
+   "endBalanceXBt": 216.63190996,
+   "realisedXBt": 39.02770303,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-09",
+   "endBalanceXBt": 223.57063439,
+   "realisedXBt": 26.95072443,
+   "withdrawalsXBt": -20.012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-10",
+   "endBalanceXBt": 214.74861312,
+   "realisedXBt": -8.82202127,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-11",
+   "endBalanceXBt": 308.8566841,
+   "realisedXBt": 94.10807098,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2019-12",
+   "endBalanceXBt": 377.15064658,
+   "realisedXBt": 69.30616248,
+   "withdrawalsXBt": -1.0122,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-01",
+   "endBalanceXBt": 429.90594783,
+   "realisedXBt": 152.79130125,
+   "withdrawalsXBt": -100.036,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-02",
+   "endBalanceXBt": 417.59713821,
+   "realisedXBt": 37.70319038,
+   "withdrawalsXBt": -50.012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-03",
+   "endBalanceXBt": 616.91385458,
+   "realisedXBt": 299.34071637,
+   "withdrawalsXBt": -100.024,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-04",
+   "endBalanceXBt": 566.12470225,
+   "realisedXBt": -50.78915233,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-05",
+   "endBalanceXBt": 537.94146425,
+   "realisedXBt": 71.843762,
+   "withdrawalsXBt": -100.027,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-06",
+   "endBalanceXBt": 584.97286606,
+   "realisedXBt": 47.03140181,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-07",
+   "endBalanceXBt": 599.42351831,
+   "realisedXBt": 14.45065225,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-08",
+   "endBalanceXBt": 581.53219231,
+   "realisedXBt": 154.134674,
+   "withdrawalsXBt": -172.026,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-09",
+   "endBalanceXBt": 682.992064,
+   "realisedXBt": 101.45987169,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-10",
+   "endBalanceXBt": 602.47027118,
+   "realisedXBt": -30.50979282,
+   "withdrawalsXBt": -50.012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-11",
+   "endBalanceXBt": 637.06728568,
+   "realisedXBt": 34.5970145,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2020-12",
+   "endBalanceXBt": 518.64429207,
+   "realisedXBt": -68.41099361,
+   "withdrawalsXBt": -50.012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-01",
+   "endBalanceXBt": 734.19880155,
+   "realisedXBt": 315.56650948,
+   "withdrawalsXBt": -100.012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-02",
+   "endBalanceXBt": 704.27188747,
+   "realisedXBt": -29.92691408,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-03",
+   "endBalanceXBt": 696.82817556,
+   "realisedXBt": 42.56828809,
+   "withdrawalsXBt": -50.012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-04",
+   "endBalanceXBt": 712.95707554,
+   "realisedXBt": 116.14089998,
+   "withdrawalsXBt": -100.012,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-05",
+   "endBalanceXBt": 795.64620712,
+   "realisedXBt": 82.68913158,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-06",
+   "endBalanceXBt": 1139.87,
+   "realisedXBt": 644.24728331,
+   "withdrawalsXBt": -300.021,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-07",
+   "endBalanceXBt": 987.49113224,
+   "realisedXBt": 147.66864181,
+   "withdrawalsXBt": -300.05,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-08",
+   "endBalanceXBt": 1213.26,
+   "realisedXBt": 625.81948368,
+   "withdrawalsXBt": -400.05,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-09",
+   "endBalanceXBt": 1304.93,
+   "realisedXBt": 691.76978566,
+   "withdrawalsXBt": -600.1,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-10",
+   "endBalanceXBt": 1089.16,
+   "realisedXBt": -215.77121649,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-11",
+   "endBalanceXBt": 892.45722363,
+   "realisedXBt": -196.70196146,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  },
+  {
+   "month": "2021-12",
+   "endBalanceXBt": 737.26973405,
+   "realisedXBt": -155.18748958,
+   "withdrawalsXBt": 0,
+   "depositsXBt": 0
+  }
+ ]
+}
