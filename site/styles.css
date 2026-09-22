@@ -36,6 +36,11 @@ svg .fill-halo{pointer-events:none}
 svg .fill-label{font:600 9px var(--mono);text-anchor:middle}
 svg .fill-label.buy-label{fill:var(--profit)}
 svg .fill-label.sell-label{fill:var(--loss)}
+svg .last-price-box{fill:var(--brass);stroke:var(--panel);stroke-width:1}
+svg .last-price-label{fill:var(--bg);font-weight:700}
+svg .ohlc-readout{fill:var(--text);font-size:9px}
+svg .ma-readout{fill:var(--muted);font-size:9px}
+svg .ma99{opacity:.9}
 
 /* ---- density pass: remove the sidebar-era gutter and tighten spacing ---- */
 .topbar{height:48px}

@@ -340,6 +340,7 @@
         ...r,
         ma7: i < 6 ? null : sum(arr.slice(i - 6, i + 1), 'close') / 7,
         ma20: i < 19 ? null : sum(arr.slice(i - 19, i + 1), 'close') / 20,
+        ma99: i < 98 ? null : sum(arr.slice(i - 98, i + 1), 'close') / 99,
       }));
       const barSides = new Map();
       if (footprint && marks !== 'off') {
@@ -365,7 +366,7 @@
       };
       const W = 900, H = 372, L = 12, R = 78, T = 30, B = 244, VT = 280, VB = 334;
       const x = (ms) => L + 5 + (ms - from) / (end - from || DAY) * (W - L - R - 10);
-      const prices = withMa.flatMap((r) => [r.low, r.high, ...(r.ma7 === null ? [] : [r.ma7]), ...(r.ma20 === null ? [] : [r.ma20])]);
+      const prices = withMa.flatMap((r) => [r.low, r.high, ...(r.ma7 === null ? [] : [r.ma7]), ...(r.ma20 === null ? [] : [r.ma20]), ...(r.ma99 === null ? [] : [r.ma99])]);
       const low = Math.min(...prices), high = Math.max(...prices), padding = (high - low || high * .01) * .08;
       const lo = Math.max(low - padding, low * 0.5);
       const hi = high + padding;
@@ -385,7 +386,7 @@
           : lo + (hi - lo) * i / 4;
         body += line(L, y(value), W - R, y(value)) + text(W - 6, y(value) + 3, number(value, decimals), '', 'end');
       }
-      body += text(L, VT - 9, '시장 거래량', 'axis-unit') + line(L, VB, W - R, VB) + text(W - 6, VT + 4, shortNumber(maxVolume), '', 'end') + text(W - 6, VB + 3, '0', '', 'end');
+      body += text(L, VT - 9, `Vol(BTC) ${shortNumber(last.volume)} · Vol(USDT) ${shortNumber(last.volume * last.close)}`, 'axis-unit') + line(L, VB, W - R, VB) + text(W - 6, VT + 4, shortNumber(maxVolume), '', 'end') + text(W - 6, VB + 3, '0', '', 'end');
       withMa.forEach((r) => {
         const xx = x(dateMs(r.day)), color = `var(--${r.close >= r.open ? 'profit' : 'loss'})`;
         body += `<line class="candle-wick" x1="${xx}" x2="${xx}" y1="${y(r.high)}" y2="${y(r.low)}" stroke="${color}" stroke-width="1"/>`;
@@ -402,7 +403,19 @@
         });
         body += `<path class="${key}" d="${path}" fill="none" stroke="${color}" stroke-width="1.4" ${dash}/>`;
       }
+      {
+        let path = '', previousDay = null;
+        withMa.forEach((r) => {
+          if (r.ma99 === null) { previousDay = null; return; }
+          const day = dateMs(r.day);
+          path += `${previousDay !== null && day - previousDay <= 31 * DAY ? 'L' : 'M'}${x(day)},${y(r.ma99)}`;
+          previousDay = day;
+        });
+        body += `<path class="ma99" d="${path}" fill="none" stroke="var(--quiet)" stroke-width="1.2"/>`;
+      }
       body += line(L, y(last.close), W - R, y(last.close), 'last-price-line');
+      body += `<rect class="last-price-box" x="${W - R + 4}" y="${(y(last.close) - 9).toFixed(2)}" width="68" height="18" rx="4"/>`;
+      body += text(W - 6, y(last.close) + 3, number(last.close, decimals), 'last-price-label', 'end');
       if (cutoff) {
         const cx = x(dateMs(last.day));
         body += `<line class="replay-cursor" x1="${cx.toFixed(2)}" x2="${cx.toFixed(2)}" y1="${T}" y2="${VB}" stroke="var(--brass)" stroke-width="1" stroke-dasharray="3 3" opacity=".9"/>`;
@@ -459,8 +472,8 @@
               if (bLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(bHigh).toFixed(2)}" y2="${y(bLow).toFixed(2)}" stroke="var(--profit)" stroke-width="${w.toFixed(2)}" opacity=".3"/>`;
               if (sLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(sHigh).toFixed(2)}" y2="${y(sLow).toFixed(2)}" stroke="var(--loss)" stroke-width="${w.toFixed(2)}" opacity=".3"/>`;
               const sideN = barSides.get(bar.day) || { bf: 0, sf: 0 };
-              if (bLow !== null) body += tri(xx, y((bLow + bHigh) / 2), 1, sizeOf(sideN.bf), 'var(--profit)', `${symbol} · ${bar.day}\n매수 ${number(bf)}건\n가격 ${number(bLow, 2)} ~ ${number(bHigh, 2)}`);
-              if (sLow !== null) body += tri(xx, y((sLow + sHigh) / 2), -1, sizeOf(sideN.sf), 'var(--loss)', `${symbol} · ${bar.day}\n매도 ${number(sf)}건\n가격 ${number(sLow, 2)} ~ ${number(sHigh, 2)}`);
+              if (bLow !== null) body += tri(xx - (sLow !== null ? 5 : 0), y((bLow + bHigh) / 2), 1, sizeOf(sideN.bf), 'var(--profit)', `${symbol} · ${bar.day}\n매수 ${number(bf)}건\n가격 ${number(bLow, 2)} ~ ${number(bHigh, 2)}`);
+              if (sLow !== null) body += tri(xx + (bLow !== null ? 5 : 0), y((sLow + sHigh) / 2), -1, sizeOf(sideN.sf), 'var(--loss)', `${symbol} · ${bar.day}\n매도 ${number(sf)}건\n가격 ${number(sLow, 2)} ~ ${number(sHigh, 2)}`);
               // Letters only when there is room between bars for one.
               if (bLow !== null) body += text(xx, y(bHigh) - 5, 'B', 'fill-label buy-label');
               if (sLow !== null) body += text(xx, y(sLow) + 11, 'S', 'fill-label sell-label');
