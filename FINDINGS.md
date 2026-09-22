@@ -60,13 +60,45 @@ which is how `docs/methodology.md` defines it.
 - Deposits: 18, totalling **14.49 XBt** (about 0.4% of the eventual result)
 - Completed withdrawals: 56, totalling **2,814.54 XBt**
 - **79.6% of all realised profit left the venue**
-- 27 of the 56 withdrawals happened within ±5 days of a high-water mark in cumulative profit
 
 This is the single most transferable behaviour in the data. The account was not compounding on
 the exchange; it was harvesting. A separate Korean trader who commented publicly on the same
 disclosure on 2026-09-22 described exactly this pattern — "whenever he collected 100 BTC he
-immediately pulled 50 out" — and concluded the lesson was discipline rather than technique. The
-ledger is consistent with that description.
+immediately pulled 50 out" — and concluded the lesson was discipline rather than technique.
+
+### The withdrawals were a rule, not a mood — Solid
+
+`scripts/withdrawals.mjs` recovers the intended withdrawal amount by subtracting the exchange
+fee suffix (BitMEX charges the fee on top, so a request for 20 BTC arrives as 20.012). **47 of
+the 56 withdrawals are an exact round BTC lot.** The ladder, in order of first use:
+
+| Lot (BTC) | Times | First | Last |
+| ---: | ---: | --- | --- |
+| 0.2 | 2 | 2018-03-30 | 2018-03-31 |
+| 1 | 5 | 2018-04-18 | 2019-12-11 |
+| 2 | 1 | 2018-05-12 | 2018-05-12 |
+| 4 | 1 | 2018-07-28 | 2018-07-28 |
+| 7 | 1 | 2018-09-05 | 2018-09-05 |
+| 8 | 1 | 2019-03-08 | 2019-03-08 |
+| 10 | 7 | 2018-11-28 | 2019-04-18 |
+| 20 | 13 | 2018-12-29 | 2020-01-08 |
+| 30 | 1 | 2020-01-11 | 2020-01-11 |
+| 50 | 10 | 2020-01-17 | 2021-03-08 |
+| 72 | 1 | 2020-08-02 | 2020-08-02 |
+| 100 | 2 | 2021-01-29 | 2021-04-05 |
+| 300 | 4 | 2021-06-20 | 2021-09-23 |
+| 400 | 1 | 2021-08-19 | 2021-08-19 |
+
+The lot size steps up with the account: 1–10 BTC through 2018–19, 20 BTC dominating 2019, 50 BTC
+through 2020–21, then 100–400 BTC in the second half of 2021. That is a ladder, not
+improvisation.
+
+### The timing was mechanical too — Solid
+
+- **44 of 56 withdrawals (79%) fell within 5 days of a new high-water mark in cumulative profit**,
+  and the median gap between the peak and the withdrawal is **0 days**.
+- Median withdrawal size was **10.3% of the equity it was taken from** (p90 23.6%).
+- Median spacing between withdrawals was **15 days** (p10 2, p90 65).
 
 **Confounder.** Withdrawals are also what an operator does when moving funds to another venue
 or to cold storage, so "risk reduction" and "reallocation" are not distinguishable here. The
@@ -220,7 +252,7 @@ survives a stricter test than the ledger's own event count.
 
 | Stated | Measured |
 | --- | --- |
-| "출금해라" and stop re-depositing after a loss | 79.6% of profit withdrawn; total deposits 14.49 XBt over four years |
+| "출금해라" and stop re-depositing after a loss | 79.6% of profit withdrawn, in round BTC lots that step up with the account; total deposits 14.49 XBt over four years |
 | "보통 하루 정도 들고 있음" | FIFO round-trip median 13.2 h |
 | "승률에 더 신경 써라" | win rate 66.99%, payoff ratio 0.84 |
 | "시총이 큰 코인 위주로 매매" | BTC+ETH = 80.2% of profit |

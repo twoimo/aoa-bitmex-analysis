@@ -13,6 +13,7 @@
     "analyze": "node scripts/analyze.mjs",
     "insights": "node scripts/insights.mjs",
     "stated": "node scripts/stated-vs-measured.mjs",
+    "withdrawals": "node scripts/withdrawals.mjs",
     "test": "node --test tests/",
     "all": "npm run validate && npm run analyze && npm run insights"
   },

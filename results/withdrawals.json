@@ -1,0 +1,1356 @@
+{
+  "summary": {
+    "generatedAt": "2026-09-22T10:27:42.395Z",
+    "window": {
+      "firstDay": "2018-03-05",
+      "lastDay": "2021-12-31",
+      "days": 1398
+    },
+    "completedWithdrawals": 56,
+    "totalWithdrawnXBt": 2814.54321713,
+    "cumulativeRealisedXBt": 3537.32369404,
+    "withdrawnShareOfRealised": 0.7957,
+    "withdrawalSizeXBt": {
+      "min": 0.011,
+      "p25": 6.2593,
+      "median": 20.012,
+      "p75": 50.012,
+      "max": 400.05
+    },
+    "shareOfEquityAtWithdrawal": {
+      "median": 0.1033,
+      "p10": 0.0551,
+      "p90": 0.2361,
+      "max": 1,
+      "note": "withdrawal amount divided by the wallet balance immediately before it"
+    },
+    "spacingDays": {
+      "median": 15,
+      "p10": 2,
+      "p90": 65
+    },
+    "timingVsProfitPeak": {
+      "within5Days": 44,
+      "within30Days": 51,
+      "medianDaysAfterPeak": 0,
+      "note": "days between a high-water mark in cumulative realised PnL and the withdrawal"
+    },
+    "cancelledWithdrawals": 7,
+    "depositsXBt": 14.48925714,
+    "roundLotPattern": {
+      "note": "Amounts are round BTC lots plus the exchange withdrawal fee, so the intended lot size is recoverable.",
+      "withdrawalsMatchingARoundLot": 47,
+      "ofWithdrawals": 56,
+      "distinctLotSizes": 21,
+      "ladder": [
+        {
+          "baseXBt": 0.011,
+          "count": 1,
+          "firstDate": "2019-12-10",
+          "lastDate": "2019-12-10"
+        },
+        {
+          "baseXBt": 0.2,
+          "count": 2,
+          "firstDate": "2018-03-30",
+          "lastDate": "2018-03-31"
+        },
+        {
+          "baseXBt": 0.5004,
+          "count": 1,
+          "firstDate": "2018-08-13",
+          "lastDate": "2018-08-13"
+        },
+        {
+          "baseXBt": 0.5016,
+          "count": 1,
+          "firstDate": "2018-04-25",
+          "lastDate": "2018-04-25"
+        },
+        {
+          "baseXBt": 1,
+          "count": 5,
+          "firstDate": "2018-04-18",
+          "lastDate": "2019-12-11"
+        },
+        {
+          "baseXBt": 1.96801713,
+          "count": 1,
+          "firstDate": "2018-03-22",
+          "lastDate": "2018-03-22"
+        },
+        {
+          "baseXBt": 2,
+          "count": 1,
+          "firstDate": "2018-05-12",
+          "lastDate": "2018-05-12"
+        },
+        {
+          "baseXBt": 2.5,
+          "count": 1,
+          "firstDate": "2018-08-10",
+          "lastDate": "2018-08-10"
+        },
+        {
+          "baseXBt": 4,
+          "count": 1,
+          "firstDate": "2018-07-28",
+          "lastDate": "2018-07-28"
+        },
+        {
+          "baseXBt": 7,
+          "count": 1,
+          "firstDate": "2018-09-05",
+          "lastDate": "2018-09-05"
+        },
+        {
+          "baseXBt": 8,
+          "count": 1,
+          "firstDate": "2019-03-08",
+          "lastDate": "2019-03-08"
+        },
+        {
+          "baseXBt": 10,
+          "count": 7,
+          "firstDate": "2018-11-28",
+          "lastDate": "2019-04-18"
+        },
+        {
+          "baseXBt": 20,
+          "count": 13,
+          "firstDate": "2018-12-29",
+          "lastDate": "2020-01-08"
+        },
+        {
+          "baseXBt": 30,
+          "count": 1,
+          "firstDate": "2020-01-11",
+          "lastDate": "2020-01-11"
+        },
+        {
+          "baseXBt": 49.99,
+          "count": 1,
+          "firstDate": "2020-08-24",
+          "lastDate": "2020-08-24"
+        },
+        {
+          "baseXBt": 50,
+          "count": 10,
+          "firstDate": "2020-01-17",
+          "lastDate": "2021-03-08"
+        },
+        {
+          "baseXBt": 72,
+          "count": 1,
+          "firstDate": "2020-08-02",
+          "lastDate": "2020-08-02"
+        },
+        {
+          "baseXBt": 100,
+          "count": 2,
+          "firstDate": "2021-01-29",
+          "lastDate": "2021-04-05"
+        },
+        {
+          "baseXBt": 300,
+          "count": 3,
+          "firstDate": "2021-07-27",
+          "lastDate": "2021-09-23"
+        },
+        {
+          "baseXBt": 300.021,
+          "count": 1,
+          "firstDate": "2021-06-20",
+          "lastDate": "2021-06-20"
+        },
+        {
+          "baseXBt": 400,
+          "count": 1,
+          "firstDate": "2021-08-19",
+          "lastDate": "2021-08-19"
+        }
+      ]
+    }
+  },
+  "events": [
+    {
+      "date": "2018-03-22",
+      "amountXBt": 1.96801713,
+      "balanceAfterXBt": 0,
+      "equityBeforeXBt": 1.96801713,
+      "shareOfEquityBefore": 1,
+      "cumulativeWithdrawnXBt": 1.96801713,
+      "cumulativeRealisedXBt": -0.24713766,
+      "withdrawnShareOfCumulativeRealised": null,
+      "daysSincePreviousWithdrawal": null,
+      "daysSinceProfitPeak": 2,
+      "drawdownFromPeakAtWithdrawalXBt": -1.95590493,
+      "transactidPrefix": "8657ea16"
+    },
+    {
+      "date": "2018-03-30",
+      "amountXBt": 0.2012,
+      "balanceAfterXBt": 2.21035794,
+      "equityBeforeXBt": 2.41155794,
+      "shareOfEquityBefore": 0.0834,
+      "cumulativeWithdrawnXBt": 2.16921713,
+      "cumulativeRealisedXBt": 0.40073847,
+      "withdrawnShareOfCumulativeRealised": 5.413,
+      "daysSincePreviousWithdrawal": 8,
+      "daysSinceProfitPeak": 10,
+      "drawdownFromPeakAtWithdrawalXBt": -1.3080288,
+      "transactidPrefix": "9abf6bd2"
+    },
+    {
+      "date": "2018-03-31",
+      "amountXBt": 0.2012,
+      "balanceAfterXBt": 2.36217277,
+      "equityBeforeXBt": 2.56337277,
+      "shareOfEquityBefore": 0.0785,
+      "cumulativeWithdrawnXBt": 2.37041713,
+      "cumulativeRealisedXBt": 0.7537533,
+      "withdrawnShareOfCumulativeRealised": 3.1448,
+      "daysSincePreviousWithdrawal": 1,
+      "daysSinceProfitPeak": 11,
+      "drawdownFromPeakAtWithdrawalXBt": -0.95501397,
+      "transactidPrefix": "bd1b0b02"
+    },
+    {
+      "date": "2018-04-18",
+      "amountXBt": 1.0012,
+      "balanceAfterXBt": 3.33818361,
+      "equityBeforeXBt": 4.33938361,
+      "shareOfEquityBefore": 0.2307,
+      "cumulativeWithdrawnXBt": 3.37161713,
+      "cumulativeRealisedXBt": 1.9974575,
+      "withdrawnShareOfCumulativeRealised": 1.688,
+      "daysSincePreviousWithdrawal": 18,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "85146ec6"
+    },
+    {
+      "date": "2018-04-24",
+      "amountXBt": 1.0012,
+      "balanceAfterXBt": 3.02608379,
+      "equityBeforeXBt": 4.02728379,
+      "shareOfEquityBefore": 0.2486,
+      "cumulativeWithdrawnXBt": 4.37281713,
+      "cumulativeRealisedXBt": 2.68655768,
+      "withdrawnShareOfCumulativeRealised": 1.6277,
+      "daysSincePreviousWithdrawal": 6,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "2028aed0"
+    },
+    {
+      "date": "2018-04-25",
+      "amountXBt": 0.5016,
+      "balanceAfterXBt": 2.54538234,
+      "equityBeforeXBt": 3.04698234,
+      "shareOfEquityBefore": 0.1646,
+      "cumulativeWithdrawnXBt": 4.87441713,
+      "cumulativeRealisedXBt": 2.70745623,
+      "withdrawnShareOfCumulativeRealised": 1.8004,
+      "daysSincePreviousWithdrawal": 1,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": -0.06876912,
+      "transactidPrefix": "f0e1d5e3"
+    },
+    {
+      "date": "2018-04-27",
+      "amountXBt": 1.0012,
+      "balanceAfterXBt": 3.80937178,
+      "equityBeforeXBt": 4.26461302,
+      "shareOfEquityBefore": 0.2348,
+      "cumulativeWithdrawnXBt": 5.87561713,
+      "cumulativeRealisedXBt": 4.42668691,
+      "withdrawnShareOfCumulativeRealised": 1.3273,
+      "daysSincePreviousWithdrawal": 2,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "245c7553"
+    },
+    {
+      "date": "2018-05-12",
+      "amountXBt": 2.0012,
+      "balanceAfterXBt": 5.65967584,
+      "equityBeforeXBt": 7.66087584,
+      "shareOfEquityBefore": 0.2612,
+      "cumulativeWithdrawnXBt": 7.87681713,
+      "cumulativeRealisedXBt": 8.82414973,
+      "withdrawnShareOfCumulativeRealised": 0.8926,
+      "daysSincePreviousWithdrawal": 15,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "810fee98"
+    },
+    {
+      "date": "2018-07-28",
+      "amountXBt": 4.0012,
+      "balanceAfterXBt": 22.88308672,
+      "equityBeforeXBt": 26.88428672,
+      "shareOfEquityBefore": 0.1488,
+      "cumulativeWithdrawnXBt": 11.87801713,
+      "cumulativeRealisedXBt": 26.5892096,
+      "withdrawnShareOfCumulativeRealised": 0.4467,
+      "daysSincePreviousWithdrawal": 77,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "ca446e2f"
+    },
+    {
+      "date": "2018-08-10",
+      "amountXBt": 2.5012,
+      "balanceAfterXBt": 24.99486659,
+      "equityBeforeXBt": 27.49606659,
+      "shareOfEquityBefore": 0.091,
+      "cumulativeWithdrawnXBt": 14.37921713,
+      "cumulativeRealisedXBt": 31.20218947,
+      "withdrawnShareOfCumulativeRealised": 0.4608,
+      "daysSincePreviousWithdrawal": 13,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "195f7c3b"
+    },
+    {
+      "date": "2018-08-13",
+      "amountXBt": 0.5004,
+      "balanceAfterXBt": 26.72832838,
+      "equityBeforeXBt": 27.22872838,
+      "shareOfEquityBefore": 0.0184,
+      "cumulativeWithdrawnXBt": 14.87961713,
+      "cumulativeRealisedXBt": 33.43605126,
+      "withdrawnShareOfCumulativeRealised": 0.445,
+      "daysSincePreviousWithdrawal": 3,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": -0.58431577,
+      "transactidPrefix": "5692a6c9"
+    },
+    {
+      "date": "2018-09-05",
+      "amountXBt": 7.012,
+      "balanceAfterXBt": 30.21580918,
+      "equityBeforeXBt": 37.22780918,
+      "shareOfEquityBefore": 0.1884,
+      "cumulativeWithdrawnXBt": 21.89161713,
+      "cumulativeRealisedXBt": 43.93553206,
+      "withdrawnShareOfCumulativeRealised": 0.4983,
+      "daysSincePreviousWithdrawal": 23,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "9a34f62a"
+    },
+    {
+      "date": "2018-11-25",
+      "amountXBt": 1.0012,
+      "balanceAfterXBt": 69.76405751,
+      "equityBeforeXBt": 70.76525751,
+      "shareOfEquityBefore": 0.0141,
+      "cumulativeWithdrawnXBt": 22.89281713,
+      "cumulativeRealisedXBt": 78.1676175,
+      "withdrawnShareOfCumulativeRealised": 0.2929,
+      "daysSincePreviousWithdrawal": 81,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "9d2d9347"
+    },
+    {
+      "date": "2018-11-28",
+      "amountXBt": 10.012,
+      "balanceAfterXBt": 75.7119588,
+      "equityBeforeXBt": 85.7239588,
+      "shareOfEquityBefore": 0.1168,
+      "cumulativeWithdrawnXBt": 32.90481713,
+      "cumulativeRealisedXBt": 94.12751879,
+      "withdrawnShareOfCumulativeRealised": 0.3496,
+      "daysSincePreviousWithdrawal": 3,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "0b394af3"
+    },
+    {
+      "date": "2018-11-29",
+      "amountXBt": 10.012,
+      "balanceAfterXBt": 68.89699932,
+      "equityBeforeXBt": 78.90899932,
+      "shareOfEquityBefore": 0.1269,
+      "cumulativeWithdrawnXBt": 42.91681713,
+      "cumulativeRealisedXBt": 97.32455931,
+      "withdrawnShareOfCumulativeRealised": 0.441,
+      "daysSincePreviousWithdrawal": 1,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "f713b39a"
+    },
+    {
+      "date": "2018-12-07",
+      "amountXBt": 10.012,
+      "balanceAfterXBt": 98.10936439,
+      "equityBeforeXBt": 108.12136439,
+      "shareOfEquityBefore": 0.0926,
+      "cumulativeWithdrawnXBt": 52.92881713,
+      "cumulativeRealisedXBt": 136.54892438,
+      "withdrawnShareOfCumulativeRealised": 0.3876,
+      "daysSincePreviousWithdrawal": 8,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "43e385be"
+    },
+    {
+      "date": "2018-12-23",
+      "amountXBt": 10.012,
+      "balanceAfterXBt": 109.40339517,
+      "equityBeforeXBt": 119.41539517,
+      "shareOfEquityBefore": 0.0838,
+      "cumulativeWithdrawnXBt": 62.94081713,
+      "cumulativeRealisedXBt": 157.85495516,
+      "withdrawnShareOfCumulativeRealised": 0.3987,
+      "daysSincePreviousWithdrawal": 16,
+      "daysSinceProfitPeak": 6,
+      "drawdownFromPeakAtWithdrawalXBt": -4.51170683,
+      "transactidPrefix": "06c26fe8"
+    },
+    {
+      "date": "2018-12-29",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 118.72828942,
+      "equityBeforeXBt": 138.74028942,
+      "shareOfEquityBefore": 0.1442,
+      "cumulativeWithdrawnXBt": 82.95281713,
+      "cumulativeRealisedXBt": 187.19184941,
+      "withdrawnShareOfCumulativeRealised": 0.4431,
+      "daysSincePreviousWithdrawal": 6,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "93d8748a"
+    },
+    {
+      "date": "2019-01-11",
+      "amountXBt": 10.012,
+      "balanceAfterXBt": 112.01438751,
+      "equityBeforeXBt": 122.02638751,
+      "shareOfEquityBefore": 0.082,
+      "cumulativeWithdrawnXBt": 92.96481713,
+      "cumulativeRealisedXBt": 190.4899475,
+      "withdrawnShareOfCumulativeRealised": 0.488,
+      "daysSincePreviousWithdrawal": 13,
+      "daysSinceProfitPeak": 3,
+      "drawdownFromPeakAtWithdrawalXBt": -4.23610477,
+      "transactidPrefix": "0c332ae9"
+    },
+    {
+      "date": "2019-01-15",
+      "amountXBt": 10.012,
+      "balanceAfterXBt": 137.19527361,
+      "equityBeforeXBt": 147.20727361,
+      "shareOfEquityBefore": 0.068,
+      "cumulativeWithdrawnXBt": 102.97681713,
+      "cumulativeRealisedXBt": 225.6828336,
+      "withdrawnShareOfCumulativeRealised": 0.4563,
+      "daysSincePreviousWithdrawal": 4,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "bd766658"
+    },
+    {
+      "date": "2019-02-09",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 152.70645501,
+      "equityBeforeXBt": 172.71845501,
+      "shareOfEquityBefore": 0.1159,
+      "cumulativeWithdrawnXBt": 122.98881713,
+      "cumulativeRealisedXBt": 261.206015,
+      "withdrawnShareOfCumulativeRealised": 0.4708,
+      "daysSincePreviousWithdrawal": 25,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "1d70d7e0"
+    },
+    {
+      "date": "2019-03-08",
+      "amountXBt": 8.0012,
+      "balanceAfterXBt": 173.71774102,
+      "equityBeforeXBt": 181.71894102,
+      "shareOfEquityBefore": 0.044,
+      "cumulativeWithdrawnXBt": 130.99001713,
+      "cumulativeRealisedXBt": 290.21850101,
+      "withdrawnShareOfCumulativeRealised": 0.4513,
+      "daysSincePreviousWithdrawal": 27,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": -0.93127743,
+      "transactidPrefix": "994b9c47"
+    },
+    {
+      "date": "2019-04-10",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 150.31438419,
+      "equityBeforeXBt": 170.32638419,
+      "shareOfEquityBefore": 0.1175,
+      "cumulativeWithdrawnXBt": 151.00201713,
+      "cumulativeRealisedXBt": 286.82714418,
+      "withdrawnShareOfCumulativeRealised": 0.5265,
+      "daysSincePreviousWithdrawal": 33,
+      "daysSinceProfitPeak": 11,
+      "drawdownFromPeakAtWithdrawalXBt": -21.89766619,
+      "transactidPrefix": "79519128"
+    },
+    {
+      "date": "2019-04-18",
+      "amountXBt": 10.012,
+      "balanceAfterXBt": 156.50733554,
+      "equityBeforeXBt": 166.51933554,
+      "shareOfEquityBefore": 0.0601,
+      "cumulativeWithdrawnXBt": 161.01401713,
+      "cumulativeRealisedXBt": 303.03209553,
+      "withdrawnShareOfCumulativeRealised": 0.5313,
+      "daysSincePreviousWithdrawal": 8,
+      "daysSinceProfitPeak": 19,
+      "drawdownFromPeakAtWithdrawalXBt": -5.69271484,
+      "transactidPrefix": "b22a807f"
+    },
+    {
+      "date": "2019-04-23",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 158.6556002,
+      "equityBeforeXBt": 178.6676002,
+      "shareOfEquityBefore": 0.112,
+      "cumulativeWithdrawnXBt": 181.02601713,
+      "cumulativeRealisedXBt": 325.19236019,
+      "withdrawnShareOfCumulativeRealised": 0.5567,
+      "daysSincePreviousWithdrawal": 5,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "f74cead8"
+    },
+    {
+      "date": "2019-05-06",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 171.05599568,
+      "equityBeforeXBt": 191.06799568,
+      "shareOfEquityBefore": 0.1047,
+      "cumulativeWithdrawnXBt": 201.03801713,
+      "cumulativeRealisedXBt": 357.60475567,
+      "withdrawnShareOfCumulativeRealised": 0.5622,
+      "daysSincePreviousWithdrawal": 13,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "d457737d"
+    },
+    {
+      "date": "2019-05-12",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 158.30005526,
+      "equityBeforeXBt": 178.31205526,
+      "shareOfEquityBefore": 0.1122,
+      "cumulativeWithdrawnXBt": 221.05001713,
+      "cumulativeRealisedXBt": 364.86081525,
+      "withdrawnShareOfCumulativeRealised": 0.6058,
+      "daysSincePreviousWithdrawal": 6,
+      "daysSinceProfitPeak": 1,
+      "drawdownFromPeakAtWithdrawalXBt": -2.69855561,
+      "transactidPrefix": "5b3aa149"
+    },
+    {
+      "date": "2019-05-27",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 176.30856076,
+      "equityBeforeXBt": 196.32056076,
+      "shareOfEquityBefore": 0.1019,
+      "cumulativeWithdrawnXBt": 241.06201713,
+      "cumulativeRealisedXBt": 402.88132075,
+      "withdrawnShareOfCumulativeRealised": 0.5983,
+      "daysSincePreviousWithdrawal": 15,
+      "daysSinceProfitPeak": 4,
+      "drawdownFromPeakAtWithdrawalXBt": -2.15363497,
+      "transactidPrefix": "d34dd724"
+    },
+    {
+      "date": "2019-06-16",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 168.21349955,
+      "equityBeforeXBt": 188.22549955,
+      "shareOfEquityBefore": 0.1063,
+      "cumulativeWithdrawnXBt": 261.07401713,
+      "cumulativeRealisedXBt": 414.79825954,
+      "withdrawnShareOfCumulativeRealised": 0.6294,
+      "daysSincePreviousWithdrawal": 20,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "8281b21e"
+    },
+    {
+      "date": "2019-06-26",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 158.31765884,
+      "equityBeforeXBt": 178.32965884,
+      "shareOfEquityBefore": 0.1122,
+      "cumulativeWithdrawnXBt": 281.08601713,
+      "cumulativeRealisedXBt": 424.91441883,
+      "withdrawnShareOfCumulativeRealised": 0.6615,
+      "daysSincePreviousWithdrawal": 10,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "f5ed6ca7"
+    },
+    {
+      "date": "2019-07-18",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 201.58828841,
+      "equityBeforeXBt": 221.60028841,
+      "shareOfEquityBefore": 0.0903,
+      "cumulativeWithdrawnXBt": 301.09801713,
+      "cumulativeRealisedXBt": 488.1970484,
+      "withdrawnShareOfCumulativeRealised": 0.6168,
+      "daysSincePreviousWithdrawal": 22,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "ec93d762"
+    },
+    {
+      "date": "2019-07-19",
+      "amountXBt": 20.015,
+      "balanceAfterXBt": 177.21897391,
+      "equityBeforeXBt": 197.23397391,
+      "shareOfEquityBefore": 0.1015,
+      "cumulativeWithdrawnXBt": 321.11301713,
+      "cumulativeRealisedXBt": 483.8427339,
+      "withdrawnShareOfCumulativeRealised": 0.6637,
+      "daysSincePreviousWithdrawal": 1,
+      "daysSinceProfitPeak": 1,
+      "drawdownFromPeakAtWithdrawalXBt": -4.3543145,
+      "transactidPrefix": "fa0c5bdb"
+    },
+    {
+      "date": "2019-09-06",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 200.60179079,
+      "equityBeforeXBt": 220.61379079,
+      "shareOfEquityBefore": 0.0907,
+      "cumulativeWithdrawnXBt": 341.12501713,
+      "cumulativeRealisedXBt": 527.23755078,
+      "withdrawnShareOfCumulativeRealised": 0.647,
+      "daysSincePreviousWithdrawal": 49,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "56a11f0a"
+    },
+    {
+      "date": "2019-12-10",
+      "amountXBt": 0.011,
+      "balanceAfterXBt": 329.22516959,
+      "equityBeforeXBt": 329.23616959,
+      "shareOfEquityBefore": 0,
+      "cumulativeWithdrawnXBt": 341.13601713,
+      "cumulativeRealisedXBt": 655.87192958,
+      "withdrawnShareOfCumulativeRealised": 0.5201,
+      "daysSincePreviousWithdrawal": 95,
+      "daysSinceProfitPeak": 5,
+      "drawdownFromPeakAtWithdrawalXBt": -2.17456585,
+      "transactidPrefix": "22bf2e1a"
+    },
+    {
+      "date": "2019-12-11",
+      "amountXBt": 1.0012,
+      "balanceAfterXBt": 360.58024765,
+      "equityBeforeXBt": 361.58144765,
+      "shareOfEquityBefore": 0.0028,
+      "cumulativeWithdrawnXBt": 342.13721713,
+      "cumulativeRealisedXBt": 688.22820764,
+      "withdrawnShareOfCumulativeRealised": 0.4971,
+      "daysSincePreviousWithdrawal": 1,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "f33929ef"
+    },
+    {
+      "date": "2020-01-08",
+      "amountXBt": 20.012,
+      "balanceAfterXBt": 379.65833472,
+      "equityBeforeXBt": 399.67033472,
+      "shareOfEquityBefore": 0.0501,
+      "cumulativeWithdrawnXBt": 362.14921713,
+      "cumulativeRealisedXBt": 727.31829471,
+      "withdrawnShareOfCumulativeRealised": 0.4979,
+      "daysSincePreviousWithdrawal": 28,
+      "daysSinceProfitPeak": 2,
+      "drawdownFromPeakAtWithdrawalXBt": -9.34071958,
+      "transactidPrefix": "e1caa803"
+    },
+    {
+      "date": "2020-01-11",
+      "amountXBt": 30.012,
+      "balanceAfterXBt": 400.68510382,
+      "equityBeforeXBt": 430.69710382,
+      "shareOfEquityBefore": 0.0697,
+      "cumulativeWithdrawnXBt": 392.16121713,
+      "cumulativeRealisedXBt": 778.35706381,
+      "withdrawnShareOfCumulativeRealised": 0.5038,
+      "daysSincePreviousWithdrawal": 3,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "4f5edbbe"
+    },
+    {
+      "date": "2020-01-17",
+      "amountXBt": 50.012,
+      "balanceAfterXBt": 355.84393312,
+      "equityBeforeXBt": 405.85593312,
+      "shareOfEquityBefore": 0.1232,
+      "cumulativeWithdrawnXBt": 442.17321713,
+      "cumulativeRealisedXBt": 783.52789311,
+      "withdrawnShareOfCumulativeRealised": 0.5643,
+      "daysSincePreviousWithdrawal": 6,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "1a7ecc88"
+    },
+    {
+      "date": "2020-02-15",
+      "amountXBt": 50.012,
+      "balanceAfterXBt": 402.20969135,
+      "equityBeforeXBt": 452.22169135,
+      "shareOfEquityBefore": 0.1106,
+      "cumulativeWithdrawnXBt": 492.18521713,
+      "cumulativeRealisedXBt": 879.90565134,
+      "withdrawnShareOfCumulativeRealised": 0.5594,
+      "daysSincePreviousWithdrawal": 29,
+      "daysSinceProfitPeak": 2,
+      "drawdownFromPeakAtWithdrawalXBt": -2.78104132,
+      "transactidPrefix": "76587cdd"
+    },
+    {
+      "date": "2020-03-13",
+      "amountXBt": 50.012,
+      "balanceAfterXBt": 632.58715842,
+      "equityBeforeXBt": 682.59915842,
+      "shareOfEquityBefore": 0.0733,
+      "cumulativeWithdrawnXBt": 542.19721713,
+      "cumulativeRealisedXBt": 1160.29511841,
+      "withdrawnShareOfCumulativeRealised": 0.4673,
+      "daysSincePreviousWithdrawal": 27,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "18494e84"
+    },
+    {
+      "date": "2020-03-24",
+      "amountXBt": 50.012,
+      "balanceAfterXBt": 526.43570723,
+      "equityBeforeXBt": 576.44770723,
+      "shareOfEquityBefore": 0.0868,
+      "cumulativeWithdrawnXBt": 592.20921713,
+      "cumulativeRealisedXBt": 1104.15566722,
+      "withdrawnShareOfCumulativeRealised": 0.5363,
+      "daysSincePreviousWithdrawal": 11,
+      "daysSinceProfitPeak": 11,
+      "drawdownFromPeakAtWithdrawalXBt": -56.13945119,
+      "transactidPrefix": "b747a4d5"
+    },
+    {
+      "date": "2020-05-02",
+      "amountXBt": 50.012,
+      "balanceAfterXBt": 539.75996555,
+      "equityBeforeXBt": 589.77196555,
+      "shareOfEquityBefore": 0.0848,
+      "cumulativeWithdrawnXBt": 642.22121713,
+      "cumulativeRealisedXBt": 1167.49192554,
+      "withdrawnShareOfCumulativeRealised": 0.5501,
+      "daysSincePreviousWithdrawal": 39,
+      "daysSinceProfitPeak": 31,
+      "drawdownFromPeakAtWithdrawalXBt": -33.49338478,
+      "transactidPrefix": "c5c7c163"
+    },
+    {
+      "date": "2020-05-11",
+      "amountXBt": 50.015,
+      "balanceAfterXBt": 548.48664394,
+      "equityBeforeXBt": 598.50164394,
+      "shareOfEquityBefore": 0.0836,
+      "cumulativeWithdrawnXBt": 692.23621713,
+      "cumulativeRealisedXBt": 1226.23360393,
+      "withdrawnShareOfCumulativeRealised": 0.5645,
+      "daysSincePreviousWithdrawal": 9,
+      "daysSinceProfitPeak": 1,
+      "drawdownFromPeakAtWithdrawalXBt": -0.23719375,
+      "transactidPrefix": "01334734"
+    },
+    {
+      "date": "2020-08-02",
+      "amountXBt": 72.012,
+      "balanceAfterXBt": 594.55444741,
+      "equityBeforeXBt": 666.56644741,
+      "shareOfEquityBefore": 0.108,
+      "cumulativeWithdrawnXBt": 764.24821713,
+      "cumulativeRealisedXBt": 1344.3134074,
+      "withdrawnShareOfCumulativeRealised": 0.5685,
+      "daysSincePreviousWithdrawal": 83,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "a512d147"
+    },
+    {
+      "date": "2020-08-19",
+      "amountXBt": 50.012,
+      "balanceAfterXBt": 621.01037156,
+      "equityBeforeXBt": 671.02237156,
+      "shareOfEquityBefore": 0.0745,
+      "cumulativeWithdrawnXBt": 814.26021713,
+      "cumulativeRealisedXBt": 1420.78133155,
+      "withdrawnShareOfCumulativeRealised": 0.5731,
+      "daysSincePreviousWithdrawal": 17,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "aeb985b8"
+    },
+    {
+      "date": "2020-08-24",
+      "amountXBt": 50.002,
+      "balanceAfterXBt": 590.91923915,
+      "equityBeforeXBt": 640.92123915,
+      "shareOfEquityBefore": 0.078,
+      "cumulativeWithdrawnXBt": 864.26221713,
+      "cumulativeRealisedXBt": 1440.69219914,
+      "withdrawnShareOfCumulativeRealised": 0.5999,
+      "daysSincePreviousWithdrawal": 5,
+      "daysSinceProfitPeak": 3,
+      "drawdownFromPeakAtWithdrawalXBt": -1.19013263,
+      "transactidPrefix": "37a7389b"
+    },
+    {
+      "date": "2020-10-02",
+      "amountXBt": 50.012,
+      "balanceAfterXBt": 643.95178233,
+      "equityBeforeXBt": 693.96378233,
+      "shareOfEquityBefore": 0.0721,
+      "cumulativeWithdrawnXBt": 914.27421713,
+      "cumulativeRealisedXBt": 1543.73674232,
+      "withdrawnShareOfCumulativeRealised": 0.5922,
+      "daysSincePreviousWithdrawal": 39,
+      "daysSinceProfitPeak": 24,
+      "drawdownFromPeakAtWithdrawalXBt": -122.85989284,
+      "transactidPrefix": "9838d6a3"
+    },
+    {
+      "date": "2020-12-20",
+      "amountXBt": 50.012,
+      "balanceAfterXBt": 573.16720242,
+      "equityBeforeXBt": 623.17920242,
+      "shareOfEquityBefore": 0.0803,
+      "cumulativeWithdrawnXBt": 964.28621713,
+      "cumulativeRealisedXBt": 1522.96416241,
+      "withdrawnShareOfCumulativeRealised": 0.6332,
+      "daysSincePreviousWithdrawal": 79,
+      "daysSinceProfitPeak": 103,
+      "drawdownFromPeakAtWithdrawalXBt": -143.63247275,
+      "transactidPrefix": "a84fc14c"
+    },
+    {
+      "date": "2021-01-29",
+      "amountXBt": 100.012,
+      "balanceAfterXBt": 752.47058482,
+      "equityBeforeXBt": 852.48258482,
+      "shareOfEquityBefore": 0.1173,
+      "cumulativeWithdrawnXBt": 1064.29821713,
+      "cumulativeRealisedXBt": 1802.27954481,
+      "withdrawnShareOfCumulativeRealised": 0.5905,
+      "daysSincePreviousWithdrawal": 40,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "73b80ee3"
+    },
+    {
+      "date": "2021-03-08",
+      "amountXBt": 50.012,
+      "balanceAfterXBt": 702.97971668,
+      "equityBeforeXBt": 752.99171668,
+      "shareOfEquityBefore": 0.0664,
+      "cumulativeWithdrawnXBt": 1114.31021713,
+      "cumulativeRealisedXBt": 1802.80067667,
+      "withdrawnShareOfCumulativeRealised": 0.6181,
+      "daysSincePreviousWithdrawal": 38,
+      "daysSinceProfitPeak": 33,
+      "drawdownFromPeakAtWithdrawalXBt": -11.86846605,
+      "transactidPrefix": "f9f8e90a"
+    },
+    {
+      "date": "2021-04-05",
+      "amountXBt": 100.012,
+      "balanceAfterXBt": 590.44951113,
+      "equityBeforeXBt": 690.46151113,
+      "shareOfEquityBefore": 0.1448,
+      "cumulativeWithdrawnXBt": 1214.32221713,
+      "cumulativeRealisedXBt": 1790.28247112,
+      "withdrawnShareOfCumulativeRealised": 0.6783,
+      "daysSincePreviousWithdrawal": 28,
+      "daysSinceProfitPeak": 61,
+      "drawdownFromPeakAtWithdrawalXBt": -24.3866716,
+      "transactidPrefix": "74880d08"
+    },
+    {
+      "date": "2021-06-20",
+      "amountXBt": 300.021,
+      "balanceAfterXBt": 1175.13,
+      "equityBeforeXBt": 1475.16,
+      "shareOfEquityBefore": 0.2034,
+      "cumulativeWithdrawnXBt": 1514.34321713,
+      "cumulativeRealisedXBt": 2674.98819261,
+      "withdrawnShareOfCumulativeRealised": 0.5661,
+      "daysSincePreviousWithdrawal": 76,
+      "daysSinceProfitPeak": 1,
+      "drawdownFromPeakAtWithdrawalXBt": -55.97505961,
+      "transactidPrefix": "5fc738ed"
+    },
+    {
+      "date": "2021-07-27",
+      "amountXBt": 300.05,
+      "balanceAfterXBt": 964.41523272,
+      "equityBeforeXBt": 1264.47,
+      "shareOfEquityBefore": 0.2373,
+      "cumulativeWithdrawnXBt": 1814.39321713,
+      "cumulativeRealisedXBt": 2764.31919271,
+      "withdrawnShareOfCumulativeRealised": 0.6564,
+      "daysSincePreviousWithdrawal": 37,
+      "daysSinceProfitPeak": 32,
+      "drawdownFromPeakAtWithdrawalXBt": -50.03416955,
+      "transactidPrefix": "b339a73e"
+    },
+    {
+      "date": "2021-08-19",
+      "amountXBt": 400.05,
+      "balanceAfterXBt": 1070.22,
+      "equityBeforeXBt": 1470.27,
+      "shareOfEquityBefore": 0.2721,
+      "cumulativeWithdrawnXBt": 2214.44321713,
+      "cumulativeRealisedXBt": 3270.17871983,
+      "withdrawnShareOfCumulativeRealised": 0.6772,
+      "daysSincePreviousWithdrawal": 23,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": 0,
+      "transactidPrefix": "7e6761e2"
+    },
+    {
+      "date": "2021-09-03",
+      "amountXBt": 300.05,
+      "balanceAfterXBt": 929.50583831,
+      "equityBeforeXBt": 1229.56,
+      "shareOfEquityBefore": 0.244,
+      "cumulativeWithdrawnXBt": 2514.49321713,
+      "cumulativeRealisedXBt": 3429.5097983,
+      "withdrawnShareOfCumulativeRealised": 0.7332,
+      "daysSincePreviousWithdrawal": 15,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": -0.61700274,
+      "transactidPrefix": "332ae93e"
+    },
+    {
+      "date": "2021-09-23",
+      "amountXBt": 300.05,
+      "balanceAfterXBt": 1095.02,
+      "equityBeforeXBt": 1395.07,
+      "shareOfEquityBefore": 0.2151,
+      "cumulativeWithdrawnXBt": 2814.54321713,
+      "cumulativeRealisedXBt": 3895.07476818,
+      "withdrawnShareOfCumulativeRealised": 0.7226,
+      "daysSincePreviousWithdrawal": 20,
+      "daysSinceProfitPeak": 0,
+      "drawdownFromPeakAtWithdrawalXBt": -1.25414452,
+      "transactidPrefix": "c395f477"
+    }
+  ],
+  "lots": [
+    {
+      "date": "2018-03-22",
+      "amountXBt": 1.96801713,
+      "baseXBt": 1.96801713,
+      "feeXBt": null,
+      "round": false
+    },
+    {
+      "date": "2018-03-30",
+      "amountXBt": 0.2012,
+      "baseXBt": 0.2,
+      "feeXBt": 0.0012,
+      "round": false
+    },
+    {
+      "date": "2018-03-31",
+      "amountXBt": 0.2012,
+      "baseXBt": 0.2,
+      "feeXBt": 0.0012,
+      "round": false
+    },
+    {
+      "date": "2018-04-18",
+      "amountXBt": 1.0012,
+      "baseXBt": 1,
+      "feeXBt": 0.0012,
+      "round": true
+    },
+    {
+      "date": "2018-04-24",
+      "amountXBt": 1.0012,
+      "baseXBt": 1,
+      "feeXBt": 0.0012,
+      "round": true
+    },
+    {
+      "date": "2018-04-25",
+      "amountXBt": 0.5016,
+      "baseXBt": 0.5016,
+      "feeXBt": null,
+      "round": false
+    },
+    {
+      "date": "2018-04-27",
+      "amountXBt": 1.0012,
+      "baseXBt": 1,
+      "feeXBt": 0.0012,
+      "round": true
+    },
+    {
+      "date": "2018-05-12",
+      "amountXBt": 2.0012,
+      "baseXBt": 2,
+      "feeXBt": 0.0012,
+      "round": true
+    },
+    {
+      "date": "2018-07-28",
+      "amountXBt": 4.0012,
+      "baseXBt": 4,
+      "feeXBt": 0.0012,
+      "round": true
+    },
+    {
+      "date": "2018-08-10",
+      "amountXBt": 2.5012,
+      "baseXBt": 2.5,
+      "feeXBt": 0.0012,
+      "round": false
+    },
+    {
+      "date": "2018-08-13",
+      "amountXBt": 0.5004,
+      "baseXBt": 0.5004,
+      "feeXBt": null,
+      "round": false
+    },
+    {
+      "date": "2018-09-05",
+      "amountXBt": 7.012,
+      "baseXBt": 7,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2018-11-25",
+      "amountXBt": 1.0012,
+      "baseXBt": 1,
+      "feeXBt": 0.0012,
+      "round": true
+    },
+    {
+      "date": "2018-11-28",
+      "amountXBt": 10.012,
+      "baseXBt": 10,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2018-11-29",
+      "amountXBt": 10.012,
+      "baseXBt": 10,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2018-12-07",
+      "amountXBt": 10.012,
+      "baseXBt": 10,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2018-12-23",
+      "amountXBt": 10.012,
+      "baseXBt": 10,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2018-12-29",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-01-11",
+      "amountXBt": 10.012,
+      "baseXBt": 10,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-01-15",
+      "amountXBt": 10.012,
+      "baseXBt": 10,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-02-09",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-03-08",
+      "amountXBt": 8.0012,
+      "baseXBt": 8,
+      "feeXBt": 0.0012,
+      "round": true
+    },
+    {
+      "date": "2019-04-10",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-04-18",
+      "amountXBt": 10.012,
+      "baseXBt": 10,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-04-23",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-05-06",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-05-12",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-05-27",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-06-16",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-06-26",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-07-18",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-07-19",
+      "amountXBt": 20.015,
+      "baseXBt": 20,
+      "feeXBt": 0.015,
+      "round": true
+    },
+    {
+      "date": "2019-09-06",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2019-12-10",
+      "amountXBt": 0.011,
+      "baseXBt": 0.011,
+      "feeXBt": null,
+      "round": false
+    },
+    {
+      "date": "2019-12-11",
+      "amountXBt": 1.0012,
+      "baseXBt": 1,
+      "feeXBt": 0.0012,
+      "round": true
+    },
+    {
+      "date": "2020-01-08",
+      "amountXBt": 20.012,
+      "baseXBt": 20,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-01-11",
+      "amountXBt": 30.012,
+      "baseXBt": 30,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-01-17",
+      "amountXBt": 50.012,
+      "baseXBt": 50,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-02-15",
+      "amountXBt": 50.012,
+      "baseXBt": 50,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-03-13",
+      "amountXBt": 50.012,
+      "baseXBt": 50,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-03-24",
+      "amountXBt": 50.012,
+      "baseXBt": 50,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-05-02",
+      "amountXBt": 50.012,
+      "baseXBt": 50,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-05-11",
+      "amountXBt": 50.015,
+      "baseXBt": 50,
+      "feeXBt": 0.015,
+      "round": true
+    },
+    {
+      "date": "2020-08-02",
+      "amountXBt": 72.012,
+      "baseXBt": 72,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-08-19",
+      "amountXBt": 50.012,
+      "baseXBt": 50,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-08-24",
+      "amountXBt": 50.002,
+      "baseXBt": 49.99,
+      "feeXBt": 0.012,
+      "round": false
+    },
+    {
+      "date": "2020-10-02",
+      "amountXBt": 50.012,
+      "baseXBt": 50,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2020-12-20",
+      "amountXBt": 50.012,
+      "baseXBt": 50,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2021-01-29",
+      "amountXBt": 100.012,
+      "baseXBt": 100,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2021-03-08",
+      "amountXBt": 50.012,
+      "baseXBt": 50,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2021-04-05",
+      "amountXBt": 100.012,
+      "baseXBt": 100,
+      "feeXBt": 0.012,
+      "round": true
+    },
+    {
+      "date": "2021-06-20",
+      "amountXBt": 300.021,
+      "baseXBt": 300.021,
+      "feeXBt": null,
+      "round": false
+    },
+    {
+      "date": "2021-07-27",
+      "amountXBt": 300.05,
+      "baseXBt": 300,
+      "feeXBt": 0.05,
+      "round": true
+    },
+    {
+      "date": "2021-08-19",
+      "amountXBt": 400.05,
+      "baseXBt": 400,
+      "feeXBt": 0.05,
+      "round": true
+    },
+    {
+      "date": "2021-09-03",
+      "amountXBt": 300.05,
+      "baseXBt": 300,
+      "feeXBt": 0.05,
+      "round": true
+    },
+    {
+      "date": "2021-09-23",
+      "amountXBt": 300.05,
+      "baseXBt": 300,
+      "feeXBt": 0.05,
+      "round": true
+    }
+  ],
+  "dailyCount": 1398
+}

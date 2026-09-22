@@ -18,6 +18,7 @@ account name `aoa` on 2026-09-22.
 | `scripts/analyze.mjs` | Descriptive statistics → `results/summary.json`, `results/monthly.csv`, `results/daily-balance.csv`, `results/symbols.csv`, `REPORT.md` |
 | `scripts/insights.mjs` | Trader-facing questions (attribution, hold time, exposure, withdrawal discipline, concentration) → `results/insights.json`, `results/symbol-attribution.csv`, `results/withdrawal-curve.csv`, `FINDINGS.md` |
 | `scripts/stated-vs-measured.mjs` | Checks the account holder's own published numbers and principles against the ledger → `results/stated-vs-measured.json` |
+| `scripts/withdrawals.mjs` | Day-level and event-level cash-flow detail, including the round-lot withdrawal ladder → `results/withdrawals.json`, `results/withdrawals-daily.csv`, `results/withdrawals-events.csv`, `results/withdrawals-cumulative.svg` |
 | `scripts/lib/csv.mjs` | Streaming RFC4180 reader + column maps + shared helpers |
 | `scripts/diagnose-wallet-balance.mjs` | Reproduces the wallet-balance semantics finding |
 | `docs/source.md` | Where the data came from, hashes, and what the discloser said about reuse |
@@ -37,6 +38,7 @@ npm run validate  # anomaly / duplicate audit
 npm run analyze   # descriptive statistics
 npm run insights  # trader-facing metrics
 npm run stated    # his published claims vs the ledger
+npm run withdrawals # day-level and per-withdrawal cash-flow detail
 npm test          # parser and definition tests, no dataset required
 ```
 
