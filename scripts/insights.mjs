@@ -114,6 +114,12 @@ async function scanExecutions(files) {
   let takerFeeSatoshi = 0;
   const dayFills = new Map();
   const dayOrders = new Map();
+  // Per-day OHLC reconstructed from the account's own fill prices. These are real
+  // market prices at the moment of execution, but they are a sparse sample of the
+  // day, not a continuous feed, so the candle is a reconstruction and is labelled
+  // as one wherever it is drawn.
+  const CANDLE_SYMBOLS = new Set(['XBTUSD', 'ETHUSD']);
+  const candles = new Map();
   const hourDow = Array.from({ length: 7 }, () => new Array(24).fill(0));
   const hourDowNotional = Array.from({ length: 7 }, () => new Array(24).fill(0));
 
@@ -135,7 +141,7 @@ async function scanExecutions(files) {
 
   const processFill = (f) => {
     const {
-      ts, day, symbol, ccy, notional, dir, fee, liquidity, settlCurrency, xbtNotional, orderid,
+      ts, day, symbol, ccy, notional, dir, fee, liquidity, settlCurrency, xbtNotional, orderid, lastpx,
     } = f;
     const rec = symbolRec(symbol, ccy);
     rec.fills += 1;
@@ -156,6 +162,17 @@ async function scanExecutions(files) {
     hourDow[w][h] += 1;
     hourDowNotional[w][h] += notional;
     dayFills.set(day, (dayFills.get(day) ?? 0) + 1);
+    if (CANDLE_SYMBOLS.has(symbol) && lastpx > 0) {
+      const key = `${symbol}|${day}`;
+      const c = candles.get(key) ?? { symbol, day, open: lastpx, high: lastpx, low: lastpx, close: lastpx, fills: 0, volumeXbt: 0 };
+      if (ts < c.firstTs || c.fills === 0) { c.open = lastpx; c.firstTs = ts; }
+      if (ts > (c.lastTs ?? '')) { c.close = lastpx; c.lastTs = ts; }
+      c.high = Math.max(c.high, lastpx);
+      c.low = Math.min(c.low, lastpx);
+      c.fills += 1;
+      c.volumeXbt += xbtNotional;
+      candles.set(key, c);
+    }
     if (!dayOrders.has(day)) dayOrders.set(day, new Set());
     if (f.orderid) dayOrders.get(day).add(f.orderid);
     dayNotional.set(day, (dayNotional.get(day) ?? 0) + notional);
@@ -226,6 +243,7 @@ async function scanExecutions(files) {
         notional: Math.abs(num(r[EXEC_COL.foreignNotional])),
         xbtNotional: Math.abs(num(r[EXEC_COL.homeNotional])),
         orderid: r[EXEC_COL.orderid] || '',
+        lastpx: num(r[EXEC_COL.lastpx]),
         dir: r[EXEC_COL.side] === 'Buy' ? 1 : -1,
         fee: num(r[EXEC_COL.execComm]),
         liquidity: r[EXEC_COL.liquidity],
@@ -243,7 +261,7 @@ async function scanExecutions(files) {
   return {
     symbols, hourFills, hourNotional, dowFills, dowNotional, dayNotional,
     dayXbtNotional, fundingByDay, feesByDay, trips, openLots, outOfOrder,
-    makerRebateSatoshi, takerFeeSatoshi, dayFills, dayOrders, hourDow, hourDowNotional,
+    makerRebateSatoshi, takerFeeSatoshi, dayFills, dayOrders, hourDow, hourDowNotional, candles,
   };
 }
 
@@ -511,6 +529,14 @@ async function main() {
   // Daily activity: answers "when did he trade" directly, and drives the
   // calendar heatmap on the site.
   const activityDays = [...exec.dayFills.keys()].sort();
+  const candleSeries = [...exec.candles.values()]
+    .map((c) => ({
+      symbol: c.symbol, day: c.day,
+      open: round(c.open, 4), high: round(c.high, 4), low: round(c.low, 4), close: round(c.close, 4),
+      fills: c.fills, volumeXbt: round(c.volumeXbt, 6),
+    }))
+    .sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : a.symbol < b.symbol ? -1 : 1));
+
   const dailyActivity = activityDays.map((day) => ({
     day,
     fills: exec.dayFills.get(day) ?? 0,
@@ -692,6 +718,14 @@ async function main() {
 
   await fsp.mkdir(OUT_DIR, { recursive: true });
   await fsp.writeFile(path.join(OUT_DIR, 'insights.json'), JSON.stringify(insights, null, 2) + '\n');
+
+  await fsp.writeFile(
+    path.join(OUT_DIR, 'candles.json'),
+    JSON.stringify({
+      note: 'OHLC per day per symbol reconstructed from the account\'s own fill prices. Real execution prices, but a sparse sample of the day rather than a continuous market feed.',
+      series: candleSeries,
+    }, null, 1) + '\n',
+  );
 
   await fsp.writeFile(
     path.join(OUT_DIR, 'daily-activity.csv'),

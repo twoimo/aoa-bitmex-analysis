@@ -51,6 +51,7 @@ async function main() {
   const withdrawals = await readJson('results/withdrawals.json');
   const manifest = await readJson('manifest.json');
   const dailyActivity = await readCsv('results/daily-activity.csv');
+  const candles = await readJson('results/candles.json');
 
   const w = summary.wallet;
   const h = insights.headline;
@@ -263,6 +264,7 @@ async function main() {
       notes: insights.definitions,
     },
     'activity.json': activity,
+    'candles.json': candles,
     'balance.json': {
       // monthly end balances only: the daily series stays in the repo
       monthly: monthly.map((m) => ({ month: m.month, endBalanceXBt: m.endBalanceXBt, realisedXBt: m.realisedXBt, withdrawalsXBt: m.withdrawalsXBt, depositsXBt: m.depositsXBt })),

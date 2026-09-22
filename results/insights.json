@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-22T11:55:50.094Z",
+  "generatedAt": "2026-09-22T12:59:16.159Z",
   "definitions": {
     "holdingPeriod": "FIFO queue matching of fills; time between opening and closing exposure, not an exchange-reported position lifetime.",
     "exposureRatio": "daily traded notional (sum of |foreignNotional|) divided by that day's closing wallet equity.",
