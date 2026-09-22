@@ -45,6 +45,10 @@ npm run stated    # his published claims vs the ledger
 npm run verify:public # fills vs BitMEX's public trade archive (network, ~64 daily files)
 npm run market    # refresh the market candles the site's chart draws (network, no key)
 npm run withdrawals # day-level and per-withdrawal cash-flow detail
+npm run footprint # where the fills sat on the price chart, per day and per level
+npm run replay    # day-by-day equity, cumulative PnL, position and activity
+npm run trades    # largest individual fills per day, for the site's fill tape
+npm run lessons   # study units, dated cases and quiz for the wisdom section
 npm test          # parser and definition tests, no dataset required
 ```
 
@@ -105,9 +109,18 @@ npm run site                         # regenerate site/data from results/
 python3 -m http.server -d site 8899  # then open http://127.0.0.1:8899
 ```
 
-`site/.qa/verify.mjs` is a 38-check harness (charts, data fields, responsive widths, keyboard
-navigation, table sorting, reduced motion, offline mode) and `site/.qa/verification.json` holds
-its last result. Both are local-only, not part of the published site.
+The site has six sections: the chart, the ledger, the headline numbers, the findings, the study
+section and the verification. The chart draws the market from its inception, marks where the
+account traded with exchange-style buy and sell arrows, prints a Market Trades tape for the day
+under the cursor, and steps bar by bar in replay. The study section turns the eight stated
+principles into units with a dated case and a self-check quiz; its answers and every case figure
+are read from the analysed payloads at build time, so authored prose never carries a number of
+its own.
+
+`site/.qa/verify.mjs` is a 56-check harness (charts, markers, fill tape, replay stepping, study
+progress and quiz, data fields, responsive widths, keyboard navigation, table sorting, reduced
+motion, offline mode) and `site/.qa/verification.json` holds its last result. Both are local-only,
+not part of the published site.
 
 The site deliberately excludes the raw CSVs, every execution/order/transaction identifier, and
 the day-by-day withdrawal ledger (`results/withdrawals-daily.csv`). Those stay in this

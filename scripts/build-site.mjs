@@ -56,6 +56,7 @@ async function main() {
   const footprint = await readJson('results/fill-footprint.json');
   const replay = await readJson('results/replay.json');
   const trades = await readJson('results/trades.json').catch(() => ({ days: {} }));
+  const lessons = await readJson('results/lessons.json');
 
   const activityByDay = new Map(dailyActivity.map((r) => [r.date, { fills: Number(r.fills), notionalXbt: Number(r.notional_xbt) }]));
   const dayMs = 86400000;
@@ -301,6 +302,7 @@ async function main() {
 
   const payloads = {
     'trades.json': trades,
+    'lessons.json': lessons,
     'meta.json': meta,
     'headline.json': headline,
     'validation.json': { checks, summary: validation.summary },

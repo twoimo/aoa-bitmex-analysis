@@ -21,7 +21,8 @@
     "withdrawals": "node scripts/withdrawals.mjs",
     "site": "node scripts/build-site.mjs",
     "test": "node --test tests/*.test.mjs",
-    "all": "npm run validate && npm run analyze && npm run insights"
+    "all": "npm run validate && npm run analyze && npm run insights",
+    "lessons": "node scripts/lessons.mjs"
   },
   "license": "MIT",
   "author": "Yeonwoo Choi (twoimo)"

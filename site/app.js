@@ -7,7 +7,7 @@
   // the build, and the data must move with it or a fresh page can read stale
   // aggregates and fail its own cross-checks.
   const DATA_VERSION = window.__dataVersion ? `?v=${window.__dataVersion}` : '';
-  const FILES = ['meta', 'headline', 'validation', 'stated', 'withdrawals', 'symbols', 'attribution', 'monthly', 'insights', 'activity', 'balance', 'candles'];
+  const FILES = ['meta', 'lessons', 'headline', 'validation', 'stated', 'withdrawals', 'symbols', 'attribution', 'monthly', 'insights', 'activity', 'balance', 'candles'];
   const DAY = 86400000;
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -591,7 +591,9 @@
             renderReplay();
             renderChart();
           });
-          renderReplay();
+          // The replay payload arrives after the first paint, and the slider's
+          // step count is derived from it, so redraw the chart once it lands.
+          renderChart();
           try {
             tabGroup($('replay-speed'), 'candle-chart', [['400', '1×'], ['90', '4×'], ['25', '16×']], '90', (next) => {
               replayStepMs = Number(next);
@@ -623,7 +625,9 @@
           source = unpack(payload);
           resolution = '1D';
           resolutionLabel = '일봉 · 런타임 로드';
-          render();
+          // The daily series replaces the embedded weekly one, which changes the
+          // replay's step count, so redraw the chart and the slider together.
+          renderChart();
         })
         .catch(() => {});
     }
@@ -916,6 +920,15 @@
 
   function stepReplay(delta) {
     if (!replayDays || !currentBars.length) return;
+    // From 전체 보기 a forward step enters the replay at the first trading day,
+    // the same place play starts, instead of doing nothing.
+    if (replayDate === null) {
+      if (delta < 0) { replayDate = currentBars[currentBars.length - 1]; renderReplay(); renderChart(); return; }
+      replayDate = currentBars.find((b) => b >= replayDays[0].d) || currentBars[0];
+      renderReplay();
+      renderChart();
+      return;
+    }
     const i = replayIndex() + delta;
     if (i < 0) { replayDate = currentBars[0]; }
     else if (i >= currentBars.length - 1) { replayDate = null; }
@@ -952,30 +965,140 @@
   // The candle renderer lives inside terminal(); keep a handle so replay can redraw.
   let renderChart = () => {};
 
-  function wisdom() {
-    const RULES = [
-      ['“특정 포지션과 사랑에 빠지지 마라. 절대 올인하지 않는다.”', '2025 비트멕스 인터뷰', 'pass',
-        '패배한 청산 717건의 손실은 그날 자기자본의 중위 0.21%, 97.5%가 30% 미만이었습니다. 한 번에 계좌를 거는 매매가 없습니다.'],
-      ['“항상 제 자본의 최대 30% 이상을 잃지 않도록 리스크를 관리합니다.”', '2025 비트멕스 인터뷰', 'pass',
-        '30%를 넘긴 청산은 2.5%뿐이었습니다. 원칙을 말한 뒤에도, 말하기 전 2018~2021년에도 같은 모양이었습니다.'],
-      ['“승률에 더 신경 써라. 손익비가 큰 건 결국 요행을 바라는 매매다.”', '차트갤 Q&A', 'pass',
-        '승률 67.0%, 손익비 0.84, Profit Factor 1.70. 큰 한 방이 아니라 자주 이기는 구조이고, 승률이 55%로만 내려가도 수익이 사라집니다.'],
-      ['“출금해라.” 그리고 손실 뒤에 다시 입금하지 마라.', '2021-08-10 게시글', 'pass',
-        '실현손익 3,537 BTC 중 2,814 BTC(79.6%)를 출금했습니다. 4년간 총입금은 14.49 BTC로 사실상 재입금이 없었습니다.'],
-      ['“보통 하루 정도 들고 있음.”', '차트갤 Q&A', 'pass',
-        'FIFO 라운드트립 141만 건의 중위 보유시간은 13.2시간이었습니다. 하루 안에 닫는 매매가 60%입니다.'],
-      ['“시총이 큰 코인 위주로 매매하는 편이다.”', '차트갤 Q&A', 'pass',
-        'BTC와 ETH가 이익의 80.2%를 만들었습니다. 46개 종목을 거래했지만 알트 선물은 대부분 손실이었습니다.'],
-      ['“공포보다 FOMO가 더 무섭습니다.”', '2025 비트멕스 인터뷰', 'note',
-        '직접 측정할 수 없습니다. 다만 손실 다음 날의 거래 규모가 승리 다음 날보다 작아(중위 3.9배 대 6.1배) 물타기식 추격은 관측되지 않았습니다.'],
-      ['“시드는 2:4:4로 나누고, 1/3만 격리 10~15배로 쓴다. 청산당하면 증거금을 더 넣지 않는다.”', '매매법 정리', 'note',
-        '자금 배분 자체는 체결만으로 알 수 없습니다. 다만 청산 뒤 추가 입금이 없었다는 부분은 총입금 14.49 BTC와 어긋나지 않습니다.'],
-      ['“추세선은 긋지 않고 지지를 주로 본다. 보조지표는 거의 보지 않는다.”', '차트갤 Q&A', 'open',
-        '진입 근거는 파일에 없습니다. 캔들과 거래량만 썼다는 주장은 체결 기록으로 확인할 수 없습니다.'],
-    ];
+  // ---- 워뇨띠 지혜 학습실 -------------------------------------------------
+  // 8개 원칙을 단원으로, 파일에서 뽑은 사례와 자가 점검을 붙인 학습 화면이다.
+  // 진도는 localStorage에 남기고, 사례를 누르면 차트가 그 날짜로 이동한다.
+  function study(d) {
+    const L = d.lessons;
+    const key = L.progressKey;
+    const readProgress = () => {
+      try { return new Set(JSON.parse(localStorage.getItem(key) || '[]')); } catch { return new Set(); }
+    };
+    const writeProgress = (set) => {
+      try { localStorage.setItem(key, JSON.stringify([...set])); } catch { /* 사생활 보호 모드 */ }
+    };
+    const done = readProgress();
+    const caseById = new Map(L.cases.map((c) => [c.id, c]));
+
+    const caseButton = (id, cls = 'study-case-link') => {
+      const c = caseById.get(id);
+      if (!c) return '';
+      return `<button type="button" class="${cls}" data-day="${esc(c.day)}" data-case="${esc(c.id)}">`
+        + `<span class="mono">${esc(c.day)}</span> ${esc(c.title)}</button>`;
+    };
+
+    const paintProgress = () => {
+      const host = $('study-progress');
+      if (!host) return;
+      const n = done.size;
+      const pct = L.units.length ? Math.round((n / L.units.length) * 100) : 0;
+      host.innerHTML = `<div class="study-bar"><i style="width:${pct}%"></i></div>`
+        + `<p><strong>${n}</strong> / ${L.units.length}개 단원 완료 · 사례 ${L.cases.length}개 · 점검 ${L.quiz.length}문항</p>`
+        + `<button type="button" class="study-reset" id="study-reset">진도 초기화</button>`;
+      const reset = $('study-reset');
+      if (reset) reset.addEventListener('click', () => { done.clear(); writeProgress(done); paintUnits(); paintProgress(); });
+    };
+
+    const paintUnits = () => {
+      const host = $('study-units');
+      if (!host) return;
+      host.innerHTML = L.units.map((u) => {
+        const isDone = done.has(u.id);
+        const verdict = u.verdict === 'pass' ? '파일과 일치' : u.verdict === 'note' ? '부분 확인' : '확인 불가';
+        return `<details class="study-unit${isDone ? ' done' : ''}" data-unit="${esc(u.id)}">`
+          + `<summary>`
+          + `<span class="unit-no mono">${u.no}</span>`
+          + `<span class="unit-title">${esc(u.title)}</span>`
+          + `<span class="verdict ${esc(u.verdict)}">${verdict}</span>`
+          + `<span class="unit-mark mono">${isDone ? '완료' : ''}</span>`
+          + `</summary>`
+          + `<div class="unit-body">`
+          + `<p class="unit-quote">${esc(u.quote)}<span class="fine"> · ${esc(u.source)}</span></p>`
+          + `<div class="unit-grid">`
+          + `<div><h4>파일에서 잰 값</h4><p>${esc(u.measuredKo || u.measured)}</p></div>`
+          + `<div><h4>읽기</h4><p>${esc(u.read)}</p></div>`
+          + `<div><h4>배울 점</h4><p>${esc(u.lesson)}</p></div>`
+          + `<div><h4>스스로 점검</h4><p>${esc(u.check)}</p></div>`
+          + `</div>`
+          + `<div class="unit-foot">`
+          + `<span class="unit-cases">${u.caseIds.map((id) => caseButton(id)).join('')}</span>`
+          + `<button type="button" class="study-done" data-unit="${esc(u.id)}">${isDone ? '완료 취소' : '학습 완료로 표시'}</button>`
+          + `</div></div></details>`;
+      }).join('');
+    };
+
+    const paintCases = () => {
+      const host = $('study-cases');
+      if (!host) return;
+      host.innerHTML = L.cases.map((c) => `<article class="study-case" id="case-${esc(c.id)}">`
+        + `<div class="case-head"><h4>${esc(c.title)}</h4><span class="mono">${esc(c.day)}</span></div>`
+        + `<dl class="case-figures">${c.figures.map(([k, v]) => `<dt>${esc(k)}</dt><dd class="mono">${esc(v)}</dd>`).join('')}</dl>`
+        + `<p>${esc(c.note)}</p>`
+        + `<button type="button" class="study-case-link" data-day="${esc(c.day)}">차트에서 이 날 보기</button>`
+        + `</article>`).join('');
+    };
+
+    const paintQuiz = () => {
+      const host = $('study-quiz');
+      if (!host) return;
+      host.innerHTML = L.quiz.map((q) => `<div class="quiz-item" data-quiz="${esc(q.id)}">`
+        + `<p class="quiz-q">${esc(q.q)}</p>`
+        + `<div class="quiz-options">${q.options.map((o, i) => `<button type="button" data-pick="${i}">${esc(o)}</button>`).join('')}</div>`
+        + `<p class="quiz-why" hidden>${esc(q.why)}</p>`
+        + `</div>`).join('');
+    };
+
+    // 사례를 누르면 리플레이 커서를 그 날짜로 옮기고 차트를 화면에 올린다.
+    const focusDay = (day) => {
+      if (replayDays && currentBars.length) {
+        replayDate = currentBars.includes(day) ? day : (currentBars.find((b) => b >= day) || currentBars[0]);
+        renderReplay();
+        renderChart();
+      }
+      const chart = $('chart');
+      if (chart) chart.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     const host = $('wisdom-body');
     if (!host) return;
-    host.innerHTML = RULES.map(([quote, source, verdict, note]) => `<article class="limit-item"><h3><span class="verdict ${verdict}">${verdict === 'pass' ? '파일과 일치' : verdict === 'note' ? '부분 확인' : '확인 불가'}</span>${esc(quote)}</h3><p>${esc(note)}</p><p class="fine">출처 · ${esc(source)}</p></article>`).join('');
+    host.innerHTML = `<div class="study-progress" id="study-progress"></div>`
+      + `<div class="study-units" id="study-units"></div>`
+      + `<h3 class="study-sub">사례 <span class="mono">파일에서 뽑은 날짜</span></h3>`
+      + `<div class="study-cases" id="study-cases"></div>`
+      + `<h3 class="study-sub">자가 점검 <span class="mono">정답은 파일에서 계산</span></h3>`
+      + `<div class="study-quiz" id="study-quiz"></div>`;
+
+    paintProgress();
+    paintUnits();
+    paintCases();
+    paintQuiz();
+
+    host.addEventListener('click', (event) => {
+      const dayBtn = event.target.closest('[data-day]');
+      if (dayBtn) { focusDay(dayBtn.dataset.day); return; }
+      const doneBtn = event.target.closest('.study-done');
+      if (doneBtn) {
+        const id = doneBtn.dataset.unit;
+        if (done.has(id)) done.delete(id); else done.add(id);
+        writeProgress(done);
+        paintUnits();
+        paintProgress();
+        const again = host.querySelector(`.study-unit[data-unit="${id}"]`);
+        if (again) again.open = true;
+        return;
+      }
+      const pick = event.target.closest('[data-pick]');
+      if (pick) {
+        const item = pick.closest('.quiz-item');
+        const quiz = L.quiz.find((q) => q.id === item.dataset.quiz);
+        const chosen = Number(pick.dataset.pick);
+        item.querySelectorAll('[data-pick]').forEach((b) => {
+          const i = Number(b.dataset.pick);
+          b.dataset.state = i === quiz.answer ? 'correct' : (i === chosen ? 'wrong' : 'idle');
+        });
+        item.querySelector('.quiz-why').hidden = false;
+      }
+    });
   }
 
   async function main() {
@@ -992,7 +1115,7 @@
       // failure still puts the page into a visibly failed state rather than
       // quietly rendering partial numbers.
       const failed = [];
-      for (const [name, fn] of [['validate', validate], ['introduction', introduction], ['terminal', terminal], ['keyNumbers', keyNumbers], ['findings', findings], ['wisdom', wisdom], ['verification', verification], ['interactions', interactions]]) {
+      for (const [name, fn] of [['validate', validate], ['introduction', introduction], ['terminal', terminal], ['keyNumbers', keyNumbers], ['findings', findings], ['study', study], ['verification', verification], ['interactions', interactions]]) {
         try { fn(d); } catch (error) { failed.push(`${name}: ${error.message}`); audit.missingFields.push(`${name}: ${error.message}`); }
       }
       if (failed.length) {
