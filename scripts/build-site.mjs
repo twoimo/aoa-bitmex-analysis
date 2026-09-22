@@ -165,8 +165,8 @@ async function main() {
       '152 are rounding (≤0.0045 XBt); 2018-04-27 and 2018-04-28 are off by 0.546 and 1.001 XBt'],
     ['Liquidation rows', `${validation.summary.liquidationRows}`, 'note',
       '28 of them use the zero order id; neither "none" nor "59" summarises this correctly'],
-    ['External market-tick comparison', 'not performed', 'open',
-      'no fill has been matched against public tick data'],
+    ['External market-tick comparison', 'reported by a third party', 'note',
+      'An independent audit published 2026-09-22 reports 72,717 of 72,718 sampled fills matching BitMEX public tick data by unique id. This repository has not reproduced that comparison.'],
     ['Publisher and exchange issuance verified', 'not performed', 'open',
       'internal consistency is not authenticity'],
   ].map(([check, result, verdict, note]) => ({ check, result, verdict, note }));

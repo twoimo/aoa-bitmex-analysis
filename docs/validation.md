@@ -54,10 +54,12 @@ described as an unresolved inconsistency.
 
 ## What is still open
 
-1. **External comparison.** No fill has been matched against public market ticks, and no
-   contract specification (multiplier, listing dates, funding rate history, settlement price)
-   has been pulled from BitMEX. Until that happens, every contract-level PnL figure below the
-   ledger is unverified.
+1. **External comparison by this repository.** No fill here has been matched against public
+   market ticks, and no contract specification (multiplier, listing dates, funding rate history,
+   settlement price) has been pulled from BitMEX. An independent third-party audit published on
+   the same day reports having matched 72,717 of 72,718 sampled fills against BitMEX's public
+   tick archive; that claim has not been reproduced here. See `docs/external-audits.md`.
+   Until it is, every contract-level PnL figure below the ledger stays unverified.
 2. **Provenance.** The post, its author, and the file upload were not independently
    authenticated.
 3. **Per-row balance continuity.** 946 rows cannot be reconciled to the running sum, for the

@@ -74,9 +74,9 @@
   },
   {
    "check": "External market-tick comparison",
-   "result": "not performed",
-   "verdict": "open",
-   "note": "no fill has been matched against public tick data"
+   "result": "reported by a third party",
+   "verdict": "note",
+   "note": "An independent audit published 2026-09-22 reports 72,717 of 72,718 sampled fills matching BitMEX public tick data by unique id. This repository has not reproduced that comparison."
   },
   {
    "check": "Publisher and exchange issuance verified",

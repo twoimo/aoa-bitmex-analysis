@@ -24,6 +24,7 @@ account name `aoa` on 2026-09-22.
 | `docs/source.md` | Where the data came from, hashes, and what the discloser said about reuse |
 | `docs/methodology.md` | Units, sign conventions, contract classes, definitions, and known limits |
 | `docs/validation.md` | Every check, its result, and the ones that are still open |
+| `docs/external-audits.md` | Two independent reviews of the same dataset: what they add, and which of their claims were spot-checked here |
 | `docs/stated-vs-measured.md` | What he said about his own trading, next to what the files show |
 | `FINDINGS.md` | What the record suggests about trading well, with confidence levels |
 
