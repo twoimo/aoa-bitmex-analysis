@@ -17,6 +17,7 @@ account name `aoa` on 2026-09-22.
 | `scripts/validate.mjs` | Full anomaly and duplicate audit → `results/validation.json`, `results/anomalies.csv`, `manifest.json` |
 | `scripts/analyze.mjs` | Descriptive statistics → `results/summary.json`, `results/monthly.csv`, `results/daily-balance.csv`, `results/symbols.csv`, `REPORT.md` |
 | `scripts/insights.mjs` | Trader-facing questions (attribution, hold time, exposure, withdrawal discipline, concentration) → `results/insights.json`, `results/symbol-attribution.csv`, `results/withdrawal-curve.csv`, `FINDINGS.md` |
+| `scripts/fetch-market-ohlcv.mjs` | Fetches real daily candles for BTCUSDT/ETHUSDT from Binance's public API → `results/market-ohlcv.json` |
 | `scripts/verify-public-trades.mjs` | Matches fills against BitMEX's public trade archive by `trdMatchID` → `results/public-trade-verification.json` |
 | `scripts/stated-vs-measured.mjs` | Checks the account holder's own published numbers and principles against the ledger → `results/stated-vs-measured.json` |
 | `scripts/withdrawals.mjs` | Day-level and event-level cash-flow detail, including the round-lot withdrawal ladder → `results/withdrawals.json`, `results/withdrawals-daily.csv`, `results/withdrawals-events.csv`, `results/withdrawals-cumulative.svg` |
@@ -42,6 +43,7 @@ npm run analyze   # descriptive statistics
 npm run insights  # trader-facing metrics
 npm run stated    # his published claims vs the ledger
 npm run verify:public # fills vs BitMEX's public trade archive (network, ~64 daily files)
+npm run market    # refresh the market candles the site's chart draws (network, no key)
 npm run withdrawals # day-level and per-withdrawal cash-flow detail
 npm test          # parser and definition tests, no dataset required
 ```

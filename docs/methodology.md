@@ -109,3 +109,21 @@ npm run fetch && npm run validate && npm run analyze && npm run insights
 `validate` writes `manifest.json`, `results/validation.json` and `results/anomalies.csv`.
 `analyze` writes `results/summary.json` and `REPORT.md`. `insights` writes
 `results/insights.json` and `FINDINGS.md`.
+
+## Market candles on the site
+
+The candlestick panel draws real daily OHLCV for `BTCUSDT` and `ETHUSDT` from Binance's public
+REST API (`/api/v3/klines`, no key, no account), refreshed by `npm run market` and committed to
+`results/market-ohlcv.json`. Three things about that choice:
+
+- Binance is **not** the venue this account traded on. It traded BitMEX `XBTUSD` and `ETHUSD`,
+  whose prints differ slightly. The chart is market context, not the account's own prices.
+- The chart originally drew OHLC reconstructed from the account's fills. That was honest but
+  sparse: a few hundred prints a year and nothing on days with no trades, so the candles were
+  gappy and the moving averages were over observations rather than calendar days. It is kept in
+  `results/candles.json` and the site payload notes it is available, but the panel no longer
+  draws it.
+- Each market bar carries the account's own activity for that day (`accountFills`,
+  `accountNotionalXbt`), drawn as a gold tick under the volume panel, so the price chart also
+  answers when the account was actually in the market. The internal audit in `site/app.js`
+  cross-checks those fields against the daily activity aggregate.

@@ -52,7 +52,9 @@ async function main() {
   const manifest = await readJson('manifest.json');
   const dailyActivity = await readCsv('results/daily-activity.csv');
   const candles = await readJson('results/candles.json');
+  const market = await readJson('results/market-ohlcv.json');
 
+  const activityByDay = new Map(dailyActivity.map((r) => [r.date, { fills: Number(r.fills), notionalXbt: Number(r.notional_xbt) }]));
   const w = summary.wallet;
   const h = insights.headline;
   // Use the audited order count (the all-zero placeholder is not an order),
@@ -264,7 +266,39 @@ async function main() {
       notes: insights.definitions,
     },
     'activity.json': activity,
-    'candles.json': candles,
+    'candles.json': {
+      source: market.source,
+      sourceUrl: market.sourceUrl,
+      fetchedAt: market.fetchedAt,
+      note: market.note,
+      // Panel symbol -> market symbol. The account traded BitMEX XBTUSD/ETHUSD;
+      // these are the closest liquid continuous series, from a different venue.
+      symbolMap: { XBTUSD: 'BTCUSDT', ETHUSD: 'ETHUSDT' },
+      // The fill-derived OHLC stays in results/candles.json. It is sparse (a few
+      // hundred prints a year, blank on days with no trades), which is why the
+      // chart uses market bars instead and marks the days the account traded.
+      reconstructedAvailable: true,
+      // Trim to the window the export covers and round to the precision the
+      // quotes actually carry: this payload is embedded in index.html for
+      // offline use, so unnecessary digits cost every reader bytes.
+      series: market.series.flatMap((s2) => {
+        const panel = s2.symbol === 'BTCUSDT' ? 'XBTUSD' : 'ETHUSD';
+        const px = (v) => Number(v.toFixed(2));
+        return s2.bars
+          .filter((b) => b.day >= '2018-03-05' && b.day <= '2021-12-24')
+          .map((b) => {
+            const day = activityByDay.get(b.day);
+            return {
+              symbol: panel,
+              day: b.day,
+              open: px(b.open), high: px(b.high), low: px(b.low), close: px(b.close),
+              volume: Number(b.volume.toFixed(3)),
+              accountFills: day ? day.fills : 0,
+              accountNotionalXbt: day ? Number(day.notionalXbt.toFixed(3)) : 0,
+            };
+          });
+      }),
+    },
     'balance.json': {
       // monthly end balances only: the daily series stays in the repo
       monthly: monthly.map((m) => ({ month: m.month, endBalanceXBt: m.endBalanceXBt, realisedXBt: m.realisedXBt, withdrawalsXBt: m.withdrawalsXBt, depositsXBt: m.depositsXBt })),
@@ -288,7 +322,10 @@ async function main() {
     throw new Error('Withdrawal event / lot alignment changed');
   }
   for (const [name, payload] of Object.entries(payloads)) {
-    await fsp.writeFile(path.join(OUT, name), JSON.stringify(payload, null, 1) + '\n');
+    // Small payloads stay indented so they are readable in the repository; the
+    // large time series are written compact because they are machine-read.
+    const text = JSON.stringify(payload, null, JSON.stringify(payload).length > 50000 ? 0 : 1);
+    await fsp.writeFile(path.join(OUT, name), text + '\n');
   }
   // The same public, allowlisted aggregates are embedded for file:// use.
   // Browsers disallow fetching local JSON; do not ask users to disable CORS.
