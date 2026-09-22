@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>aoa — 비트멕스 거래기록</title>
 <meta name="description" content="aoa 명의로 공개된 2018–2021 비트멕스 거래기록. 원장 대사, 전 역사 차트, 계좌가 매매한 위치.">
-<link rel="stylesheet" href="styles.css?v=0f0fbc2600">
+<link rel="stylesheet" href="styles.css?v=490f311005">
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -54,15 +54,17 @@
         </div>
         <p class="reconstruction-notice"><span class="verdict note">시장 데이터</span> 캔들은 Binance·Bitstamp·Bitfinex 공개 API의 실제 일봉입니다. 계좌가 거래한 거래소(BitMEX)가 아니므로 가격은 조금 다릅니다. 초록·빨강 세로 막대는 그 봉에서 계좌가 <b>매수한 가격 범위</b>와 <b>매도한 가격 범위</b>, 오른쪽 가로 막대는 <b>가격대별 체결 금액</b>입니다.</p>
         <div class="line-legend candle-legend">
-          <span><i class="key-line profit"></i>계좌 매수 범위</span>
-          <span><i class="key-line loss"></i>계좌 매도 범위</span>
+          <span><i class="key-line profit"></i>매수 범위 <b class="positive">B</b></span>
+          <span><i class="key-line loss"></i>매도 범위 <b class="negative">S</b></span>
           <span><i class="key-line brass"></i>MA 7</span>
           <span><i class="key-line dashed neutral"></i>MA 20</span>
           <span><i class="key-box brass"></i>계좌 거래일</span>
         </div>
         <div class="replay-bar">
           <button type="button" id="replay-toggle" class="replay-btn">▶ 리플레이</button>
-          <input type="range" id="replay-range" min="0" max="0" value="0" step="1" aria-label="리플레이 날짜">
+          <button type="button" id="replay-prev" class="replay-btn" aria-label="이전 봉">◀</button>
+          <button type="button" id="replay-next" class="replay-btn" aria-label="다음 봉">▶</button>
+          <input type="range" id="replay-range" min="0" max="0" value="0" step="1" aria-label="리플레이 봉 위치">
           <span class="mono" id="replay-date">전체 보기</span>
           <span class="segmented" id="replay-speed" aria-label="재생 속도"></span>
           <button type="button" id="replay-reset" class="replay-btn">전체</button>
@@ -139,6 +141,14 @@
 <script>window.__dataVersion="5dea17322960"</script>
 <script>window.__dataVersion="5dea17322960"</script>
 <script>window.__dataVersion="5dea17322960"</script>
-<script src="app.js?v=779dbf2828"></script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script src="app.js?v=b5145b137a"></script>
 </body>
 </html>

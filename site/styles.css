@@ -30,3 +30,8 @@
   .replay-readout{grid-template-columns:repeat(2,minmax(0,1fr))}
   .hero-strip #hero-ledger{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+svg .fill-mark{cursor:crosshair}
+svg .fill-mark:hover{stroke:var(--text);stroke-width:1}
+svg .fill-label{font:600 9px var(--mono);text-anchor:middle}
+svg .fill-label.buy-label{fill:var(--profit)}
+svg .fill-label.sell-label{fill:var(--loss)}

@@ -29,12 +29,14 @@
     if (u.protocol !== 'https:') throw new Error('허용하지 않는 근거 링크');
     return esc(u.href);
   };
-  // Bar-replay state: null index means "show everything".
-  let replayDays = null;
-  let replayIdx = null;
+  // Bar replay, TradingView style: the cursor is a date, and stepping moves one
+  // bar of whatever resolution the chart is currently drawing. null = live.
+  let replayDays = null;      // daily state rows from replay.json
+  let replayDate = null;      // replay cursor
+  let currentBars = [];       // bar days of the series the chart is drawing
   let replayTimer = null;
   let replayStepMs = 90;
-  const replayCutoff = () => (replayDays && replayIdx !== null ? replayDays[replayIdx].d : null);
+  const replayCutoff = () => replayDate;
 
   const audit = { state: 'loading', fieldsRead: new Set(), missingFields: [], checks: [], mode: '' };
   window.reportAudit = audit;
@@ -294,12 +296,23 @@
       const entry = source.get(symbol);
       const meta = entry.meta || {};
       const cutoff = replayCutoff();
-      const all = cutoff ? entry.bars.filter((b) => b.day <= cutoff) : entry.bars;
+      const spanDays0 = range === 'all' ? Math.round((dateMs(entry.bars.at(-1).day) - dateMs(entry.bars[0].day)) / DAY) : (RANGE_DAYS[range] || 365);
+      const res0 = resolutionFor(spanDays0);
+      const resFull = bucketBars(entry.bars, res0);
+      // The replay slider covers the account's own window. Steps before the
+      // account existed would have no state to show, so they are context only.
+      const winFrom = replayDays ? replayDays[0].d : null;
+      const winTo = replayDays ? replayDays[replayDays.length - 1].d : null;
+      const replayBars = winFrom ? resFull.filter((b) => b.day >= winFrom && b.day <= winTo) : [];
+      currentBars = (replayBars.length >= 2 ? replayBars : resFull).map((b) => b.day);
+      const all = cutoff ? resFull.filter((b) => b.day <= cutoff) : resFull;
       if (!all.length) return;
       const last = all.at(-1), previous = all.at(-2) || last;
       const end = dateMs(last.day);
       const spanDays = range === 'all' ? Math.round((end - dateMs(all[0].day)) / DAY) : (RANGE_DAYS[range] || 365);
-      const from = range === 'all' ? dateMs(all[0].day) : end - spanDays * DAY;
+      // While replaying, the cursor stays at the right edge and the window
+      // extends back only as far as there is data.
+      const from = Math.max(range === 'all' ? dateMs(all[0].day) : end - spanDays * DAY, dateMs(all[0].day));
       const res = resolutionFor(spanDays);
       const rows = bucketBars(all.filter((r) => dateMs(r.day) >= from), res);
       const withMa = rows.map((r, i, arr) => ({
@@ -307,6 +320,7 @@
         ma7: i < 6 ? null : sum(arr.slice(i - 6, i + 1), 'close') / 7,
         ma20: i < 19 ? null : sum(arr.slice(i - 19, i + 1), 'close') / 20,
       }));
+      const barSides = new Map();
       const W = 900, H = 372, L = 12, R = 78, T = 30, B = 244, VT = 280, VB = 334;
       const x = (ms) => L + 5 + (ms - from) / (end - from || DAY) * (W - L - R - 10);
       const prices = withMa.flatMap((r) => [r.low, r.high, ...(r.ma7 === null ? [] : [r.ma7]), ...(r.ma20 === null ? [] : [r.ma20])]);
@@ -336,12 +350,6 @@
         body += `<rect class="candle-body" data-day="${r.day}" x="${(xx - bodyWidth / 2).toFixed(2)}" y="${Math.min(y(r.open), y(r.close)).toFixed(2)}" width="${bodyWidth.toFixed(2)}" height="${Math.max(1, Math.abs(y(r.open) - y(r.close))).toFixed(2)}" fill="${color}"/>`;
         body += `<rect class="candle-volume" data-day="${r.day}" x="${(xx - bodyWidth / 2).toFixed(2)}" y="${vy(r.volume).toFixed(2)}" width="${bodyWidth.toFixed(2)}" height="${Math.max(.5, VB - vy(r.volume)).toFixed(2)}" fill="${color}" opacity=".55"/>`;
       });
-      const traded = withMa.filter((r) => r.accountFills > 0);
-      body += text(L, VB - 6, `계좌 거래 ${number(traded.length)} / ${number(withMa.length)}봉`, 'axis-unit');
-      traded.forEach((r) => {
-        const xx = x(dateMs(r.day));
-        body += `<rect class="candle-mark" x="${(xx - Math.max(bodyWidth, 2) / 2).toFixed(2)}" y="${VB - 4}" width="${Math.max(bodyWidth, 2).toFixed(2)}" height="4" fill="var(--brass)" opacity=".85"/>`;
-      });
       for (const [key, color, dash] of [['ma7', 'var(--brass)', ''], ['ma20', 'var(--text)', 'stroke-dasharray="4 3"']]) {
         let path = '', previousDay = null;
         withMa.forEach((r) => {
@@ -353,6 +361,11 @@
         body += `<path class="${key}" d="${path}" fill="none" stroke="${color}" stroke-width="1.4" ${dash}/>`;
       }
       body += line(L, y(last.close), W - R, y(last.close), 'last-price-line');
+      if (cutoff) {
+        const cx = x(dateMs(last.day));
+        body += `<line class="replay-cursor" x1="${cx.toFixed(2)}" x2="${cx.toFixed(2)}" y1="${T}" y2="${VB}" stroke="var(--brass)" stroke-width="1" stroke-dasharray="3 3" opacity=".9"/>`;
+        body += `<text x="${(cx + 4).toFixed(2)}" y="${T + 11}" font-size="9" fill="var(--brass)">리플레이</text>`;
+      }
       withMa.forEach((r) => {
         const xx = x(dateMs(r.day));
         const label = `${symbol} · ${r.day} · ${res}`
@@ -382,13 +395,28 @@
             if (r.sellLow !== null) { sLow = sLow === null ? r.sellLow : Math.min(sLow, r.sellLow); sHigh = sHigh === null ? r.sellHigh : Math.max(sHigh, r.sellHigh); }
             bf += r.buyFills; sf += r.sellFills; rj += 1;
           }
+          if (bf || sf) barSides.set(bar.day, { bf, sf });
           if (marks === 'range') {
             const xx = x(startMs);
             const w = Math.max(bodyWidth, 1.6);
-            if (bLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(bHigh).toFixed(2)}" y2="${y(bLow).toFixed(2)}" stroke="var(--profit)" stroke-width="${w.toFixed(2)}" opacity=".45"/>`;
-            if (sLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(sHigh).toFixed(2)}" y2="${y(sLow).toFixed(2)}" stroke="var(--loss)" stroke-width="${w.toFixed(2)}" opacity=".45"/>`;
+            if (bLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(bHigh).toFixed(2)}" y2="${y(bLow).toFixed(2)}" stroke="var(--profit)" stroke-width="${w.toFixed(2)}" opacity=".26"/>`;
+            if (sLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(sHigh).toFixed(2)}" y2="${y(sLow).toFixed(2)}" stroke="var(--loss)" stroke-width="${w.toFixed(2)}" opacity=".26"/>`;
+            // Explicit buy / sell markers so the chart says which side the fill
+            // was, not just where the price range sat.
+            const tri = Math.max(2.4, Math.min(6, bodyWidth * 0.9));
+            if (bLow !== null) {
+              const my = y((bLow + bHigh) / 2);
+              body += `<polygon class="fill-mark" data-side="buy" data-day="${bar.day}" points="${(xx - tri).toFixed(2)},${(my + tri).toFixed(2)} ${(xx + tri).toFixed(2)},${(my + tri).toFixed(2)} ${xx.toFixed(2)},${(my - tri).toFixed(2)}" fill="var(--profit)" ${tip(`${symbol} · ${bar.day}\n매수 ${number(bf)}건\n가격 ${number(bLow, 2)} ~ ${number(bHigh, 2)}`) }/>`;
+            }
+            if (sLow !== null) {
+              const my = y((sLow + sHigh) / 2);
+              body += `<polygon class="fill-mark" data-side="sell" data-day="${bar.day}" points="${(xx - tri).toFixed(2)},${(my - tri).toFixed(2)} ${(xx + tri).toFixed(2)},${(my - tri).toFixed(2)} ${xx.toFixed(2)},${(my + tri).toFixed(2)}" fill="var(--loss)" ${tip(`${symbol} · ${bar.day}\n매도 ${number(sf)}건\n가격 ${number(sLow, 2)} ~ ${number(sHigh, 2)}`) }/>`;
+            }
+            if (withMa.length <= 90) {
+              if (bLow !== null) body += text(xx, y(bHigh) - 4, 'B', 'fill-label buy-label');
+              if (sLow !== null) body += text(xx, y(sLow) + 10, 'S', 'fill-label sell-label');
+            }
           }
-          void bf; void sf;
         }
         if (marks === 'profile') {
           const buckets = footprint.profile.get(symbol) || [];
@@ -403,6 +431,21 @@
           body += text(W - R - bw - 6, T - 6, '계좌 체결 가격대', 'axis-unit');
         }
       }
+      const traded = withMa.filter((r) => r.accountFills > 0);
+      const buyBars = withMa.filter((r) => barSides.has(r.day) && barSides.get(r.day).bf > 0).length;
+      const sellBars = withMa.filter((r) => barSides.has(r.day) && barSides.get(r.day).sf > 0).length;
+      body += text(L, VB - 16, `계좌 매수 ${number(buyBars)}봉 / 매도 ${number(sellBars)}봉 (거래 ${number(traded.length)} / ${number(withMa.length)})`, 'axis-unit');
+      withMa.forEach((r) => {
+        const side = barSides.get(r.day);
+        if (!side) return;
+        const xx = x(dateMs(r.day));
+        const w = Math.max(bodyWidth, 2);
+        // Two thin rows under the volume panel: green where the bar contained
+        // buys, red where it contained sells. Readable at any bar density, which
+        // letters are not.
+        if (side.bf > 0) body += `<rect class="candle-mark" data-side="buy" x="${(xx - w / 2).toFixed(2)}" y="${VB - 10}" width="${w.toFixed(2)}" height="4" fill="var(--profit)" opacity=".9"/>`;
+        if (side.sf > 0) body += `<rect class="candle-mark" data-side="sell" x="${(xx - w / 2).toFixed(2)}" y="${VB - 5}" width="${w.toFixed(2)}" height="4" fill="var(--loss)" opacity=".9"/>`;
+      });
       body += dateLabels(from, end, x, VB + 23, 3);
       const host = $('candle-chart');
       host.innerHTML = svg(`${symbol} ${res} 시장 시세, 금색 눈금은 계좌가 거래한 봉`, body, W, H);
@@ -417,7 +460,7 @@
       if (readout) readout.textContent = `${symbol} · ${last.day} 마지막 봉 · O ${number(last.open, 2)} / H ${number(last.high, 2)} / L ${number(last.low, 2)} / C ${number(last.close, 2)} USD`;
     };
 
-    renderChart = render;
+    renderChart = () => { render(); renderReplay(); };
     tabGroup($('symbol-filter'), 'candle-chart', [['XBTUSD', 'XBTUSD'], ['ETHUSD', 'ETHUSD']], symbol, (next) => { symbol = next; render(); }, 'symbol');
     tabGroup($('candle-periods'), 'candle-chart', RANGES, range, (next) => { range = next; render(); });
     tabGroup($('candle-scale'), 'candle-chart', [['auto', 'AUTO'], ['log', 'LOG'], ['lin', 'LIN']], scaleMode, (next) => { scaleMode = next; render(); }, 'scale');
@@ -433,17 +476,25 @@
         .then((payload) => {
           if (!payload || !payload.days) return;
           replayDays = payload.days;
-          replayIdx = null;
-          const range = $('replay-range');
-          if (range) { range.max = String(replayDays.length - 1); range.value = String(replayDays.length - 1); }
+          replayDate = null;
           const toggle = $('replay-toggle');
           if (toggle) {
             toggle.disabled = false;
             toggle.addEventListener('click', () => (replayTimer ? stopReplay() : startReplay()));
           }
+          const prev = $('replay-prev');
+          if (prev) prev.addEventListener('click', () => { stopReplay(); stepReplay(-1); });
+          const next = $('replay-next');
+          if (next) next.addEventListener('click', () => { stopReplay(); stepReplay(1); });
           const reset = $('replay-reset');
-          if (reset) reset.addEventListener('click', () => { stopReplay(); replayIdx = null; renderReplay(); renderChart(); });
-          if (range) range.addEventListener('input', () => { stopReplay(); replayIdx = Number(range.value); renderReplay(); renderChart(); });
+          if (reset) reset.addEventListener('click', () => { stopReplay(); replayDate = null; renderReplay(); renderChart(); });
+          const range2 = $('replay-range');
+          if (range2) range2.addEventListener('input', () => {
+            stopReplay();
+            replayDate = Number(range2.value) >= currentBars.length - 1 ? null : currentBars[Number(range2.value)];
+            renderReplay();
+            renderChart();
+          });
           renderReplay();
           try {
             tabGroup($('replay-speed'), 'candle-chart', [['400', '1×'], ['90', '4×'], ['25', '16×']], '90', (next) => {
@@ -710,33 +761,71 @@
       + `<tbody>${shown.map((r) => `<tr><td>${esc(r.symbol)}${r.charted ? ' <span class="muted">차트</span>' : ''}</td><td class="numeric">${number(r.fills)}</td><td class="numeric">${shortNumber(r.notionalUsd)}</td><td class="mono">${esc(r.firstDay)} → ${esc(r.lastDay)}</td></tr>`).join('')}</tbody>`;
   }
 
+  function replayRow(date) {
+    if (!replayDays || !date) return null;
+    let lo = 0;
+    let hi = replayDays.length - 1;
+    let found = null;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      if (replayDays[mid].d <= date) { found = replayDays[mid]; lo = mid + 1; } else hi = mid - 1;
+    }
+    return found;
+  }
+
+  function replayIndex() {
+    if (replayDate === null || !currentBars.length) return currentBars.length - 1;
+    const i = currentBars.indexOf(replayDate);
+    if (i >= 0) return i;
+    let at = 0;
+    for (let k = 0; k < currentBars.length; k += 1) if (currentBars[k] <= replayDate) at = k;
+    return at;
+  }
+
   function renderReplay() {
     const readout = $('replay-readout');
     const label = $('replay-date');
-    const range = $('replay-range');
+    const range2 = $('replay-range');
     if (!readout) return;
     if (!replayDays) {
       readout.innerHTML = '';
       if (label) label.textContent = '리플레이 준비 중';
       return;
     }
-    const i = replayIdx === null ? replayDays.length - 1 : replayIdx;
-    const day = replayDays[i];
-    if (range && range.max !== String(replayDays.length - 1)) {
-      range.max = String(replayDays.length - 1);
-      range.value = String(i);
-    } else if (range) {
-      range.value = String(i);
+    const max = Math.max(0, currentBars.length - 1);
+    if (range2) {
+      range2.max = String(max);
+      range2.value = String(replayIndex());
+      range2.disabled = currentBars.length === 0;
     }
-    if (label) label.textContent = replayIdx === null ? '전체 보기' : day.d;
-    const eq = day.eq;
+    const at = replayDate === null ? currentBars[max] : replayDate;
+    if (label) label.textContent = replayDate === null ? '전체 보기' : `${at} · ${replayIndex() + 1}/${currentBars.length}봉`;
+    const day = replayRow(at);
+    if (!day || day.d > at) {
+      readout.innerHTML = `<div><strong>0.00 BTC</strong><span>장부 잔고 · 거래 시작 전</span></div>`
+        + `<div><strong>0건</strong><span>체결 · ${esc(at)}</span></div>`
+        + `<div><strong>—</strong><span>누적 실현손익</span></div>`
+        + `<div><strong>—</strong><span>누적 출금</span></div>`
+        + `<div><strong>—</strong><span>순포지션</span></div>`;
+      return;
+    }
     readout.innerHTML = [
-      ['장부 잔고', `${number(eq, 2)} BTC`, `${esc(day.d)} 기준`],
+      ['장부 잔고', `${number(day.eq, 2)} BTC`, `${esc(day.d)} 기준`],
       ['누적 실현손익', `${number(day.pnl, 1)} BTC`, `입금 ${number(day.dep, 2)}`],
-      ['누적 출금', `${number(day.wd, 0)} BTC`, `잔고 + 출금 = ${number(eq + day.wd, 1)}`],
+      ['누적 출금', `${number(day.wd, 0)} BTC`, `잔고 + 출금 = ${number(day.eq + day.wd, 1)}`],
       ['순포지션', `${signed(day.pos, 1)} BTC`, 'BTC·ETH 합산 · 음수는 숏'],
       ['그날 체결', `${number(day.f)}건`, `명목 ${shortNumber(day.n)} USD`],
     ].map(([label2, value, sub]) => `<div><strong>${value}</strong><span>${esc(label2)} · ${esc(sub)}</span></div>`).join('');
+  }
+
+  function stepReplay(delta) {
+    if (!replayDays || !currentBars.length) return;
+    const i = replayIndex() + delta;
+    if (i < 0) { replayDate = currentBars[0]; }
+    else if (i >= currentBars.length - 1) { replayDate = null; }
+    else { replayDate = currentBars[i]; }
+    renderReplay();
+    renderChart();
   }
 
   function stopReplay() {
@@ -747,17 +836,20 @@
   }
 
   function startReplay() {
-    if (!replayDays) return;
-    if (replayIdx === null || replayIdx >= replayDays.length - 1) replayIdx = 0;
+    if (!replayDays || !currentBars.length) return;
+    // Start where the account starts trading, not at the first bar of 2011:
+    // otherwise the replay spends eight minutes on years with no fills.
+    if (replayDate === null) {
+      const first = replayDays[0].d;
+      replayDate = currentBars.find((d) => d >= first) || currentBars[0];
+    }
     const button = $('replay-toggle');
     if (button) { button.dataset.playing = 'true'; button.textContent = '❚❚ 정지'; }
     if (replayTimer) clearInterval(replayTimer);
     replayTimer = setInterval(() => {
-      if (!replayDays || replayIdx === null) { stopReplay(); return; }
-      replayIdx += 1;
-      if (replayIdx >= replayDays.length - 1) { replayIdx = replayDays.length - 1; renderReplay(); renderChart(); stopReplay(); return; }
-      renderReplay();
-      renderChart();
+      if (!replayDays || !currentBars.length) { stopReplay(); return; }
+      if (replayIndex() >= currentBars.length - 1) { replayDate = null; renderReplay(); renderChart(); stopReplay(); return; }
+      stepReplay(1);
     }, replayStepMs);
   }
 
