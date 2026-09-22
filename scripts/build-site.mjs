@@ -54,6 +54,7 @@ async function main() {
   const candles = await readJson('results/candles.json');
   const marketHistory = await readJson('results/market-history.json');
   const footprint = await readJson('results/fill-footprint.json');
+  const replay = await readJson('results/replay.json');
 
   const activityByDay = new Map(dailyActivity.map((r) => [r.date, { fills: Number(r.fills), notionalXbt: Number(r.notional_xbt) }]));
   const dayMs = 86400000;
@@ -351,6 +352,12 @@ async function main() {
       offlineFallback: true,
       series: weeklySeries,
     },
+    'replay.json': {
+      note: replay.note,
+      firstDay: replay.firstDay,
+      lastDay: replay.lastDay,
+      days: replay.days,
+    },
     'fill-footprint.json': {
       note: footprint.note,
       chartedSymbols: footprint.chartedSymbols,
@@ -407,8 +414,8 @@ async function main() {
   // candles-daily.json is deliberately left out: 9,358 bars would roughly
   // double index.html. Offline readers get the embedded weekly series instead,
   // and app.js labels the resolution when it falls back to it.
-  const { 'candles-daily.json': omittedDaily, 'fill-footprint.json': omittedFootprint, ...embeddedPayloads } = payloads;
-  void omittedDaily; void omittedFootprint;
+  const { 'candles-daily.json': omittedDaily, 'fill-footprint.json': omittedFootprint, 'replay.json': omittedReplay, ...embeddedPayloads } = payloads;
+  void omittedDaily; void omittedFootprint; void omittedReplay;
   const embedded = JSON.stringify(embeddedPayloads).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
   let outHtml = html.replace(marker, (_match, before, after) => before + embedded + after);
   outHtml = outHtml.replace(/(<script src="app\.js)/, `<script>window.__dataVersion=${JSON.stringify(dataVersion)}</script>\n$1`);

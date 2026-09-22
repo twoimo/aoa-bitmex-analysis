@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>aoa — 비트멕스 거래기록</title>
 <meta name="description" content="aoa 명의로 공개된 2018–2021 비트멕스 거래기록. 원장 대사, 전 역사 차트, 계좌가 매매한 위치.">
-<link rel="stylesheet" href="styles.css?v=79972bcf66">
+<link rel="stylesheet" href="styles.css?v=0f0fbc2600">
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -16,8 +16,8 @@
     <a class="brand" href="#main"><span class="brand-mark">a</span><span class="mono">aoa · BITMEX</span></a>
     <nav class="topnav" aria-label="섹션">
       <a href="#chart">차트</a>
-      <a href="#numbers">핵심 수치</a>
       <a href="#findings">발견</a>
+      <a href="#wisdom">지혜</a>
       <a href="#verify">검증</a>
     </nav>
     <span class="archive-badge" id="data-status">집계 불러오는 중</span>
@@ -30,24 +30,6 @@
 
 <main id="main" tabindex="-1">
 
-  <section class="hero">
-    <div class="hero-copy">
-      <h1>aoa 거래기록</h1>
-      <p class="lede">2026년 9월 22일 공개된 비트멕스 체결 143만 건과 지갑 내역. 원장은 사토시 단위로 맞습니다.</p>
-      <p class="hero-boundary"><span class="verdict open">미확인</span> 발급 주체와 계좌 소유자는 인증되지 않았습니다.</p>
-    </div>
-    <div class="ledger-panel">
-      <div class="ledger-heading"><h2>원장 대사</h2><span class="mono">BTC</span></div>
-      <p class="ledger-sub">시작 잔고 0 · 완료 거래만 합산</p>
-      <div id="hero-ledger" aria-busy="true"><p class="loading">원장 집계를 읽고 있습니다.</p></div>
-      <div class="ledger-bottom">
-        <p>정수 사토시로 대사</p>
-        <div class="reconcile-stamp" id="reconcile-stamp"><span>DIFFERENCE</span><strong>—</strong><span>SATOSHI</span></div>
-      </div>
-    </div>
-    <div class="hero-stats" id="hero-stats"></div>
-  </section>
-
   <section id="chart" class="report-section terminal-section">
     <div class="terminal-title">
       <div>
@@ -56,7 +38,7 @@
       </div>
       <span class="confidence directional">시장 시세 + 계좌 체결</span>
     </div>
-    <div class="terminal-grid">
+    <div class="chart-main">
       <figure class="chart candle-panel">
         <div class="chart-heading">
           <div>
@@ -78,21 +60,38 @@
           <span><i class="key-line dashed neutral"></i>MA 20</span>
           <span><i class="key-box brass"></i>계좌 거래일</span>
         </div>
+        <div class="replay-bar">
+          <button type="button" id="replay-toggle" class="replay-btn">▶ 리플레이</button>
+          <input type="range" id="replay-range" min="0" max="0" value="0" step="1" aria-label="리플레이 날짜">
+          <span class="mono" id="replay-date">전체 보기</span>
+          <span class="segmented" id="replay-speed" aria-label="재생 속도"></span>
+          <button type="button" id="replay-reset" class="replay-btn">전체</button>
+        </div>
+        <div class="replay-readout" id="replay-readout" aria-live="polite"></div>
         <div id="candle-chart" class="plot-scroll"></div>
         <p class="chart-readout" aria-live="polite">방향키로 캔들을 이동하고 Escape로 툴팁을 닫습니다.</p>
         <figcaption id="candle-note"></figcaption>
       </figure>
-      <div class="terminal-side">
-        <div class="market-list">
-          <div class="ledger-heading"><h2>손익 상위 종목</h2><span class="mono">BTC</span></div>
-          <div class="table-scroll"><table id="market-table"></table></div>
-        </div>
-        <div class="market-list">
-          <div class="ledger-heading"><h2>체결 종목 전체</h2><span class="mono">전 종목</span></div>
-          <div class="table-scroll"><table id="symbol-table"></table></div>
-        </div>
+    </div>
+    <div class="chart-grid">
+      <div class="market-list">
+        <div class="ledger-heading"><h2>손익 상위 종목</h2><span class="mono">BTC</span></div>
+        <div class="table-scroll"><table id="market-table"></table></div>
+      </div>
+      <div class="market-list">
+        <div class="ledger-heading"><h2>체결 종목 전체</h2><span class="mono">전 종목</span></div>
+        <div class="table-scroll"><table id="symbol-table"></table></div>
       </div>
     </div>
+  </section>
+
+  <section id="ledger" class="report-section">
+    <div class="section-head"><h2>원장 대사</h2><span class="section-source">시작 잔고 0 · 완료 거래만 합산 · BTC</span></div>
+    <div class="hero-strip">
+      <div id="hero-ledger" aria-busy="true"><p class="loading">원장 집계를 읽고 있습니다.</p></div>
+      <div class="reconcile-stamp" id="reconcile-stamp"><span>DIFFERENCE</span><strong>—</strong><span>SATOSHI</span></div>
+    </div>
+    <div class="hero-stats" id="hero-stats"></div>
   </section>
 
   <section id="numbers" class="report-section">
@@ -103,6 +102,12 @@
   <section id="findings" class="report-section">
     <div class="section-head"><h2>발견</h2><span class="section-source">원장과 체결에서 직접 계산</span></div>
     <div class="limitations" id="findings-body"></div>
+  </section>
+
+  <section id="wisdom" class="report-section">
+    <div class="section-head"><h2>워뇨띠의 지혜</h2><span class="section-source">본인이 공개한 원칙 · 파일로 확인한 결과</span></div>
+    <p class="section-intro">그가 2019~2025년에 직접 쓴 글과 인터뷰에서 뽑은 원칙입니다. 각 원칙 옆의 판정은 이 거래기록으로 계산해본 결과이고, 원칙을 지켰다는 증명이 아니라 <b>파일이 그 원칙과 어긋나지 않는다</b>는 뜻입니다.</p>
+    <div class="limitations" id="wisdom-body"></div>
   </section>
 
   <section id="verify" class="report-section">
@@ -130,6 +135,10 @@
 <script>window.__dataVersion="e1c00723e3ab"</script>
 <script>window.__dataVersion="e1c00723e3ab"</script>
 <script>window.__dataVersion="e1c00723e3ab"</script>
-<script src="app.js?v=96baaf8c3f"></script>
+<script>window.__dataVersion="e1c00723e3ab"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script src="app.js?v=779dbf2828"></script>
 </body>
 </html>

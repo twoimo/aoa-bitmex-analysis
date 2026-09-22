@@ -7,3 +7,26 @@
 @media(max-width:520px){.terminal-side{grid-template-columns:minmax(0,1fr)}.market-quote strong{font-size:20px}.candle-panel .chart-heading{gap:10px}.symbol-tabs button{font-size:12px}.symbol-tabs{gap:10px}.stat-strip{grid-template-columns:minmax(0,1fr)}.stat-item{display:grid;grid-template-columns:110px minmax(0,1fr);gap:5px 12px;border-right:0;border-bottom:1px solid var(--line);align-items:center}.stat-item p{margin:0}.stat-detail{grid-column:2;margin:0}.ledger-number{font-size:12px}.hero-stat .value{font-size:18px}.ticker-item small{font-size:9px}.check-note{grid-column:1/-1}.hero-copy p{font-size:10px}.record-counts{grid-template-columns:repeat(2,minmax(0,1fr))}.record-counts>div:first-child{grid-column:1/-1}.principle-head{align-items:center}.fee-row{flex-wrap:wrap}.fee-row span:last-child{margin-left:auto}.candle-toolbar{align-items:center}.segmented button{padding:5px 8px}.chart-heading{gap:9px}.line-legend{gap:9px;font-size:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media print{.topbar,.ticker-strip,.sidebar,.segmented,.skip,.chart-tooltip{display:none}main{margin:0;padding:0}.chart,.ledger-panel,.market-list{break-inside:avoid}.footer{margin:20px 0}.plot-scroll,.table-scroll,.calendar-year{overflow:visible}.plot-scroll svg,.calendar-year svg{min-width:0}}
+
+/* Chart-first layout, replay controls, and the compact ledger strip. */
+.chart-main{display:block;min-width:0}
+.chart-main>.chart{margin:0}
+.chart-main #candle-chart svg{min-width:620px}
+.replay-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0 4px;padding:10px 12px;background:var(--bg);border:1px solid var(--line)}
+.replay-btn{background:transparent;border:1px solid var(--line);color:var(--muted);font:11px var(--mono);padding:7px 12px;min-height:30px}
+.replay-btn:hover{color:var(--brass);border-color:var(--brass)}
+.replay-btn[data-playing=true]{color:var(--brass);border-color:var(--brass);background:#f5b54416}
+#replay-range{flex:1;min-width:180px;accent-color:var(--brass);height:22px}
+#replay-date{font-size:11px;color:var(--text);white-space:nowrap}
+.replay-readout{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:10px}
+.replay-readout>div{padding:10px 12px;background:var(--panel);text-align:right;min-width:0}
+.replay-readout strong{display:block;font:16px var(--mono);margin-bottom:3px}
+.replay-readout span{font-size:9px;color:var(--muted)}
+.hero-strip{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:14px 16px;background:var(--panel);border:1px solid var(--line)}
+.hero-strip #hero-ledger{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;flex:1;min-width:280px;background:var(--line)}
+.hero-strip .ledger-row{display:grid;gap:6px;padding:10px 12px;background:var(--panel);border:0;text-align:right}
+.hero-strip .ledger-row.total{border:0}
+@media(max-width:700px){
+  .replay-readout{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero-strip #hero-ledger{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

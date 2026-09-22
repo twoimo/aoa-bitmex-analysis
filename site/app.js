@@ -29,6 +29,13 @@
     if (u.protocol !== 'https:') throw new Error('허용하지 않는 근거 링크');
     return esc(u.href);
   };
+  // Bar-replay state: null index means "show everything".
+  let replayDays = null;
+  let replayIdx = null;
+  let replayTimer = null;
+  let replayStepMs = 90;
+  const replayCutoff = () => (replayDays && replayIdx !== null ? replayDays[replayIdx].d : null);
+
   const audit = { state: 'loading', fieldsRead: new Set(), missingFields: [], checks: [], mode: '' };
   window.reportAudit = audit;
 
@@ -286,7 +293,8 @@
     const render = () => {
       const entry = source.get(symbol);
       const meta = entry.meta || {};
-      const all = entry.bars;
+      const cutoff = replayCutoff();
+      const all = cutoff ? entry.bars.filter((b) => b.day <= cutoff) : entry.bars;
       if (!all.length) return;
       const last = all.at(-1), previous = all.at(-2) || last;
       const end = dateMs(last.day);
@@ -409,15 +417,42 @@
       if (readout) readout.textContent = `${symbol} · ${last.day} 마지막 봉 · O ${number(last.open, 2)} / H ${number(last.high, 2)} / L ${number(last.low, 2)} / C ${number(last.close, 2)} USD`;
     };
 
+    renderChart = render;
     tabGroup($('symbol-filter'), 'candle-chart', [['XBTUSD', 'XBTUSD'], ['ETHUSD', 'ETHUSD']], symbol, (next) => { symbol = next; render(); }, 'symbol');
     tabGroup($('candle-periods'), 'candle-chart', RANGES, range, (next) => { range = next; render(); });
     tabGroup($('candle-scale'), 'candle-chart', [['auto', 'AUTO'], ['log', 'LOG'], ['lin', 'LIN']], scaleMode, (next) => { scaleMode = next; render(); }, 'scale');
     tabGroup($('candle-marks'), 'candle-chart', [['range', '체결 범위'], ['profile', '가격대'], ['off', '끔']], marks, (next) => { marks = next; render(); }, 'marks');
+    renderReplay();
     render();
     // The full daily history is ~9,400 bars, too large to embed for offline use.
     // It is fetched over http(s) only; under file:// the embedded weekly series
     // is what the chart shows, and the caption says so.
     if (/^https?:/.test(location.protocol)) {
+      fetch(`data/replay.json${DATA_VERSION}`, { cache: 'no-cache' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((payload) => {
+          if (!payload || !payload.days) return;
+          replayDays = payload.days;
+          replayIdx = null;
+          const range = $('replay-range');
+          if (range) { range.max = String(replayDays.length - 1); range.value = String(replayDays.length - 1); }
+          const toggle = $('replay-toggle');
+          if (toggle) {
+            toggle.disabled = false;
+            toggle.addEventListener('click', () => (replayTimer ? stopReplay() : startReplay()));
+          }
+          const reset = $('replay-reset');
+          if (reset) reset.addEventListener('click', () => { stopReplay(); replayIdx = null; renderReplay(); renderChart(); });
+          if (range) range.addEventListener('input', () => { stopReplay(); replayIdx = Number(range.value); renderReplay(); renderChart(); });
+          renderReplay();
+          try {
+            tabGroup($('replay-speed'), 'candle-chart', [['400', '1×'], ['90', '4×'], ['25', '16×']], '90', (next) => {
+              replayStepMs = Number(next);
+              if (replayTimer) { stopReplay(); startReplay(); }
+            }, 'speed');
+          } catch (error) { audit.missingFields.push(`replay-speed: ${error.message}`); }
+        })
+        .catch(() => {});
       fetch(`data/fill-footprint.json${DATA_VERSION}`, { cache: 'no-cache' })
         .then((r) => (r.ok ? r.json() : null))
         .then((payload) => {
@@ -675,6 +710,86 @@
       + `<tbody>${shown.map((r) => `<tr><td>${esc(r.symbol)}${r.charted ? ' <span class="muted">차트</span>' : ''}</td><td class="numeric">${number(r.fills)}</td><td class="numeric">${shortNumber(r.notionalUsd)}</td><td class="mono">${esc(r.firstDay)} → ${esc(r.lastDay)}</td></tr>`).join('')}</tbody>`;
   }
 
+  function renderReplay() {
+    const readout = $('replay-readout');
+    const label = $('replay-date');
+    const range = $('replay-range');
+    if (!readout) return;
+    if (!replayDays) {
+      readout.innerHTML = '';
+      if (label) label.textContent = '리플레이 준비 중';
+      return;
+    }
+    const i = replayIdx === null ? replayDays.length - 1 : replayIdx;
+    const day = replayDays[i];
+    if (range && range.max !== String(replayDays.length - 1)) {
+      range.max = String(replayDays.length - 1);
+      range.value = String(i);
+    } else if (range) {
+      range.value = String(i);
+    }
+    if (label) label.textContent = replayIdx === null ? '전체 보기' : day.d;
+    const eq = day.eq;
+    readout.innerHTML = [
+      ['장부 잔고', `${number(eq, 2)} BTC`, `${esc(day.d)} 기준`],
+      ['누적 실현손익', `${number(day.pnl, 1)} BTC`, `입금 ${number(day.dep, 2)}`],
+      ['누적 출금', `${number(day.wd, 0)} BTC`, `잔고 + 출금 = ${number(eq + day.wd, 1)}`],
+      ['순포지션', `${signed(day.pos, 1)} BTC`, 'BTC·ETH 합산 · 음수는 숏'],
+      ['그날 체결', `${number(day.f)}건`, `명목 ${shortNumber(day.n)} USD`],
+    ].map(([label2, value, sub]) => `<div><strong>${value}</strong><span>${esc(label2)} · ${esc(sub)}</span></div>`).join('');
+  }
+
+  function stopReplay() {
+    if (replayTimer) clearInterval(replayTimer);
+    replayTimer = null;
+    const button = $('replay-toggle');
+    if (button) { button.dataset.playing = 'false'; button.textContent = '▶ 리플레이'; }
+  }
+
+  function startReplay() {
+    if (!replayDays) return;
+    if (replayIdx === null || replayIdx >= replayDays.length - 1) replayIdx = 0;
+    const button = $('replay-toggle');
+    if (button) { button.dataset.playing = 'true'; button.textContent = '❚❚ 정지'; }
+    if (replayTimer) clearInterval(replayTimer);
+    replayTimer = setInterval(() => {
+      if (!replayDays || replayIdx === null) { stopReplay(); return; }
+      replayIdx += 1;
+      if (replayIdx >= replayDays.length - 1) { replayIdx = replayDays.length - 1; renderReplay(); renderChart(); stopReplay(); return; }
+      renderReplay();
+      renderChart();
+    }, replayStepMs);
+  }
+
+  // The candle renderer lives inside terminal(); keep a handle so replay can redraw.
+  let renderChart = () => {};
+
+  function wisdom() {
+    const RULES = [
+      ['“특정 포지션과 사랑에 빠지지 마라. 절대 올인하지 않는다.”', '2025 비트멕스 인터뷰', 'pass',
+        '패배한 청산 717건의 손실은 그날 자기자본의 중위 0.21%, 97.5%가 30% 미만이었습니다. 한 번에 계좌를 거는 매매가 없습니다.'],
+      ['“항상 제 자본의 최대 30% 이상을 잃지 않도록 리스크를 관리합니다.”', '2025 비트멕스 인터뷰', 'pass',
+        '30%를 넘긴 청산은 2.5%뿐이었습니다. 원칙을 말한 뒤에도, 말하기 전 2018~2021년에도 같은 모양이었습니다.'],
+      ['“승률에 더 신경 써라. 손익비가 큰 건 결국 요행을 바라는 매매다.”', '차트갤 Q&A', 'pass',
+        '승률 67.0%, 손익비 0.84, Profit Factor 1.70. 큰 한 방이 아니라 자주 이기는 구조이고, 승률이 55%로만 내려가도 수익이 사라집니다.'],
+      ['“출금해라.” 그리고 손실 뒤에 다시 입금하지 마라.', '2021-08-10 게시글', 'pass',
+        '실현손익 3,537 BTC 중 2,814 BTC(79.6%)를 출금했습니다. 4년간 총입금은 14.49 BTC로 사실상 재입금이 없었습니다.'],
+      ['“보통 하루 정도 들고 있음.”', '차트갤 Q&A', 'pass',
+        'FIFO 라운드트립 141만 건의 중위 보유시간은 13.2시간이었습니다. 하루 안에 닫는 매매가 60%입니다.'],
+      ['“시총이 큰 코인 위주로 매매하는 편이다.”', '차트갤 Q&A', 'pass',
+        'BTC와 ETH가 이익의 80.2%를 만들었습니다. 46개 종목을 거래했지만 알트 선물은 대부분 손실이었습니다.'],
+      ['“공포보다 FOMO가 더 무섭습니다.”', '2025 비트멕스 인터뷰', 'note',
+        '직접 측정할 수 없습니다. 다만 손실 다음 날의 거래 규모가 승리 다음 날보다 작아(중위 3.9배 대 6.1배) 물타기식 추격은 관측되지 않았습니다.'],
+      ['“시드는 2:4:4로 나누고, 1/3만 격리 10~15배로 쓴다. 청산당하면 증거금을 더 넣지 않는다.”', '매매법 정리', 'note',
+        '자금 배분 자체는 체결만으로 알 수 없습니다. 다만 청산 뒤 추가 입금이 없었다는 부분은 총입금 14.49 BTC와 어긋나지 않습니다.'],
+      ['“추세선은 긋지 않고 지지를 주로 본다. 보조지표는 거의 보지 않는다.”', '차트갤 Q&A', 'open',
+        '진입 근거는 파일에 없습니다. 캔들과 거래량만 썼다는 주장은 체결 기록으로 확인할 수 없습니다.'],
+    ];
+    const host = $('wisdom-body');
+    if (!host) return;
+    host.innerHTML = RULES.map(([quote, source, verdict, note]) => `<article class="limit-item"><h3><span class="verdict ${verdict}">${verdict === 'pass' ? '파일과 일치' : verdict === 'note' ? '부분 확인' : '확인 불가'}</span>${esc(quote)}</h3><p>${esc(note)}</p><p class="fine">출처 · ${esc(source)}</p></article>`).join('');
+  }
+
   async function main() {
     try {
       const loaded = await load();
@@ -689,7 +804,7 @@
       // failure still puts the page into a visibly failed state rather than
       // quietly rendering partial numbers.
       const failed = [];
-      for (const [name, fn] of [['validate', validate], ['introduction', introduction], ['terminal', terminal], ['keyNumbers', keyNumbers], ['findings', findings], ['verification', verification], ['interactions', interactions]]) {
+      for (const [name, fn] of [['validate', validate], ['introduction', introduction], ['terminal', terminal], ['keyNumbers', keyNumbers], ['findings', findings], ['wisdom', wisdom], ['verification', verification], ['interactions', interactions]]) {
         try { fn(d); } catch (error) { failed.push(`${name}: ${error.message}`); audit.missingFields.push(`${name}: ${error.message}`); }
       }
       if (failed.length) {

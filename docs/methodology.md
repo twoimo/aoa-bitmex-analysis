@@ -146,3 +146,20 @@ The candlestick panel draws real daily OHLCV from free, keyless public APIs, ref
 embedding it would roughly double the page. Offline the chart draws weekly bars and says so.
 Both asset and data URLs carry a build hash, because GitHub Pages caches them for ten minutes
 and a fresh page reading stale aggregates would fail its own cross-checks.
+
+## Replay and the fill footprint
+
+`npm run replay` builds `results/replay.json`: one row per day with closing equity, cumulative
+realised PnL, cumulative withdrawals, that day's fill count and notional, and the net position at
+the close across XBTUSD and ETHUSD converted to BTC at that day's market close.
+
+It is a **replay of the disclosed record, not a backtest of a strategy**. The export contains no
+entry or exit rules, only executions, so nothing here can be replayed against different
+parameters. The page uses it to scrub through time: moving the slider truncates the chart to that
+date and shows the account's state on it.
+
+`npm run footprint` builds `results/fill-footprint.json`: every fill in the export aggregated into
+per-day buy and sell price ranges for the two charted symbols (1,268,435 of 1,439,207 fills,
+88.1%), a price-level profile of notional, and a per-symbol table covering all 46 instruments so
+the page can state exactly how much of the record is drawn. The export has no resting orders, so
+this shows where fills happened, not where quotes were posted.
