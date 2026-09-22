@@ -7,7 +7,13 @@
   // the build, and the data must move with it or a fresh page can read stale
   // aggregates and fail its own cross-checks.
   const DATA_VERSION = window.__dataVersion ? `?v=${window.__dataVersion}` : '';
-  const FILES = ['meta', 'lessons', 'headline', 'validation', 'stated', 'withdrawals', 'symbols', 'attribution', 'monthly', 'insights', 'activity', 'balance', 'candles'];
+  // Each page embeds only the payloads it renders, so the required set is read
+  // from that page's own snapshot instead of a single fixed list.
+  const FILES = (() => {
+    try {
+      return Object.keys(JSON.parse(document.getElementById('site-data').textContent)).map((k) => k.replace(/\.json$/, ''));
+    } catch { return []; }
+  })();
   const DAY = 86400000;
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -67,47 +73,76 @@
     audit.checks.push(description);
   }
   function validate(d) {
-    const h = d.headline, w = d.meta.ledgerSatoshi;
-    check(BigInt(w.deposits) + BigInt(w.withdrawals) + BigInt(w.realised) === BigInt(w.finalBalance) && BigInt(w.diff) === 0n, '정수 사토시 원장 대사');
-    check(satoshi(h.depositsXBt) === BigInt(w.deposits) && satoshi(h.withdrawalsXBt) === BigInt(w.withdrawals) && satoshi(h.realisedXBt) === BigInt(w.realised) && satoshi(h.finalBalanceXBt) === BigInt(w.finalBalance), '히어로와 감사 원장 일치');
-    check(h.orders === d.validation.summary.ordersChecked && h.orders === d.stated.announcement.measured.orders, '유효 주문 수 일치');
-    check(d.activity.days.length === new Set(d.activity.days.map((r) => r.d)).size && d.activity.days.every((r) => Number.isInteger(r.f) && r.f >= 0 && r.d >= d.activity.summary.firstDay && r.d <= d.activity.summary.lastDay), '활동일 중복·기간·건수 검사');
-    check(sum(d.activity.days, 'f') === h.fills && d.activity.days.filter((r) => r.f > 0).length === h.tradingDays, '일별 체결 합계·활동일 일치');
-    check(d.activity.hourDow.length === 7 && d.activity.hourDow.every((r) => r.length === 24 && r.every(Number.isFinite)) && d.activity.hourDow.flat().reduce((a, b) => a + b, 0) === h.fills, '요일·시간대 체결 합계 일치');
-    check(d.monthly.length === 46 && d.monthly[0].month === '2018-03' && d.monthly.at(-1).month === '2021-12' && d.monthly.every((r, i, a) => !i || r.month > a[i - 1].month), '46개월 기간과 순서');
-    check(satSum(d.monthly, 'realisedXBt') === BigInt(w.realised) && satSum(d.monthly, 'withdrawalsXBt') === BigInt(w.withdrawals) && satSum(d.monthly, 'depositsXBt') === BigInt(w.deposits), '월별 금액 합계 일치');
-    check(d.balance.monthly.length === d.monthly.length && d.balance.monthly.every((m, i) => ['month', 'endBalanceXBt', 'realisedXBt', 'withdrawalsXBt', 'depositsXBt'].every((key) => m[key] === d.monthly[i][key])), '잔고와 월별 시리즈 일치');
-    check(satoshi(d.balance.monthly.at(-1).endBalanceXBt) === BigInt(w.finalBalance), '마지막 월말 잔고 일치');
-    check(d.withdrawals.events.length === d.withdrawals.summary.completedWithdrawals && satSum(d.withdrawals.events, 'amountXBt') === -BigInt(w.withdrawals), '완료 출금 이벤트 합계 일치');
-    check(d.withdrawals.events.filter((e) => e.round).length === d.withdrawals.summary.roundLotPattern.withdrawalsMatchingARoundLot && sum(d.withdrawals.ladder, 'count') === d.withdrawals.events.length, '출금 단위 분류 합계');
-    check(d.withdrawals.events.filter((e) => e.daysSinceProfitPeak >= 0 && e.daysSinceProfitPeak <= 5).length === d.withdrawals.summary.timingVsProfitPeak.within5Days, '고점 이후 5일 내 출금 건수');
-    const hold = d.insights.holdingPeriod;
-    check(sum(hold.histogram, 'trips') === hold.histogramCoverage.classifiedTrips && hold.histogramCoverage.classifiedTrips + hold.histogramCoverage.unclassifiedTrips === hold.trips && hold.histogramCoverage.unclassifiedTrips >= 0, '보유기간 구간 합계와 미분류 건수 대사');
-    check(h.netTradeFeeXBt === d.insights.feeComponents.netTradeFeeXBt, '순거래 수수료 필드 일치');
-    check(/^[a-f0-9]{64}$/.test(d.meta.source.sha256), '원본 압축파일 해시 형식');
-    const candles = d.candles.series;
-    check(d.candles.resolution === '1W' && d.candles.offlineFallback === true
-      && candles.every((r) => ['XBTUSD', 'ETHUSD'].includes(r.symbol) && /^\d{4}-\d{2}-\d{2}$/.test(r.day) && Number.isFinite(dateMs(r.day))
-        && ['open', 'high', 'low', 'close', 'volume'].every((k) => Number.isFinite(r[k]))
-        && r.low > 0 && r.high >= Math.max(r.open, r.close) && r.low <= Math.min(r.open, r.close) && r.volume >= 0
-        && Number.isInteger(r.accountFills) && r.accountFills >= 0), '주봉 스냅샷 필수 필드·OHLC·거래량 유효성');
-    const btcDays = candles.filter((r) => r.symbol === 'XBTUSD').length;
-    const ethDays = candles.filter((r) => r.symbol === 'ETHUSD').length;
-    check(btcDays >= 700 && ethDays >= 500, '주봉이 전 역사를 덮는지 (BTC 2011~, ETH 2016~)');
-    check(new Set(candles.map((r) => r.symbol + '/' + r.day)).size === candles.length, '캔들 종목·날짜 중복 없음');
-    const activity = new Map(d.activity.days.map((r) => [r.d, r]));
-    const weekSum = (startDay, key) => {
-      let total = 0;
-      for (let i = 0; i < 7; i += 1) {
-        const d2 = isoDay(dateMs(startDay) + i * DAY);
-        const a = activity.get(d2);
-        if (a) total += key === 'f' ? a.f : a.n;
-      }
-      return total;
-    };
-    check(d.activity.days.every((r) => Number.isFinite(r.n) && r.n >= 0)
-      && candles.filter((r) => r.accountFills > 0).every((r) => r.accountFills === weekSum(r.day, 'f') && Math.abs(r.accountNotionalXbt - weekSum(r.day, 'n')) < .01),
-      '주봉의 계좌 체결 표시가 그 주 일별 활동 합계와 일치');
+    // Each page carries a subset of the payloads, so a cross-check runs only
+    // when every payload it needs is present on this page.
+    const has = (...names) => names.every((name) => Object.hasOwn(d, name));
+    if (has('headline', 'meta')) {
+      const h = d.headline, w = d.meta.ledgerSatoshi;
+      check(BigInt(w.deposits) + BigInt(w.withdrawals) + BigInt(w.realised) === BigInt(w.finalBalance) && BigInt(w.diff) === 0n, '정수 사토시 원장 대사');
+      check(satoshi(h.depositsXBt) === BigInt(w.deposits) && satoshi(h.withdrawalsXBt) === BigInt(w.withdrawals) && satoshi(h.realisedXBt) === BigInt(w.realised) && satoshi(h.finalBalanceXBt) === BigInt(w.finalBalance), '히어로와 감사 원장 일치');
+    }
+    if (has('headline', 'validation', 'stated')) {
+      const h = d.headline;
+      check(h.orders === d.validation.summary.ordersChecked && h.orders === d.stated.announcement.measured.orders, '유효 주문 수 일치');
+    }
+    if (has('headline', 'activity')) {
+      const h = d.headline;
+      check(d.activity.days.length === new Set(d.activity.days.map((r) => r.d)).size && d.activity.days.every((r) => Number.isInteger(r.f) && r.f >= 0 && r.d >= d.activity.summary.firstDay && r.d <= d.activity.summary.lastDay), '활동일 중복·기간·건수 검사');
+      check(sum(d.activity.days, 'f') === h.fills && d.activity.days.filter((r) => r.f > 0).length === h.tradingDays, '일별 체결 합계·활동일 일치');
+      check(d.activity.hourDow.length === 7 && d.activity.hourDow.every((r) => r.length === 24 && r.every(Number.isFinite)) && d.activity.hourDow.flat().reduce((a, b) => a + b, 0) === h.fills, '요일·시간대 체결 합계 일치');
+    }
+    if (has('meta', 'monthly')) {
+      const w = d.meta.ledgerSatoshi;
+      check(d.monthly.length === 46 && d.monthly[0].month === '2018-03' && d.monthly.at(-1).month === '2021-12' && d.monthly.every((r, i, a) => !i || r.month > a[i - 1].month), '46개월 기간과 순서');
+      check(satSum(d.monthly, 'realisedXBt') === BigInt(w.realised) && satSum(d.monthly, 'withdrawalsXBt') === BigInt(w.withdrawals) && satSum(d.monthly, 'depositsXBt') === BigInt(w.deposits), '월별 금액 합계 일치');
+    }
+    if (has('meta', 'monthly', 'balance')) {
+      const w = d.meta.ledgerSatoshi;
+      check(d.balance.monthly.length === d.monthly.length && d.balance.monthly.every((m, i) => ['month', 'endBalanceXBt', 'realisedXBt', 'withdrawalsXBt', 'depositsXBt'].every((key) => m[key] === d.monthly[i][key])), '잔고와 월별 시리즈 일치');
+      check(satoshi(d.balance.monthly.at(-1).endBalanceXBt) === BigInt(w.finalBalance), '마지막 월말 잔고 일치');
+    }
+    if (has('meta', 'withdrawals')) {
+      const w = d.meta.ledgerSatoshi;
+      check(d.withdrawals.events.length === d.withdrawals.summary.completedWithdrawals && satSum(d.withdrawals.events, 'amountXBt') === -BigInt(w.withdrawals), '완료 출금 이벤트 합계 일치');
+      check(d.withdrawals.events.filter((e) => e.round).length === d.withdrawals.summary.roundLotPattern.withdrawalsMatchingARoundLot && sum(d.withdrawals.ladder, 'count') === d.withdrawals.events.length, '출금 단위 분류 합계');
+      check(d.withdrawals.events.filter((e) => e.daysSinceProfitPeak >= 0 && e.daysSinceProfitPeak <= 5).length === d.withdrawals.summary.timingVsProfitPeak.within5Days, '고점 이후 5일 내 출금 건수');
+    }
+    if (has('headline', 'insights')) {
+      const h = d.headline;
+      const hold = d.insights.holdingPeriod;
+      check(sum(hold.histogram, 'trips') === hold.histogramCoverage.classifiedTrips && hold.histogramCoverage.classifiedTrips + hold.histogramCoverage.unclassifiedTrips === hold.trips && hold.histogramCoverage.unclassifiedTrips >= 0, '보유기간 구간 합계와 미분류 건수 대사');
+      check(h.netTradeFeeXBt === d.insights.feeComponents.netTradeFeeXBt, '순거래 수수료 필드 일치');
+    }
+    if (has('meta')) {
+      check(/^[a-f0-9]{64}$/.test(d.meta.source.sha256), '원본 압축파일 해시 형식');
+    }
+    if (has('candles')) {
+      const candles = d.candles.series;
+      check(d.candles.resolution === '1W' && d.candles.offlineFallback === true
+        && candles.every((r) => ['XBTUSD', 'ETHUSD'].includes(r.symbol) && /^\d{4}-\d{2}-\d{2}$/.test(r.day) && Number.isFinite(dateMs(r.day))
+          && ['open', 'high', 'low', 'close', 'volume'].every((k) => Number.isFinite(r[k]))
+          && r.low > 0 && r.high >= Math.max(r.open, r.close) && r.low <= Math.min(r.open, r.close) && r.volume >= 0
+          && Number.isInteger(r.accountFills) && r.accountFills >= 0), '주봉 스냅샷 필수 필드·OHLC·거래량 유효성');
+      const btcDays = candles.filter((r) => r.symbol === 'XBTUSD').length;
+      const ethDays = candles.filter((r) => r.symbol === 'ETHUSD').length;
+      check(btcDays >= 700 && ethDays >= 500, '주봉이 전 역사를 덮는지 (BTC 2011~, ETH 2016~)');
+      check(new Set(candles.map((r) => r.symbol + '/' + r.day)).size === candles.length, '캔들 종목·날짜 중복 없음');
+    }
+    if (has('candles', 'activity')) {
+      const activity = new Map(d.activity.days.map((r) => [r.d, r]));
+      const weekSum = (startDay, key) => {
+        let total = 0;
+        for (let i = 0; i < 7; i += 1) {
+          const d2 = isoDay(dateMs(startDay) + i * DAY);
+          const a = activity.get(d2);
+          if (a) total += key === 'f' ? a.f : a.n;
+        }
+        return total;
+      };
+      check(d.activity.days.every((r) => Number.isFinite(r.n) && r.n >= 0)
+        && d.candles.series.filter((r) => r.accountFills > 0).every((r) => r.accountFills === weekSum(r.day, 'f') && Math.abs(r.accountNotionalXbt - weekSum(r.day, 'n')) < .01),
+        '주봉의 계좌 체결 표시가 그 주 일별 활동 합계와 일치');
+    }
   }
   async function load() {
     const embedded = () => JSON.parse($('site-data').textContent);
@@ -210,9 +245,12 @@
     }
     return body;
   }
-  function terminal(d) {
+  // The ticker sits in the shared shell, so it is filled on every page.
+  function headerStrip(d) {
     const h = d.headline;
-    $('ticker-strip').innerHTML = [
+    const host = $('ticker-strip');
+    if (!host) return;
+    host.innerHTML = [
       ['원장 순실현손익', signed(h.realisedXBt), 'BTC', 'positive'],
       ['완료 출금', number(-h.withdrawalsXBt, 2), 'BTC', ''],
       ['최종 장부 잔고', number(h.finalBalanceXBt, 2), 'BTC', ''],
@@ -220,6 +258,10 @@
       ['Trade 체결', number(h.fills), '건', ''],
       ['메이커 체결 비중', percent(h.makerShare, 2), '건수 기준', ''],
     ].map(([label, value, unit, cls]) => `<div class="ticker-item"><small>${label}</small><strong class="${cls}">${value}</strong><em>${unit}</em></div>`).join('');
+  }
+
+  function terminal(d) {
+    const h = d.headline;
     sortable('market-table', '전체 기간 손익 상위 6종목 · 실시간 호가 아님', [
       { key: 'symbol', label: '종목' },
       { key: 'pnlXBt', label: '손익 BTC', numeric: true, signed: true, format: (v) => signed(v, 2) },
@@ -604,6 +646,9 @@
             renderReplay();
             renderChart();
           });
+          // A case on the study page deep-links here with the day to show.
+          const requested = new URLSearchParams(location.search).get('d');
+          if (requested && currentBars.includes(requested)) replayDate = requested;
           // The replay payload arrives after the first paint, and the slider's
           // step count is derived from it, so redraw the chart once it lands.
           renderChart();
@@ -859,6 +904,12 @@
       ['open', '확인되지 않은 것', '거래소 발급 여부와 계좌 소유자는 인증되지 않았습니다. 입출금은 공개 소스가 없어 대조하지 못했습니다.'],
     ];
     $('verify-body').innerHTML = `<div class="check-list">${rows.map(([verdict, title, body]) => `<div class="check-row"><span class="verdict ${verdict}">${verdict.toUpperCase()}</span><span class="check-name">${esc(title)}</span><span class="check-note">${esc(body)}</span></div>`).join('')}</div>`;
+
+    // The full audit trail, so the page shows the working and not only the summary.
+    const checks = $('verify-checks');
+    if (checks) {
+      checks.innerHTML = `<div class="check-list">${d.validation.checks.map((c) => `<div class="check-row"><span class="verdict ${esc(c.verdict)}">${esc(c.verdict.toUpperCase())}</span><span class="check-name">${esc(c.check)}</span><span class="check-result">${esc(c.result)}</span><span class="check-note">${esc(c.note)}</span></div>`).join('')}</div>`;
+    }
   }
 
   function symbolTable(rows) {
@@ -1063,13 +1114,18 @@
 
     // 사례를 누르면 리플레이 커서를 그 날짜로 옮기고 차트를 화면에 올린다.
     const focusDay = (day) => {
+      const chart = $('chart');
+      if (!chart) {
+        // The study page has no chart, so the case carries the day across.
+        location.href = `chart.html?d=${encodeURIComponent(day)}`;
+        return;
+      }
       if (replayDays && currentBars.length) {
         replayDate = currentBars.includes(day) ? day : (currentBars.find((b) => b >= day) || currentBars[0]);
         renderReplay();
         renderChart();
       }
-      const chart = $('chart');
-      if (chart) chart.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      chart.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
     const host = $('wisdom-body');
@@ -1128,7 +1184,21 @@
       // failure still puts the page into a visibly failed state rather than
       // quietly rendering partial numbers.
       const failed = [];
-      for (const [name, fn] of [['validate', validate], ['introduction', introduction], ['terminal', terminal], ['keyNumbers', keyNumbers], ['findings', findings], ['study', study], ['verification', verification], ['interactions', interactions]]) {
+      // Each page carries a subset of the sections, so a block is skipped when
+      // its host element is absent rather than failing the page.
+      const BLOCKS = [
+        ['validate', validate, null],
+        ['headerStrip', headerStrip, null],
+        ['introduction', introduction, 'hero-ledger'],
+        ['terminal', terminal, 'candle-chart'],
+        ['keyNumbers', keyNumbers, 'key-numbers'],
+        ['findings', findings, 'findings-body'],
+        ['study', study, 'wisdom-body'],
+        ['verification', verification, 'verify-body'],
+        ['interactions', interactions, 'chart-tooltip'],
+      ];
+      for (const [name, fn, host] of BLOCKS) {
+        if (host && !$(host)) continue;
         try { fn(d); } catch (error) { failed.push(`${name}: ${error.message}`); audit.missingFields.push(`${name}: ${error.message}`); }
       }
       if (failed.length) {

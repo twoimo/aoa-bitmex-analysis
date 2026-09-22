@@ -1,0 +1,118 @@
+<section id="chart" class="report-section terminal-section">
+    <p class="section-line" id="chart-eyebrow">시장 차트 · 계좌가 매매한 위치</p>
+    <div class="chart-main">
+      <figure class="chart candle-panel">
+        <div class="chart-heading">
+          <div>
+            <div id="symbol-filter" class="segmented symbol-tabs" role="tablist" aria-label="종목"></div>
+            <p class="chart-sub">시장 마지막 종가 · USD</p>
+          </div>
+          <div class="market-quote"><strong id="candle-last">—</strong><span id="candle-change">전일 대비 확인 중</span></div>
+        </div>
+        <div class="candle-toolbar">
+          <span class="segmented" id="candle-marks" aria-label="계좌 체결 표시"></span>
+          <span class="segmented" id="candle-scale" aria-label="가격 축"></span>
+          <div id="candle-periods" class="segmented" aria-label="기간"></div>
+        </div>
+        <p class="reconstruction-notice"><span class="verdict note">시장 데이터</span> 캔들은 Binance·Bitstamp·Bitfinex 공개 API의 실제 일봉입니다. 계좌가 거래한 거래소(BitMEX)가 아니므로 가격은 조금 다릅니다. 초록·빨강 세로 막대는 그 봉에서 계좌가 <b>매수한 가격 범위</b>와 <b>매도한 가격 범위</b>, 오른쪽 가로 막대는 <b>가격대별 체결 금액</b>입니다.</p>
+        <div class="line-legend candle-legend">
+          <span><i class="key-line profit"></i>매수 범위 <b class="positive">B</b></span>
+          <span><i class="key-line loss"></i>매도 범위 <b class="negative">S</b></span>
+          <span><i class="key-line brass"></i>MA 7</span>
+          <span><i class="key-line dashed neutral"></i>MA 20</span>
+          <span><i class="key-box profit"></i>매수한 봉</span>
+          <span><i class="key-box loss"></i>매도한 봉</span>
+        </div>
+        <div class="replay-bar">
+          <button type="button" id="replay-toggle" class="replay-btn">▶ 리플레이</button>
+          <button type="button" id="replay-prev" class="replay-btn" aria-label="이전 봉">◀</button>
+          <button type="button" id="replay-next" class="replay-btn" aria-label="다음 봉">▶</button>
+          <input type="range" id="replay-range" min="0" max="0" value="0" step="1" aria-label="리플레이 봉 위치">
+          <span class="mono" id="replay-date">전체 보기</span>
+          <span class="segmented" id="replay-speed" aria-label="재생 속도"></span>
+          <button type="button" id="replay-reset" class="replay-btn">전체</button>
+        </div>
+        <div class="replay-readout" id="replay-readout" aria-live="polite"></div>
+        <div id="candle-chart" class="plot-scroll"></div>
+        <aside id="market-trades" class="market-trades" aria-label="체결 테이프">
+          <div class="tape-head">
+            <h3>Market Trades</h3>
+            <span class="mono" id="tape-day">—</span>
+            <span class="mono" id="tape-stats">—</span>
+          </div>
+          <div class="tape-grid" id="market-trades-body"></div>
+        </aside>
+        <p class="chart-readout" aria-live="polite">방향키로 캔들을 이동하고 Escape로 툴팁을 닫습니다.</p>
+        <figcaption id="candle-note"></figcaption>
+      </figure>
+    </div>
+    <div class="chart-grid">
+      <div class="market-list">
+        <div class="ledger-heading"><h2>손익 상위 종목</h2><span class="mono">BTC</span></div>
+        <div class="table-scroll"><table id="market-table"></table></div>
+      </div>
+      <div class="market-list">
+        <div class="ledger-heading"><h2>체결 종목 전체</h2><span class="mono">전 종목</span></div>
+        <div class="table-scroll"><table id="symbol-table"></table></div>
+      </div>
+    </div>
+  </section>
+
+<section id="ledger" class="report-section">
+    <div class="section-head"><h2>원장 대사</h2><span class="section-source">시작 잔고 0 · 완료 거래만 합산 · BTC</span></div>
+    <div class="hero-strip">
+      <div id="hero-ledger" aria-busy="true"><p class="loading">원장 집계를 읽고 있습니다.</p></div>
+      <div class="reconcile-stamp" id="reconcile-stamp"><span>DIFFERENCE</span><strong>—</strong><span>SATOSHI</span></div>
+    </div>
+    <div class="hero-stats" id="hero-stats"></div>
+  </section>
+
+<section id="numbers" class="report-section">
+    <div class="section-head"><h2>핵심 수치</h2><span class="section-source">전 기간 · 실행내역과 원장 기준</span></div>
+    <div class="stat-strip" id="key-numbers"></div>
+  </section>
+
+<section id="findings" class="report-section">
+    <div class="section-head"><h2>발견</h2><span class="section-source">원장과 체결에서 직접 계산</span></div>
+    <div class="limitations" id="findings-body"></div>
+  </section>
+
+<section id="wisdom" class="report-section">
+    <div class="section-head"><h2>워뇨띠의 지혜 학습실</h2><span class="section-source">본인이 공개한 원칙 8개 · 파일에서 뽑은 사례 12개 · 자가 점검 6문항</span></div>
+    <p class="section-intro">그가 직접 쓴 글과 인터뷰에서 뽑은 원칙을 단원으로 만들었습니다. 각 단원은 <b>원문 · 파일에서 잰 값 · 읽기 · 배울 점 · 스스로 점검</b> 순서로 되어 있고, 사례를 누르면 차트가 그 날짜로 이동합니다. 판정은 원칙을 지켰다는 증명이 아니라 <b>파일이 그 원칙과 어긋나지 않는다</b>는 뜻입니다.</p>
+    <div class="study-host" id="wisdom-body"></div>
+  </section>
+
+<section id="verify" class="report-section">
+    <div class="section-head"><h2>검증</h2><span class="section-source">무엇이 확인됐고 무엇이 안 됐는지</span></div>
+    <div id="verify-body"></div>
+    <h3 class="study-sub">검증 항목 전체 <span class="mono">results/validation.json</span></h3>
+    <div id="verify-checks"></div>
+    <div class="verify-grid">
+      <div>
+        <h3 class="study-sub">재현 방법 <span class="mono">Node 20+ · 의존성 없음</span></h3>
+        <pre>npm run fetch          # 원본 압축파일을 내려받아 .work/data/ 에 풉니다
+npm run validate       # 이상치·중복 감사
+npm run analyze        # 기술 통계
+npm run insights       # 트레이더 지표
+npm run verify:public  # BitMEX 공개 체결 아카이브와 trdMatchID 대조
+npm run footprint      # 체결이 있던 가격대
+npm run replay         # 일별 자산·포지션
+npm run trades         # 체결 테이프 표본
+npm run lessons        # 학습 단원·사례·퀴즈
+npm run site           # 사이트 페이로드 재생성</pre>
+      </div>
+      <div>
+        <h3 class="study-sub">공개 범위 <span class="mono">무엇을 싣지 않았나</span></h3>
+        <ul class="scope-list">
+          <li>원본 체결·지갑 CSV는 재배포하지 않습니다.</li>
+          <li>모든 실행·주문·트랜잭션 식별자를 제거했습니다.</li>
+          <li>날짜별 출금 원장은 일별 집계만 싣습니다.</li>
+          <li>게시글 전문 대신 인용한 문장만 씁니다.</li>
+          <li>공개된 값만 사이트에 들어갑니다. 원본 파일은 저장소에 없습니다.</li>
+        </ul>
+        <p class="fine">분석 코드와 방법론은 <a class="text-link" id="repo-link-2" href="#">저장소</a>의 <span class="mono">docs/</span> 에 있습니다.</p>
+      </div>
+    </div>
+  </section>
+

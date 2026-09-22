@@ -406,34 +406,95 @@ async function main() {
     const text = JSON.stringify(payload, null, JSON.stringify(payload).length > 50000 ? 0 : 1);
     await fsp.writeFile(path.join(OUT, name), text + '\n');
   }
-  // The same public, allowlisted aggregates are embedded for file:// use.
-  // Browsers disallow fetching local JSON; do not ask users to disable CORS.
-  const indexPath = path.join(ROOT, 'site', 'index.html');
-  const html = await fsp.readFile(indexPath, 'utf8');
-  const marker = /(<script id="site-data" type="application\/json">)[\s\S]*?(<\/script>)/;
+  // ---- pages --------------------------------------------------------------
+  // One shell plus a section inventory, assembled into four pages so no single
+  // screen has to carry the whole report.
+  const PAGES = [
+    {
+      file: 'index.html', page: 'summary', nav: '요약',
+      title: 'aoa — 비트멕스 거래기록 요약',
+      description: 'aoa 명의로 공개된 2018~2021 비트멕스 거래기록의 원장 대사와 핵심 수치.',
+      sections: ['ledger', 'numbers', 'findings'],
+      files: ['meta', 'headline', 'validation', 'stated', 'withdrawals', 'symbols', 'attribution', 'monthly', 'insights', 'activity', 'balance'],
+    },
+    {
+      file: 'chart.html', page: 'chart', nav: '차트',
+      title: 'aoa — 시장 차트와 계좌가 매매한 위치',
+      description: 'BTC·ETH 전 역사 차트 위에 계좌가 실제로 체결한 위치와 리플레이.',
+      sections: ['chart'],
+      files: ['meta', 'headline', 'candles', 'symbols', 'attribution', 'monthly'],
+    },
+    {
+      file: 'study.html', page: 'study', nav: '학습',
+      title: 'aoa — 워뇨띠의 지혜 학습실',
+      description: '본인이 공개한 원칙 8개를 파일에서 잰 값과 사례로 공부하는 학습실.',
+      sections: ['wisdom'],
+      files: ['meta', 'headline', 'lessons'],
+    },
+    {
+      file: 'verify.html', page: 'verify', nav: '검증',
+      title: 'aoa — 검증과 한계',
+      description: '무엇이 확인됐고 무엇이 확인되지 않았는지, 어떤 값이 빠졌는지.',
+      sections: ['verify'],
+      files: ['meta', 'headline', 'validation', 'stated', 'withdrawals', 'symbols', 'balance'],
+    },
+  ];
+
+  const buildDir = path.join(ROOT, 'site', '.build');
+  const shell = await fsp.readFile(path.join(buildDir, 'shell.html'), 'utf8');
+  const inventory = await fsp.readFile(path.join(buildDir, 'sections.html'), 'utf8');
+  const sectionHtml = (id) => {
+    const match = inventory.match(new RegExp(`<section id="${id}"[\\s\\S]*?</section>`));
+    if (!match) throw new Error(`Section ${id} is missing from the inventory`);
+    return match[0];
+  };
+  const navHtml = (active) => `<nav class="pagenav" aria-label="페이지">`
+    + PAGES.map((p) => `<a href="${p.file}"${p.page === active ? ' aria-current="page"' : ''}>${p.nav}</a>`).join('')
+    + `</nav>`;
+
+  const escapeForScript = (text) => text.replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+
+  // The full daily series and the two per-fill payloads are fetched, never
+  // embedded: they are large, and the pages that need them label the fallback.
+  const FETCHED = ['candles-daily.json', 'fill-footprint.json', 'replay.json', 'trades.json'];
+
   const dataVersion = crypto.createHash('sha256')
     .update(Object.keys(payloads).sort().map((k) => k + JSON.stringify(payloads[k])).join('|'))
     .digest('hex').slice(0, 12);
-  if (!marker.test(html)) throw new Error('index.html is missing the offline data marker');
-  // candles-daily.json is deliberately left out: 9,358 bars would roughly
-  // double index.html. Offline readers get the embedded weekly series instead,
-  // and app.js labels the resolution when it falls back to it.
-  const { 'candles-daily.json': omittedDaily, 'fill-footprint.json': omittedFootprint, 'replay.json': omittedReplay, 'trades.json': omittedTrades, ...embeddedPayloads } = payloads;
-  void omittedDaily; void omittedFootprint; void omittedReplay;
-  const embedded = JSON.stringify(embeddedPayloads).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
-  let outHtml = html.replace(marker, (_match, before, after) => before + embedded + after);
-  outHtml = outHtml.replace(/(<script src="app\.js)/, `<script>window.__dataVersion=${JSON.stringify(dataVersion)}</script>\n$1`);
-  await fsp.writeFile(indexPath, outHtml);
+
+  for (const page of PAGES) {
+    const wanted = Object.fromEntries(page.files.map((name) => [`${name}.json`, payloads[`${name}.json`]]));
+    for (const key of Object.keys(wanted)) {
+      if (wanted[key] === undefined) throw new Error(`${page.file} wants a payload that does not exist: ${key}`);
+    }
+    const embedded = escapeForScript(JSON.stringify(wanted));
+    let out = shell
+      .replace('<!--TITLE-->', page.title)
+      .replace('<!--DESCRIPTION-->', page.description)
+      .replace('<!--PAGE-->', page.page)
+      .replace('<!--NAV-->', navHtml(page.page))
+      .replace('<!--SECTIONS-->', page.sections.map(sectionHtml).join('\n\n'))
+      .replace('<!--DATA-->', `<script id="site-data" type="application/json">${embedded}</script>`);
+    out = out.replace(/(<script src="app\.js)/, `<script>window.__dataVersion=${JSON.stringify(dataVersion)}</script>\n$1`);
+    await fsp.writeFile(path.join(ROOT, 'site', page.file), out);
+  }
+
   // Cache-bust the two assets. GitHub Pages serves them with a 10-minute
   // max-age, so without this a content change can sit invisible behind a stale
   // copy for minutes after a deploy.
   const assetHash = (file) => crypto.createHash('sha256')
     .update(fs.readFileSync(path.join(ROOT, 'site', file)))
     .digest('hex').slice(0, 10);
-  let assetHtml = await fsp.readFile(indexPath, 'utf8');
-  assetHtml = assetHtml.replace(/(href="styles\.css)(\?v=[0-9a-f]+)?(")/, `$1?v=${assetHash('styles.css')}$3`);
-  assetHtml = assetHtml.replace(/(src="app\.js)(\?v=[0-9a-f]+)?(")/, `$1?v=${assetHash('app.js')}$3`);
-  await fsp.writeFile(indexPath, assetHtml);
+  const styleVersion = assetHash('styles.css');
+  const scriptVersion = assetHash('app.js');
+  for (const page of PAGES) {
+    const file = path.join(ROOT, 'site', page.file);
+    let html2 = await fsp.readFile(file, 'utf8');
+    html2 = html2.replace(/(href="styles\.css)(\?v=[0-9a-f]+)?(")/, `$1?v=${styleVersion}$3`);
+    html2 = html2.replace(/(src="app\.js)(\?v=[0-9a-f]+)?(")/, `$1?v=${scriptVersion}$3`);
+    await fsp.writeFile(file, html2);
+  }
+  void FETCHED;
 
   const sizes = Object.keys(payloads).map((n) => `${n} ${(fs.statSync(path.join(OUT, n)).size / 1024).toFixed(1)}kB`);
   console.log('wrote site/data:\n  ' + sizes.join('\n  '));

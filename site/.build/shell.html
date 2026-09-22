@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><!--TITLE--></title>
+<meta name="description" content="<!--DESCRIPTION-->">
+<link rel="stylesheet" href="styles.css?v=e515e7e115">
+</head>
+<body data-page="<!--PAGE-->">
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#main"><span class="brand-mark">a</span><span class="mono">aoa · BITMEX</span></a>
+    <!--NAV-->
+    <span class="topbar-meta mono" id="data-status">집계 불러오는 중</span>
+  </div>
+</header>
+
+<div class="ticker-strip" id="ticker-strip" aria-label="주요 수치"></div>
+
+<p class="notice" id="load-notice" hidden></p>
+
+<main id="main" tabindex="-1">
+<!--SECTIONS-->
+</main>
+
+<div class="chart-tooltip" id="chart-tooltip" role="status" hidden></div>
+
+<footer class="footer">
+  <div>
+    <p class="brand"><span class="brand-mark">a</span> <span class="mono">aoa · BITMEX</span></p>
+    <p>비공식 독립 분석. 원본 CSV는 재배포하지 않습니다.</p>
+    <p class="mono" id="foot-meta"></p>
+  </div>
+  <a class="text-link" id="repo-link" href="#">전체 보고서와 코드 ↗</a>
+</footer>
+
+<!--DATA-->
+<script src="app.js?v=183792ecb5"></script>
+</body>
+</html>

@@ -109,18 +109,26 @@ npm run site                         # regenerate site/data from results/
 python3 -m http.server -d site 8899  # then open http://127.0.0.1:8899
 ```
 
-The site has six sections: the chart, the ledger, the headline numbers, the findings, the study
-section and the verification. The chart draws the market from its inception, marks where the
-account traded with exchange-style buy and sell arrows, prints a Market Trades tape for the day
-under the cursor, and steps bar by bar in replay. The study section turns the eight stated
-principles into units with a dated case and a self-check quiz; its answers and every case figure
-are read from the analysed payloads at build time, so authored prose never carries a number of
-its own.
+The report is split into four pages so no single screen carries everything. `index.html` is the
+one-screen summary: the ledger reconciliation with its zero-satoshi stamp, the six headline numbers
+and the five findings. `chart.html` holds the market chart, the replay and the fill tape.
+`study.html` is the study platform. `verify.html` carries the verification summary, the full
+fourteen-item audit checklist, the reproduction commands and the publication scope.
 
-`site/.qa/verify.mjs` is a 56-check harness (charts, markers, fill tape, replay stepping, study
-progress and quiz, data fields, responsive widths, keyboard navigation, table sorting, reduced
-motion, offline mode) and `site/.qa/verification.json` holds its last result. Both are local-only,
-not part of the published site.
+Each page embeds only the payloads it renders and fetches the rest, so the split does not
+duplicate the snapshot. `site/.build/` holds the shell and the section inventory the pages are
+assembled from; edit those, then run `npm run site`.
+
+The chart draws the market from its inception, marks where the account traded with exchange-style
+buy and sell arrows, prints a Market Trades tape for the day under the cursor, and steps bar by
+bar in replay. The study section turns the eight stated principles into units with a dated case
+and a self-check quiz; its answers and every case figure are read from the analysed payloads at
+build time, so authored prose never carries a number of its own.
+
+`site/.qa/verify.mjs` is a 103-check harness (per-page rendering, embedded payload sets, charts,
+markers, fill tape, replay stepping, study progress and quiz, cross-page deep links, responsive
+widths, keyboard navigation, offline mode) and `site/.qa/verification.json` holds its last result.
+Both are local-only, not part of the published site.
 
 The site deliberately excludes the raw CSVs, every execution/order/transaction identifier, and
 the day-by-day withdrawal ledger (`results/withdrawals-daily.csv`). Those stay in this
