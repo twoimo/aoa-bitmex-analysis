@@ -282,7 +282,7 @@
       ['잔고 열 = 행별 누적 잔고?', `${number(s.walletRowLevelBalanceMismatches)} / ${number(c.walletTransactions)}행 불일치`, '이 전제는 성립하지 않습니다. 잔고 열은 같은 날 반복되는 반올림된 스냅샷입니다.'],
       ['일말 잔고와 재구성 금액', `${number(s.walletDayEndBalanceMismatches)} / 1,380일 불일치`, '152일은 반올림 범위입니다. 2018-04-27과 04-28의 0.54595876 / 1.00120000 BTC 차이는 미해결입니다.'],
       ['Liquidation 표시 실행 행', `${number(s.liquidationRows)}행 · 영 주문 ID ${number(s.liquidationRowsWithZeroOrderId)}행`, '실행 행의 표시입니다. 행 수만으로 독립적인 강제청산 사건 수를 확정하지 않습니다.'],
-      ['외부 시장 체결 대조', '미수행', '공개 시장 틱 데이터와 체결을 하나씩 맞춰 본 검증은 아직 없습니다.'],
+      ['외부 시장 체결 대조', '81,263 / 81,268행 일치', 'BitMEX 공개 체결 아카이브에서 trdMatchID로 직접 대조했습니다. 표본 64일의 81,268행 중 81,263행이 발견되었고(99.9938%), 미발견 5행은 모두 아카이브가 공개하지 않는 청산 체결입니다. 발견된 행은 심볼·수량·가격이 전부 일치했고, 테이커 기준 사이드 규칙도 81,263행 전부 성립해 메이커·테이커 분류가 외부로 확인됩니다.'],
       ['작성 주체·거래소 발급 여부', '미인증', '내부 금액이 맞아도 원본 누락, 편집 여부, 계정 소유자까지 인증되지는 않습니다.'],
     ];
     check(rows.length === d.validation.checks.length, '화면 검사 항목과 공개 JSON 개수');
@@ -387,7 +387,7 @@
       ['진입 이유와 주문 취소 판단', '보조지표, 신호, 보류·취소·정정된 주문은 체결 기록에 남지 않습니다. 거래 규칙이나 재현 가능한 전략을 추출했다고 주장하지 않습니다.'],
       ['성과의 일반화와 인과관계', '한 계정, 한 거래소, 한 과거 기간의 관측입니다. 다른 시장·자본·시점에서 같은 결과가 날지는 확인할 수 없습니다.'],
       ['실제 포지션 수명과 승률', 'FIFO는 수량 대응의 근사이고, 양수 비율은 원장 손익 항목 기준입니다. 주문 수, 진입 횟수, 포지션 수와 서로 바꿔 쓰지 않습니다.'],
-      ['외부 시장 기록·출금 목적지', '시장 틱 대조, 당시 계약 사양 확인은 미완료입니다. 출금이 보관·재배치·소비 중 무엇인지도 이 자료에는 없습니다.'],
+      ['계약 사양·출금 목적지', '체결 대조는 표본 5.6%까지만 했고, 당시 계약 승수·상장일·펀딩률 이력은 아직 받지 않았습니다. 출금이 보관·재배치·소비 중 무엇인지도 이 자료에는 없습니다.'],
     ];
     $('limits-body').innerHTML = `<div class="confidence-key"><div><span class="confidence solid">Solid · 직접 집계</span><p>공개 파일과 계산 정의에서 직접 나오는 수치. 파일 진위에 대한 보증은 아닙니다.</p></div><div><span class="confidence directional">Directional · 근사·패턴</span><p>방향은 관측되지만 가정, 표본, 재구성 방법에 민감한 값입니다.</p></div><div><span class="confidence speculative">Speculative · 해석</span><p>행동의 이유나 성과의 원인에 대한 설명. 이 보고서의 검증된 결론으로 채택하지 않습니다.</p></div></div><div class="limitations">${limits.map(([name, note]) => `<article class="limit-item"><h3>${stamp('open')}${esc(name)}</h3><p>${esc(note)}</p></article>`).join('')}</div><p class="fine source-note">판독 기준: ${external(d.meta.repository + '/blob/main/FINDINGS.md', 'FINDINGS.md')} · 정의와 한계: ${external(d.meta.repository + '/blob/main/docs/methodology.md', 'methodology.md')}</p>`;
   }
