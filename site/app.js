@@ -3,7 +3,7 @@
  */
 (() => {
   'use strict';
-  const FILES = ['meta', 'headline', 'validation', 'stated', 'withdrawals', 'symbols', 'attribution', 'monthly', 'insights', 'activity', 'balance'];
+  const FILES = ['meta', 'headline', 'validation', 'stated', 'withdrawals', 'symbols', 'attribution', 'monthly', 'insights', 'activity', 'balance', 'candles'];
   const DAY = 86400000;
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -70,6 +70,13 @@
     check(sum(hold.histogram, 'trips') === hold.histogramCoverage.classifiedTrips && hold.histogramCoverage.classifiedTrips + hold.histogramCoverage.unclassifiedTrips === hold.trips && hold.histogramCoverage.unclassifiedTrips >= 0, '보유기간 구간 합계와 미분류 건수 대사');
     check(h.netTradeFeeXBt === d.insights.feeComponents.netTradeFeeXBt, '순거래 수수료 필드 일치');
     check(/^[a-f0-9]{64}$/.test(d.meta.source.sha256), '원본 압축파일 해시 형식');
+    const candles = d.candles.series;
+    check(typeof d.candles.note === 'string' && d.candles.note.includes('sparse') && candles.every((r) => ['XBTUSD', 'ETHUSD'].includes(r.symbol) && /^\d{4}-\d{2}-\d{2}$/.test(r.day) && Number.isFinite(dateMs(r.day)) && ['open', 'high', 'low', 'close', 'volumeXbt', 'fills'].every((k) => Number.isFinite(r[k])) && r.low > 0 && r.high >= Math.max(r.open, r.close) && r.low <= Math.min(r.open, r.close) && r.volumeXbt >= 0 && Number.isInteger(r.fills) && r.fills > 0), '캔들 필수 필드·OHLC·체결량 유효성');
+    check(candles.length === 1235 && candles.filter((r) => r.symbol === 'XBTUSD').length === 1045 && candles.filter((r) => r.symbol === 'ETHUSD').length === 190, '캔들 종목별 관측일 수');
+    check(new Set(candles.map((r) => r.symbol + '/' + r.day)).size === candles.length, '캔들 종목·날짜 중복 없음');
+    check(['XBTUSD', 'ETHUSD'].every((s) => sum(candles.filter((r) => r.symbol === s), 'fills') === d.symbols.find((r) => r.symbol === s).fills), '캔들 체결 수와 종목 집계 대사');
+    const activity = new Map(d.activity.days.map((r) => [r.d, r]));
+    check(d.activity.days.every((r) => Number.isFinite(r.n) && r.n >= 0) && candles.every((r) => activity.has(r.day) && r.fills <= activity.get(r.day).f && r.volumeXbt <= activity.get(r.day).n + .00011), '캔들 날짜·명목금액과 활동 집계 교차 확인');
   }
   async function load() {
     const embedded = () => JSON.parse($('site-data').textContent);
@@ -90,6 +97,7 @@
   }
 
   let svgIndex = 0;
+  let bindCharts = () => {};
   const text = (x, y, value, cls = '', anchor = 'start') => `<text x="${x}" y="${y}" class="${cls}" text-anchor="${anchor}">${esc(value)}</text>`;
   const line = (x1, y1, x2, y2, cls = 'grid-line') => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="${cls}"/>`;
   const tip = (label, extra = '') => `data-tip="${esc(label)}" aria-label="${esc(label)}" tabindex="-1" role="button" ${extra}`;
@@ -115,6 +123,225 @@
   }
   function monthLabels(months, x, y) {
     return months.map((m, i) => i === 0 || m.month.endsWith('-01') || i === months.length - 1 ? text(x(i), y, i === 0 || i === months.length - 1 ? m.month.replace('-', '.') : m.month.slice(0, 4), '', i === 0 ? 'start' : i === months.length - 1 ? 'end' : 'middle') : '').join('');
+  }
+  // Tabs use one keyboard stop, arrow/Home/End navigation and real data scopes.
+  function tabGroup(container, panelId, options, selected, change, field = 'period') {
+    container.setAttribute('role', 'tablist');
+    container.innerHTML = options.map(([key, label]) => `<button type="button" role="tab" id="${container.id}-${key}" aria-controls="${panelId}" aria-selected="${key === selected}" aria-pressed="${key === selected}" tabindex="${key === selected ? 0 : -1}" data-${field}="${key}">${esc(label)}</button>`).join('');
+    const buttons = [...container.querySelectorAll('button')];
+    const activate = (button) => {
+      buttons.forEach((b) => {
+        b.setAttribute('aria-selected', String(b === button));
+        b.setAttribute('aria-pressed', String(b === button));
+        b.tabIndex = b === button ? 0 : -1;
+      });
+      const panel = $(panelId);
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', button.id);
+      change(button.dataset[field]);
+      $('chart-tooltip').hidden = true;
+      bindCharts();
+    };
+    container.addEventListener('click', (event) => {
+      const button = event.target.closest('button');
+      if (button && buttons.includes(button)) activate(button);
+    });
+    container.addEventListener('keydown', (event) => {
+      const i = buttons.indexOf(document.activeElement);
+      if (i < 0 || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (i + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+      buttons[next].focus();
+      activate(buttons[next]);
+    });
+    activate(buttons.find((b) => b.dataset[field] === selected));
+  }
+  const YEARS = [['all', '전체'], ['2018', '2018'], ['2019', '2019'], ['2020', '2020'], ['2021', '2021']];
+  function panelControls(id, render, scoped = true) {
+    const figure = $(id).closest('figure');
+    const toolbar = document.createElement('div');
+    toolbar.className = 'panel-toolbar';
+    toolbar.innerHTML = `<span class="mono">${scoped ? '표시 기간 / 원자료 날짜 기준' : '2018–2021 · 연도별 집계 없음'}</span><div class="segmented" id="${id}-periods" aria-label="${esc(figure.querySelector('h3').textContent)} 기간"></div>`;
+    figure.querySelector('.chart-heading').after(toolbar);
+    tabGroup(toolbar.lastElementChild, id, scoped ? YEARS : [['all', '전체 집계']], 'all', (range) => { $(id).dataset.range = range; render(range); });
+  }
+  function panelQuote(id, symbol, value, detail, cls = '') {
+    const heading = $(id).closest('figure').querySelector('.chart-heading');
+    let quote = heading.querySelector('.panel-quote');
+    if (!quote) { quote = document.createElement('div'); quote.className = 'panel-quote'; heading.append(quote); }
+    quote.innerHTML = `<span>${esc(symbol)}</span><strong class="${cls}">${esc(value)}</strong><span>${esc(detail)}</span>`;
+  }
+  function dateLabels(start, end, x, y, count = 4) {
+    let body = '';
+    for (let i = 0; i <= count; i++) {
+      const ms = start + (end - start) * i / count;
+      body += text(x(ms), y, isoDay(ms), '', i === 0 ? 'start' : i === count ? 'end' : 'middle');
+    }
+    return body;
+  }
+  function terminal(d) {
+    const h = d.headline;
+    $('ticker-strip').innerHTML = [
+      ['원장 순실현손익', signed(h.realisedXBt), 'BTC', 'positive'],
+      ['완료 출금', number(-h.withdrawalsXBt, 2), 'BTC', ''],
+      ['최종 장부 잔고', number(h.finalBalanceXBt, 2), 'BTC', ''],
+      ['양수 원장 항목 비율', percent(h.winRate, 2), '전체 기간', ''],
+      ['Trade 체결', number(h.fills), '건', ''],
+      ['메이커 체결 비중', percent(h.makerShare, 2), '건수 기준', ''],
+    ].map(([label, value, unit, cls]) => `<div class="ticker-item"><small>${label}</small><strong class="${cls}">${value}</strong><em>${unit}</em></div>`).join('');
+    sortable('market-table', '전체 기간 손익 상위 6종목 · 실시간 호가 아님', [
+      { key: 'symbol', label: '종목' },
+      { key: 'pnlXBt', label: '손익 BTC', numeric: true, signed: true, format: (v) => signed(v, 2) },
+      { key: 'shareOfPnl', label: '기여 %', numeric: true, signed: true, format: (v) => percent(v, 1) },
+    ], [...d.attribution].sort((a, b) => b.pnlXBt - a.pnlXBt).slice(0, 6), 1, true);
+    let symbol = 'XBTUSD', range = '1Y';
+    const bySymbol = new Map(['XBTUSD', 'ETHUSD'].map((s) => {
+      const series = d.candles.series.filter((r) => r.symbol === s).sort((a, b) => a.day.localeCompare(b.day));
+      return [s, series.map((r, i) => ({ ...r, ma7: i < 6 ? null : sum(series.slice(i - 6, i + 1), 'close') / 7, ma20: i < 19 ? null : sum(series.slice(i - 19, i + 1), 'close') / 20 }))];
+    }));
+    const render = () => {
+      const all = bySymbol.get(symbol), last = all.at(-1), previous = all.at(-2);
+      const end = dateMs(last.day), from = range === 'all' ? dateMs(all[0].day) : end - (range === '3M' ? 90 : 365) * DAY;
+      const rows = all.filter((r) => dateMs(r.day) >= from);
+      const W = 900, H = 372, L = 12, R = 78, T = 30, B = 244, VT = 280, VB = 334;
+      const x = (ms) => L + 5 + (ms - from) / (end - from || DAY) * (W - L - R - 10);
+      const prices = rows.flatMap((r) => [r.low, r.high, ...(r.ma7 === null ? [] : [r.ma7]), ...(r.ma20 === null ? [] : [r.ma20])]);
+      const low = Math.min(...prices), high = Math.max(...prices), padding = (high - low || high * .01) * .08;
+      const lo = low - padding, hi = high + padding;
+      const y = (v) => B - (v - lo) / (hi - lo) * (B - T);
+      const maxVolume = Math.max(...rows.map((r) => r.volumeXbt), 1);
+      const vy = (v) => VB - v / maxVolume * (VB - VT);
+      const bodyWidth = Math.max(.65, Math.min(9, DAY / (end - from || DAY) * (W - L - R - 10) * .68));
+      let body = text(L, 14, '체결가 OHLC / USD', 'axis-unit');
+      for (let i = 0; i <= 4; i++) {
+        const value = lo + (hi - lo) * i / 4;
+        body += line(L, y(value), W - R, y(value)) + text(W - 6, y(value) + 3, number(value, symbol === 'ETHUSD' ? 2 : 0), '', 'end');
+      }
+      body += text(L, VT - 9, '계좌 체결 명목금액 / BTC 환산', 'axis-unit') + line(L, VB, W - R, VB) + text(W - 6, VT + 4, shortNumber(maxVolume), '', 'end') + text(W - 6, VB + 3, '0', '', 'end');
+      rows.forEach((r) => {
+        const xx = x(dateMs(r.day)), color = `var(--${r.close >= r.open ? 'profit' : 'loss'})`;
+        body += `<line class="candle-wick" x1="${xx}" x2="${xx}" y1="${y(r.high)}" y2="${y(r.low)}" stroke="${color}" stroke-width="1"/>`;
+        body += `<rect class="candle-body" data-day="${r.day}" x="${xx - bodyWidth / 2}" y="${Math.min(y(r.open), y(r.close))}" width="${bodyWidth}" height="${Math.max(1, Math.abs(y(r.open) - y(r.close)))}" fill="${color}"/>`;
+        body += `<rect class="candle-volume" data-day="${r.day}" x="${xx - bodyWidth / 2}" y="${vy(r.volumeXbt)}" width="${bodyWidth}" height="${Math.max(.5, VB - vy(r.volumeXbt))}" fill="${color}" opacity=".55"/>`;
+      });
+      for (const [key, color, dash] of [['ma7', 'var(--brass)', ''], ['ma20', 'var(--text)', 'stroke-dasharray="4 3"']]) {
+        let path = '', previousDay = null;
+        rows.forEach((r) => {
+          if (r[key] === null) { previousDay = null; return; }
+          const day = dateMs(r.day);
+          path += `${previousDay !== null && day - previousDay === DAY ? 'L' : 'M'}${x(day)},${y(r[key])}`;
+          previousDay = day;
+        });
+        body += `<path class="${key}" d="${path}" fill="none" stroke="${color}" stroke-width="1.4" ${dash}/>`;
+      }
+      body += line(L, y(last.close), W - R, y(last.close), 'last-price-line');
+      rows.forEach((r) => {
+        const xx = x(dateMs(r.day));
+        const label = `${symbol} · ${r.day} · 체결가 재구성\nO ${number(r.open, 2)} / H ${number(r.high, 2)}\nL ${number(r.low, 2)} / C ${number(r.close, 2)} USD\n체결 ${number(r.fills)}건 · 명목 ${number(r.volumeXbt, 6)} BTC\nMA7 ${r.ma7 === null ? '관측 부족' : number(r.ma7, 2)} / MA20 ${r.ma20 === null ? '관측 부족' : number(r.ma20, 2)}\n이동평균은 관측 종가 수 기준 · 연속 시세 아님`;
+        body += `<rect class="candle-mark" x="${xx - Math.max(bodyWidth, 4) / 2}" y="${T}" width="${Math.max(bodyWidth, 4)}" height="${VB - T}" fill="transparent" ${tip(label, `data-day="${r.day}" data-x="${xx}" data-y="${y(r.close)}" data-close="${r.close}" data-volume="${r.volumeXbt}" data-ma7="${r.ma7 ?? ''}" data-ma20="${r.ma20 ?? ''}"`)}/>`;
+      });
+      body += dateLabels(from, end, x, VB + 23, 3);
+      const host = $('candle-chart');
+      host.innerHTML = svg(`${symbol} 계좌 체결가 일별 재구성, 시장 시세가 아님`, body, W, H);
+      Object.assign(host.dataset, { symbol, range, count: String(rows.length), from: isoDay(from), to: last.day });
+      const delta = (last.close - previous.close) / previous.close;
+      $('candle-last').textContent = number(last.close, 2);
+      $('candle-last').className = delta >= 0 ? 'positive' : 'negative';
+      $('candle-change').textContent = `${signed(delta * 100, 2)}% · 직전 관측일 ${previous.day} 대비`;
+      $('candle-change').className = delta >= 0 ? 'positive' : 'negative';
+      $('candle-note').textContent = `${isoDay(from)} → ${last.day} · ${number(rows.length)} / ${number(all.length)}관측일 · JSON day 기준. 3M=90일, 1Y=365일, 종목의 마지막 체결일 기준입니다. MA7/20은 직전 이력을 포함한 7/20개 관측 종가 평균이며 달력 일수 평균이 아닙니다. 빈 날짜에서 평균선도 끊습니다.`;
+      host.closest('figure').querySelector('.chart-readout').textContent = `${symbol} · ${last.day} 마지막 관측 · O ${number(last.open, 2)} / H ${number(last.high, 2)} / L ${number(last.low, 2)} / C ${number(last.close, 2)} USD`;
+    };
+    tabGroup($('symbol-filter'), 'candle-chart', [['XBTUSD', 'XBTUSD'], ['ETHUSD', 'ETHUSD']], symbol, (next) => { symbol = next; render(); }, 'symbol');
+    tabGroup($('candle-periods'), 'candle-chart', [['3M', '3M'], ['1Y', '1Y'], ['all', 'ALL']], range, (next) => { range = next; render(); });
+  }
+  function monthlyPanels(d) {
+    let pnl = 0n, out = 0n, peak = 0;
+    const full = d.balance.monthly.map((m) => {
+      pnl += satoshi(m.realisedXBt); out -= satoshi(m.withdrawalsXBt); peak = Math.max(peak, m.endBalanceXBt);
+      return { ...m, pnl: Number(pnl) / 1e8, out: Number(out) / 1e8, peak, drawdown: peak ? (m.endBalanceXBt - peak) / peak : 0 };
+    });
+    for (const id of ['cumulative-chart', 'monthly-chart', 'balance-chart']) panelControls(id, (range) => {
+      const rows = full.filter((m) => range === 'all' || m.month.startsWith(range));
+      const W = 1000, H = 292, L = 62, R = 25, T = 28, B = 248;
+      const x = (i) => L + (i + .5) / rows.length * (W - L - R);
+      const key = id === 'cumulative-chart' ? 'pnl' : id === 'monthly-chart' ? 'realisedXBt' : 'endBalanceXBt';
+      const values = rows.flatMap((m) => id === 'cumulative-chart' ? [m.pnl, m.out] : id === 'balance-chart' ? [m.endBalanceXBt, m.peak] : [m.realisedXBt]);
+      const { y, markup } = yAxis(extent(values), L, W - R, T, B, 'BTC');
+      const bw = (W - L - R) / rows.length * .68;
+      let body = markup;
+      if (id === 'cumulative-chart') {
+        const before = full[full.indexOf(rows[0]) - 1];
+        for (const [field, color, dash] of [['pnl', 'var(--profit)', ''], ['out', 'var(--brass)', 'stroke-dasharray="6 4"']]) {
+          const path = `M${L},${y(before ? before[field] : 0)}` + rows.map((m, i) => `H${x(i)}V${y(m[field])}`).join('');
+          body += `<path d="${path}" fill="none" stroke="${color}" stroke-width="2" ${dash}/>`;
+        }
+      } else if (id === 'balance-chart') {
+        const path = rows.map((m, i) => `${i ? 'L' : 'M'}${x(i)},${y(m.endBalanceXBt)}`).join('');
+        const peakPath = rows.map((m, i) => `${i ? 'L' : 'M'}${x(i)},${y(m.peak)}`).join('');
+        const reverse = [...rows].reverse().map((m, i) => `L${x(rows.length - 1 - i)},${y(m.endBalanceXBt)}`).join('');
+        body += `<path class="balance-area" d="${path}L${x(rows.length - 1)},${B}H${x(0)}Z" fill="var(--profit)" opacity=".1"/>`;
+        body += `<path class="drawdown-area" d="${peakPath}${reverse}Z" fill="var(--loss)" opacity=".18"/>`;
+        body += `<path d="${peakPath}" fill="none" stroke="var(--loss)" stroke-dasharray="4 4" opacity=".6"/><path d="${path}" fill="none" stroke="var(--profit)" stroke-width="2"/>`;
+      }
+      rows.forEach((m, i) => {
+        const value = m[key];
+        if (id === 'monthly-chart') body += `<rect x="${x(i) - bw / 2}" y="${Math.min(y(value), y(0))}" width="${bw}" height="${Math.max(.8, Math.abs(y(value) - y(0)))}" fill="var(--${value < 0 ? 'loss' : 'profit'})"/>`;
+        const label = id === 'cumulative-chart' ? `${m.month} 월말 · BTC\n누적 실현손익 ${number(m.pnl, 8)}\n누적 출금 ${number(m.out, 8)}\n두 누계의 차이 ${number(m.pnl - m.out, 8)} (잔고 아님)\n기간을 바꿔도 누계는 전체 이력을 유지합니다.` : id === 'monthly-chart' ? `${m.month}\n원장 순실현손익 ${signed(value, 8)} BTC` : `${m.month} 월말\n장부 잔고 ${number(value, 8)} BTC\n이전 월말 최고 ${number(m.peak, 8)} BTC\n월말 관측 낙폭 ${signed(m.drawdown * 100, 2)}%\n출금과 반올림 포함 · 계좌 평가액이 아님`;
+        body += `<rect x="${x(i) - bw / 2}" y="${T}" width="${bw}" height="${B - T}" fill="transparent" ${tip(label, `data-month="${m.month}" data-value="${value}" data-x="${x(i)}" data-y="${y(value)}" data-drawdown="${m.drawdown}"`)}/>`;
+      });
+      body += monthLabels(rows, x, B + 25);
+      $(id).classList.add('wide-plot');
+      $(id).innerHTML = svg(id === 'balance-chart' ? '월말 장부 잔고와 월말 고점 대비 감소, 평가액 아님' : id === 'monthly-chart' ? '월별 순실현손익' : '월말 누적 실현손익과 출금', body, W, H);
+      const last = rows.at(-1), prev = full[full.indexOf(last) - 1];
+      const delta = prev && prev[key] !== 0 ? (last[key] - prev[key]) / Math.abs(prev[key]) : null;
+      panelQuote(id, id === 'balance-chart' ? 'BOOK / BTC' : 'PNL / BTC', signed(last[key], 2), `${last.month} · ${delta === null ? '비교 기준 없음' : signed(delta * 100, 2) + '% 전월 대비 / |전월 값|'}`, last[key] < 0 ? 'negative' : 'positive');
+    });
+    $('monthly-note').textContent = `마지막 3개월의 원장 실현손익은 ${signed(sum(full.slice(-3), 'realisedXBt'))} BTC입니다. 월별 확정 손익만 보여주며 미실현손익과 장중 낙폭은 포함하지 않습니다.`;
+    const balanceFigure = $('balance-chart').closest('figure');
+    balanceFigure.querySelector('figcaption').textContent = '붉은 음영은 전체 이력의 이전 월말 잔고 최고점과 관측 잔고의 차이입니다. 출금과 반올림도 반영됩니다. 이 곡선은 미실현손익을 포함한 계좌 평가액·전략 수익률·장중 최대 낙폭이 아닙니다.';
+    const legend = document.createElement('div'); legend.className = 'line-legend';
+    legend.innerHTML = '<span><i class="key-line profit"></i>월말 장부 잔고</span><span><i class="key-box loss"></i>이전 월말 고점과의 차이</span>';
+    $('balance-chart').before(legend);
+  }
+  function dailyPanel(d) {
+    panelControls('daily-chart', (range) => {
+      const rows = d.activity.days.filter((r) => range === 'all' || r.d.startsWith(range));
+      const start = dateMs(range === 'all' ? d.activity.summary.firstDay : `${range}-01-01`), end = dateMs(range === 'all' ? d.activity.summary.lastDay : `${range}-12-31`);
+      const W = 1000, H = 350, L = 60, R = 25;
+      const x = (ms) => L + (ms - start) / (end - start) * (W - L - R);
+      const fills = yAxis(extent(rows.map((r) => r.f)), L, W - R, 30, 151, '체결 / 건');
+      const notional = yAxis(extent(rows.map((r) => r.n)), L, W - R, 204, 305, '명목금액 / BTC 환산');
+      let body = fills.markup + notional.markup;
+      const bw = Math.max(.6, (W - L - R) / ((end - start) / DAY + 1) * .7);
+      rows.forEach((r) => {
+        const xx = x(dateMs(r.d));
+        body += `<rect x="${xx - bw / 2}" y="${fills.y(r.f)}" width="${bw}" height="${151 - fills.y(r.f)}" fill="var(--profit)"/>`;
+        body += `<rect x="${xx - bw / 2}" y="${notional.y(r.n)}" width="${bw}" height="${305 - notional.y(r.n)}" fill="var(--brass)"/>`;
+        body += `<rect x="${xx - 2}" y="30" width="4" height="275" fill="transparent" ${tip(`${r.d} · KST · 전체 종목\nTrade 체결 ${number(r.f)}건\n명목금액 ${number(r.n, 4)} BTC 환산\n거래 규모이며 잔고·레버리지 아님`, `data-day="${r.d}" data-fills="${r.f}" data-notional="${r.n}" data-x="${xx}" data-y="${fills.y(r.f)}"`)}/>`;
+      });
+      body += dateLabels(start, end, x, 332, 4);
+      $('daily-chart').innerHTML = svg('일별 체결 수와 BTC 환산 명목금액, 분리된 두 축', body, W, H);
+      $('daily-chart').classList.add('wide-plot');
+      panelQuote('daily-chart', 'ALL SYMBOLS / FILLS', number(rows.at(-1).f) + '건', rows.at(-1).d + ' 마지막 활동일 · 활동량, 손익 아님');
+    });
+  }
+  function feePanel(d) {
+    const f = d.insights.feeComponents;
+    const rows = [{ label: '메이커 리베이트', value: -f.makerRebateXBt }, { label: '테이커 수수료', value: -f.takerFeeXBt }, { label: '펀딩 순수취', value: f.fundingReceivedXBt }];
+    panelControls('fees-chart', () => {
+      const W = 1000, H = 192, L = 138, R = 25, T = 30, B = 148, e = extent(rows.map((r) => r.value));
+      const x = (v) => L + (v - e.lo) / (e.hi - e.lo) * (W - L - R);
+      let body = text(L, 14, 'BTC / 수취 (+) · 지급 (−)', 'axis-unit');
+      for (let n = e.lo; n <= e.hi; n += e.step) body += line(x(n), T - 5, x(n), B, n === 0 ? 'zero-line' : 'grid-line') + text(x(n), B + 24, n, '', 'middle');
+      rows.forEach((r, i) => {
+        const yy = T + i * 40;
+        body += text(L - 14, yy + 16, r.label, '', 'end') + `<rect x="${Math.min(x(0), x(r.value))}" y="${yy}" width="${Math.abs(x(r.value) - x(0))}" height="25" fill="var(--${r.value < 0 ? 'loss' : 'profit'})" ${tip(`${r.label}\n${signed(r.value, 8)} BTC\n원장 손익에 이미 포함 · 중복 합산 금지`)}/>`;
+      });
+      $('fees-chart').innerHTML = svg('수수료와 펀딩의 수취 및 지급', body, W, H);
+      $('fees-chart').querySelector('svg').dataset.axis = 'y';
+      panelQuote('fees-chart', 'NET / BTC', signed(f.fundingReceivedXBt - f.netTradeFeeXBt, 2), '전 기간 구성 · 시점별 등락률 미산출', 'positive');
+    }, false);
   }
   function histogram(id, rows, valueKey, unit, describe, height = 250) {
     const W = 550, L = 50, R = 14, T = 28, B = height - 48;
@@ -159,12 +386,11 @@
     const duration = (last - first) / DAY + 1;
     $('calendar-summary').textContent = `${d.activity.summary.firstDay} → ${d.activity.summary.lastDay} · ${number(duration)}일 중 ${number(d.headline.tradingDays)}활동일`;
     $('calendar-note').textContent = `${number(duration - d.headline.tradingDays)}일에는 공개 파일 안에 Trade가 없습니다. 최대 ${number(d.activity.summary.maxFillsPerActiveDay)}체결이 중간 값을 덮지 않도록 비선형 건수 구간으로 명암을 나눴습니다. 범위 밖 칸은 빈 윤곽으로 표시합니다. 좁은 화면은 달력을 좌우로 스크롤할 수 있습니다.`;
-    $('year-filter').addEventListener('click', (event) => {
-      const button = event.target.closest('button[data-year]');
-      if (!button) return;
-      $('year-filter').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
-      $('calendar').querySelectorAll('.calendar-year').forEach((el) => { el.hidden = button.dataset.year !== 'all' && el.dataset.year !== button.dataset.year; });
-    });
+    tabGroup($('year-filter'), 'calendar', YEARS, 'all', (year) => {
+      $('calendar').dataset.range = year;
+      $('calendar').querySelectorAll('.calendar-year').forEach((el) => { el.hidden = year !== 'all' && el.dataset.year !== year; });
+      $('calendar').closest('figure').querySelector('.chart-readout').textContent = `${year === 'all' ? '2018–2021' : year} · 날짜를 선택하면 체결 수를 표시합니다.`;
+    }, 'year');
     const W = 550, L = 32, T = 30, sx = 21, sy = 24, labels = ['일', '월', '화', '수', '목', '금', '토'];
     let body = '', maximum = { value: -1, dow: 0, hour: 0 };
     const level = (n) => n === 0 ? 0 : n < 1000 ? 1 : n < 5000 ? 2 : n < 10000 ? 3 : n < 20000 ? 4 : 5;
@@ -181,8 +407,14 @@
     $('hour-legend').innerHTML = ['0', '1–999', '1k–4,999', '5k–9,999', '10k–19,999', '20k+'].map((s, i) => `<span><i class="heat-${i}"></i>${s}</span>`).join('');
     $('hour-note').textContent = `가장 많은 체결은 ${labels[maximum.dow]}요일 ${maximum.hour}시대의 ${number(maximum.value)}건입니다. 활동 빈도이며, 이 시간대의 수익성이나 우위를 뜻하지 않습니다.`;
     const ranges = [[1, 100, '1–99'], [100, 500, '100–499'], [500, 1500, '500–1.4k'], [1500, 5000, '1.5k–4.9k'], [5000, Infinity, '5k+']];
-    const rows = ranges.map(([lo, hi, label]) => ({ label, count: d.activity.days.filter((r) => r.f >= lo && r.f < hi).length }));
-    histogram('fills-hist', rows, 'count', '일수', (r) => `${r.label} 체결/일\n${number(r.count)}일 · 활동일의 ${percent(r.count / d.headline.tradingDays)}`, 222);
+    panelControls('fills-hist', (range) => {
+      const days = d.activity.days.filter((r) => (range === 'all' || r.d.startsWith(range)) && r.f > 0);
+      const rows = ranges.map(([lo, hi, label]) => ({ label, count: days.filter((r) => r.f >= lo && r.f < hi).length }));
+      histogram('fills-hist', rows, 'count', '일수', (r) => `${r.label} 체결/일\n${number(r.count)}일 · 선택 기간 활동일의 ${percent(r.count / days.length)}`, 222);
+      panelQuote('fills-hist', 'ACTIVE DAYS', number(days.length) + '일', `${range === 'all' ? '2018–2021' : range} 합계 · 등락률 미산출`);
+    });
+    panelControls('hour-dow', () => {}, false);
+    panelQuote('hour-dow', 'FILLS / KST', number(d.headline.fills) + '건', '전 기간 합계 · 등락률 미산출');
     $('fills-note').textContent = `활동일 중위값 ${number(d.headline.medianFillsPerActiveDay)}체결, 90백분위 ${number(d.activity.summary.p90FillsPerActiveDay)}체결입니다. 체결 수는 의사결정이나 매매 횟수와 다릅니다.`;
   }
   function financialCharts(d) {
@@ -401,11 +633,13 @@
 
   function interactions() {
     const tooltip = $('chart-tooltip');
+    const bound = new WeakSet();
     let active = null, dismissed = null;
     const hide = () => {
       tooltip.hidden = true;
       if (active) active.removeAttribute('aria-describedby');
       active = null;
+      document.querySelectorAll('.crosshair').forEach((cross) => cross.setAttribute('visibility', 'hidden'));
     };
     const show = (el, pointer) => {
       if (el === dismissed) return;
@@ -422,34 +656,72 @@
       tooltip.style.top = Math.max(12, Math.min(innerHeight - box.height - 12, py + 18)) + 'px';
       const readout = el.closest('figure')?.querySelector('.chart-readout');
       if (readout) readout.textContent = el.dataset.tip.replace(/\n/g, ' · ');
+      const chart = el.closest('svg'), cross = chart.querySelector('.crosshair');
+      const markBox = el.getBBox(), view = chart.viewBox.baseVal;
+      const x = Number(el.dataset.x ?? markBox.x + markBox.width / 2);
+      const y = Number(el.dataset.y ?? markBox.y + markBox.height / 2);
+      cross.innerHTML = line(x, 20, x, view.height - 30, '') + line(0, y, view.width, y, '') + `<circle cx="${x}" cy="${y}" r="3"/>`;
+      cross.setAttribute('visibility', 'visible');
+      cross.dataset.label = el.dataset.tip.split('\n')[0];
     };
-    document.querySelectorAll('svg[data-keynav]').forEach((chart) => {
+    bindCharts = () => {
+      hide();
+      dismissed = null;
+      document.querySelectorAll('svg[data-keynav]').forEach((chart) => {
+      if (bound.has(chart)) return;
+      bound.add(chart);
       const marks = [...chart.querySelectorAll('[data-tip]')];
       if (!marks.length) return;
+      const cross = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      cross.setAttribute('class', 'crosshair');
+      cross.setAttribute('aria-hidden', 'true');
+      cross.setAttribute('visibility', 'hidden');
+      chart.append(cross);
       let index = 0;
       marks[0].setAttribute('tabindex', '0');
-      const select = (next) => {
+      const syncIndex = (el) => {
         marks[index].setAttribute('tabindex', '-1');
-        index = Math.max(0, Math.min(marks.length - 1, next));
+        index = marks.indexOf(el);
         marks[index].setAttribute('tabindex', '0');
+      };
+      const select = (next) => {
+        syncIndex(marks[Math.max(0, Math.min(marks.length - 1, next))]);
         dismissed = null;
         marks[index].focus({ preventScroll: true });
         marks[index].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
         show(marks[index]);
       };
+      // Snap to an actual observation, including on thin candles. No synthetic
+      // price is interpolated across dates where this account did not trade.
+      const nearest = (event) => {
+        const direct = event.target.closest('[data-tip]');
+        if (direct && marks.includes(direct)) return direct;
+        const matrix = chart.getScreenCTM();
+        if (!matrix) return null;
+        const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(matrix.inverse());
+        if (point.y < 20 || point.y > chart.viewBox.baseVal.height - 28) return null;
+        let best = null, distance = Infinity;
+        for (const mark of marks) {
+          const b = mark.getBBox();
+          const dx = point.x - Number(mark.dataset.x ?? b.x + b.width / 2);
+          const dy = point.y - Number(mark.dataset.y ?? b.y + b.height / 2);
+          const score = chart.dataset.axis === 'y' ? Math.abs(dy) : ['calendar', 'hours'].includes(chart.dataset.keynav) ? dx * dx + dy * dy : Math.abs(dx);
+          if (score < distance) { best = mark; distance = score; }
+        }
+        return best;
+      };
       chart.addEventListener('pointermove', (event) => {
-        const el = event.target.closest('[data-tip]');
-        if (el) show(el, event);
+        const el = nearest(event);
+        if (el) { if (el !== active && el !== dismissed) dismissed = null; show(el, event); }
+        else hide();
       });
-      chart.addEventListener('pointerout', (event) => {
-        if (event.target.matches('[data-tip]')) { dismissed = null; hide(); }
-      });
+      chart.addEventListener('pointerleave', () => { dismissed = null; hide(); });
       chart.addEventListener('focusin', (event) => {
-        if (event.target.matches('[data-tip]')) { dismissed = null; show(event.target); }
+        if (event.target.matches('[data-tip]')) { syncIndex(event.target); dismissed = null; show(event.target); }
       });
       chart.addEventListener('focusout', hide);
       chart.addEventListener('click', (event) => {
-        const el = event.target.closest('[data-tip]');
+        const el = nearest(event);
         if (el) select(marks.indexOf(el));
       });
       chart.addEventListener('keydown', (event) => {
@@ -463,11 +735,13 @@
         }
       });
     });
+    };
+    bindCharts();
     document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { dismissed = active; hide(); } });
     window.addEventListener('resize', hide);
     window.addEventListener('scroll', hide, { passive: true });
     if ('IntersectionObserver' in window) {
-      const nav = [...document.querySelectorAll('.topnav a')];
+      const nav = [...document.querySelectorAll('.topnav a,.sidebar nav a')];
       const observer = new IntersectionObserver((entries) => {
         const entry = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
         if (!entry) return;
@@ -495,6 +769,13 @@
       interpretations(d);
       detailTables(d);
       reproduction(d);
+      terminal(d);
+      monthlyPanels(d);
+      dailyPanel(d);
+      feePanel(d);
+      for (const id of ['attribution-chart', 'hold-chart']) panelControls(id, () => {}, false);
+      panelQuote('attribution-chart', 'ALL SYMBOLS / PNL', signed(d.headline.realisedXBt, 2) + ' BTC', '전 기간 합계 · 시점별 등락률 미산출', 'positive');
+      panelQuote('hold-chart', 'FIFO / MEDIAN', d.insights.holdingPeriod.median, '전체 수량 대응 · 등락률 미산출');
       interactions();
       check(![...document.querySelectorAll('svg')].some((s) => /(?:NaN|Infinity|undefined)/.test(s.innerHTML)), 'SVG 좌표와 레이블 유효성');
       audit.state = 'ready';
