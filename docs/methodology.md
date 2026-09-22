@@ -112,18 +112,37 @@ npm run fetch && npm run validate && npm run analyze && npm run insights
 
 ## Market candles on the site
 
-The candlestick panel draws real daily OHLCV for `BTCUSDT` and `ETHUSDT` from Binance's public
-REST API (`/api/v3/klines`, no key, no account), refreshed by `npm run market` and committed to
-`results/market-ohlcv.json`. Three things about that choice:
+The candlestick panel draws real daily OHLCV from free, keyless public APIs, refreshed by
+`npm run market` and committed to `results/market-history.json`:
 
-- Binance is **not** the venue this account traded on. It traded BitMEX `XBTUSD` and `ETHUSD`,
-  whose prints differ slightly. The chart is market context, not the account's own prices.
-- The chart originally drew OHLC reconstructed from the account's fills. That was honest but
-  sparse: a few hundred prints a year and nothing on days with no trades, so the candles were
-  gappy and the moving averages were over observations rather than calendar days. It is kept in
-  `results/candles.json` and the site payload notes it is available, but the panel no longer
-  draws it.
-- Each market bar carries the account's own activity for that day (`accountFills`,
-  `accountNotionalXbt`), drawn as a gold tick under the volume panel, so the price chart also
-  answers when the account was actually in the market. The internal audit in `site/app.js`
-  cross-checks those fields against the daily activity aggregate.
+| Panel | Source | From | Bars |
+| --- | --- | --- | ---: |
+| BTC | Bitstamp `BTC/USD` | 2011-08-18 | 5,515 |
+| ETH | Bitfinex `ETH/USD` | 2016-03-09 | 3,843 |
+
+- **Neither venue is BitMEX**, where this account traded, so prices differ slightly from its
+  fills. The chart names the venue and the first day on every render.
+- ETH mainnet launched 2015-07-30. The earliest ETH/USD daily series reachable from a free
+  source here starts 2016-03-09; Kraken ignores the `since` parameter, Bitstamp has no ETH
+  history that far back, Poloniex's public endpoint returned nothing and CryptoCompare now
+  requires a key. The chart therefore starts where the data does, not where the chain does.
+- Bitfinex candles are ordered `[MTS, OPEN, CLOSE, HIGH, LOW, VOLUME]`, not the more common
+  `[MTS, OPEN, HIGH, LOW, CLOSE, VOLUME]`. Reading them the common way produces bars where the
+  close sits outside the high/low range, so the fetcher documents and follows the real order.
+- **Resolution follows the range**, the way a real chart behaves: 1M-1Y draws daily bars, 2Y-5Y
+  weekly, 10Y and ALL monthly, all aggregated from the same daily series. A decade of daily
+  candles is sub-pixel mush.
+- **The price axis switches to log automatically** when the range spans more than 8x, and can be
+  forced to LOG or LIN. A linear axis over 2011-2026 collapses the first eight years onto the
+  baseline.
+- Each bar carries the account's own activity for that bar (`accountFills`,
+  `accountNotionalXbt`, summed over the bar's span), drawn as a gold tick under the volume panel.
+  The internal audit in `site/app.js` cross-checks those against the daily activity aggregate.
+
+### Two payloads
+
+`candles.json` (weekly, whole history, ~180 kB) is embedded in `index.html` for offline readers.
+`candles-daily.json` (daily, ~9,400 bars, ~420 kB) is fetched at runtime over http(s) only;
+embedding it would roughly double the page. Offline the chart draws weekly bars and says so.
+Both asset and data URLs carry a build hash, because GitHub Pages caches them for ten minutes
+and a fresh page reading stale aggregates would fail its own cross-checks.

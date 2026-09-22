@@ -3,6 +3,10 @@
  */
 (() => {
   'use strict';
+  // GitHub Pages caches these files for ten minutes. index.html is versioned by
+  // the build, and the data must move with it or a fresh page can read stale
+  // aggregates and fail its own cross-checks.
+  const DATA_VERSION = window.__dataVersion ? `?v=${window.__dataVersion}` : '';
   const FILES = ['meta', 'headline', 'validation', 'stated', 'withdrawals', 'symbols', 'attribution', 'monthly', 'insights', 'activity', 'balance', 'candles'];
   const DAY = 86400000;
   const $ = (id) => document.getElementById(id);
@@ -71,13 +75,28 @@
     check(h.netTradeFeeXBt === d.insights.feeComponents.netTradeFeeXBt, '순거래 수수료 필드 일치');
     check(/^[a-f0-9]{64}$/.test(d.meta.source.sha256), '원본 압축파일 해시 형식');
     const candles = d.candles.series;
-    check(typeof d.candles.note === 'string' && candles.every((r) => ['XBTUSD', 'ETHUSD'].includes(r.symbol) && /^\d{4}-\d{2}-\d{2}$/.test(r.day) && Number.isFinite(dateMs(r.day)) && ['open', 'high', 'low', 'close', 'volume'].every((k) => Number.isFinite(r[k])) && r.low > 0 && r.high >= Math.max(r.open, r.close) && r.low <= Math.min(r.open, r.close) && r.volume >= 0 && Number.isInteger(r.accountFills) && r.accountFills >= 0), '캔들 필수 필드·OHLC·거래량 유효성');
-    const btcDays = candles.filter((r) => r.symbol === 'XBTUSD').length; const ethDays = candles.filter((r) => r.symbol === 'ETHUSD').length;
-    check(btcDays >= 1000 && ethDays >= 1000 && btcDays === ethDays, '캔들 종목별 일수');
-    check(new Set(candles.map((r) => r.symbol + '/' + r.day)).size === candles.length, '캔들 종목·날짜 중복 없음');
+    check(d.candles.resolution === '1W' && d.candles.offlineFallback === true
+      && candles.every((r) => ['XBTUSD', 'ETHUSD'].includes(r.symbol) && /^\d{4}-\d{2}-\d{2}$/.test(r.day) && Number.isFinite(dateMs(r.day))
+        && ['open', 'high', 'low', 'close', 'volume'].every((k) => Number.isFinite(r[k]))
+        && r.low > 0 && r.high >= Math.max(r.open, r.close) && r.low <= Math.min(r.open, r.close) && r.volume >= 0
+        && Number.isInteger(r.accountFills) && r.accountFills >= 0), '주봉 스냅샷 필수 필드·OHLC·거래량 유효성');
+    const btcDays = candles.filter((r) => r.symbol === 'XBTUSD').length;
+    const ethDays = candles.filter((r) => r.symbol === 'ETHUSD').length;
+    check(btcDays >= 700 && ethDays >= 500, '주봉이 전 역사를 덮는지 (BTC 2011~, ETH 2016~)');
     check(new Set(candles.map((r) => r.symbol + '/' + r.day)).size === candles.length, '캔들 종목·날짜 중복 없음');
     const activity = new Map(d.activity.days.map((r) => [r.d, r]));
-    check(d.activity.days.every((r) => Number.isFinite(r.n) && r.n >= 0) && candles.filter((r) => r.accountFills > 0).every((r) => activity.has(r.day) && r.accountFills === activity.get(r.day).f && Math.abs(r.accountNotionalXbt - activity.get(r.day).n) < .002), '계좌 거래일 표시가 일별 활동 집계와 일치');
+    const weekSum = (startDay, key) => {
+      let total = 0;
+      for (let i = 0; i < 7; i += 1) {
+        const d2 = isoDay(dateMs(startDay) + i * DAY);
+        const a = activity.get(d2);
+        if (a) total += key === 'f' ? a.f : a.n;
+      }
+      return total;
+    };
+    check(d.activity.days.every((r) => Number.isFinite(r.n) && r.n >= 0)
+      && candles.filter((r) => r.accountFills > 0).every((r) => r.accountFills === weekSum(r.day, 'f') && Math.abs(r.accountNotionalXbt - weekSum(r.day, 'n')) < .01),
+      '주봉의 계좌 체결 표시가 그 주 일별 활동 합계와 일치');
   }
   async function load() {
     const embedded = () => JSON.parse($('site-data').textContent);
@@ -86,7 +105,7 @@
     const timeout = setTimeout(() => controller.abort(), 8000);
     try {
       const payload = Object.fromEntries(await Promise.all(FILES.map(async (name) => {
-        const response = await fetch(`data/${name}.json`, { signal: controller.signal, cache: 'no-cache' });
+        const response = await fetch(`data/${name}.json${DATA_VERSION}`, { signal: controller.signal, cache: 'no-cache' });
         if (!response.ok) throw new Error(`${name}.json: HTTP ${response.status}`);
         return [`${name}.json`, await response.json()];
       })));
@@ -196,77 +215,175 @@
       { key: 'shareOfPnl', label: '기여 %', numeric: true, signed: true, format: (v) => percent(v, 1) },
     ], [...d.attribution].sort((a, b) => b.pnlXBt - a.pnlXBt).slice(0, 6), 1, true);
     let symbol = 'XBTUSD', range = '1Y';
-    const bySymbol = new Map(['XBTUSD', 'ETHUSD'].map((s) => {
-      const series = d.candles.series.filter((r) => r.symbol === s).sort((a, b) => a.day.localeCompare(b.day));
-      return [s, series.map((r, i) => ({ ...r, ma7: i < 6 ? null : sum(series.slice(i - 6, i + 1), 'close') / 7, ma20: i < 19 ? null : sum(series.slice(i - 19, i + 1), 'close') / 20 }))];
-    }));
+    const RANGES = [['1M', '1M'], ['3M', '3M'], ['6M', '6M'], ['1Y', '1Y'], ['2Y', '2Y'], ['3Y', '3Y'], ['5Y', '5Y'], ['10Y', '10Y'], ['all', 'ALL']];
+    const RANGE_DAYS = { '1M': 30, '3M': 91, '6M': 182, '1Y': 365, '2Y': 730, '3Y': 1095, '5Y': 1826, '10Y': 3652 };
+    // Real charts change resolution with the range: a decade of daily candles is
+    // sub-pixel mush, so long ranges are aggregated from the same daily series.
+    const resolutionFor = (days) => (days <= 400 ? '1D' : days <= 2200 ? '1W' : '1M');
+
+    const unpack = (payload) => {
+      const out = new Map();
+      for (const s2 of payload.series) {
+        const bars = [];
+        let t = s2.t0;
+        for (let i = 0, k = 0; i < s2.bars.length; i += 6, k += 1) {
+          t += s2.bars[i];
+          const acct = s2.account ? s2.account[k] : null;
+          bars.push({
+            day: isoDay(t * DAY), open: s2.bars[i + 1], high: s2.bars[i + 2], low: s2.bars[i + 3],
+            close: s2.bars[i + 4], volume: s2.bars[i + 5],
+            accountFills: acct ? acct[0] : 0, accountNotionalXbt: acct ? acct[1] : 0,
+          });
+        }
+        out.set(s2.panel, { meta: s2, bars });
+      }
+      return out;
+    };
+    const fromWeekly = (payload) => {
+      const out = new Map();
+      for (const panel of ['XBTUSD', 'ETHUSD']) {
+        const bars = payload.series.filter((r) => r.symbol === panel).sort((a, b) => a.day.localeCompare(b.day));
+        out.set(panel, { meta: (payload.sources || []).find((s2) => (s2.panel === 'BTC' ? 'XBTUSD' : 'ETHUSD') === panel) || null, bars });
+      }
+      return out;
+    };
+    const bucketBars = (bars, res) => {
+      if (res === '1D') return bars;
+      const keyOf = res === '1W'
+        ? (b) => { const dt = new Date(dateMs(b.day)); dt.setUTCDate(dt.getUTCDate() - ((dt.getUTCDay() + 6) % 7)); return dt.toISOString().slice(0, 10); }
+        : (b) => b.day.slice(0, 7);
+      const out = [];
+      for (const b of bars) {
+        const k = keyOf(b);
+        const last = out[out.length - 1];
+        if (last && last.k === k) {
+          last.high = Math.max(last.high, b.high);
+          last.low = Math.min(last.low, b.low);
+          last.close = b.close;
+          last.volume += b.volume;
+          last.accountFills += b.accountFills;
+          last.accountNotionalXbt += b.accountNotionalXbt;
+        } else {
+          out.push({ ...b, k });
+        }
+      }
+      return out;
+    };
+
+    let source = fromWeekly(d.candles);
+    let resolution = '1W';
+    let resolutionLabel = '주봉 · 오프라인 스냅샷';
+    // A linear price axis over 2011-2026 is useless: BTC's first years collapse
+    // onto the baseline because the range spans four orders of magnitude. The
+    // axis therefore switches to log automatically and can be forced either way.
+    let scaleMode = 'auto';
+
     const render = () => {
-      const all = bySymbol.get(symbol), last = all.at(-1), previous = all.at(-2);
-      const end = dateMs(last.day), from = range === 'all' ? dateMs(all[0].day) : end - (range === '3M' ? 90 : 365) * DAY;
-      const rows = all.filter((r) => dateMs(r.day) >= from);
+      const entry = source.get(symbol);
+      const meta = entry.meta || {};
+      const all = entry.bars;
+      if (!all.length) return;
+      const last = all.at(-1), previous = all.at(-2) || last;
+      const end = dateMs(last.day);
+      const spanDays = range === 'all' ? Math.round((end - dateMs(all[0].day)) / DAY) : (RANGE_DAYS[range] || 365);
+      const from = range === 'all' ? dateMs(all[0].day) : end - spanDays * DAY;
+      const res = resolutionFor(spanDays);
+      const rows = bucketBars(all.filter((r) => dateMs(r.day) >= from), res);
+      const withMa = rows.map((r, i, arr) => ({
+        ...r,
+        ma7: i < 6 ? null : sum(arr.slice(i - 6, i + 1), 'close') / 7,
+        ma20: i < 19 ? null : sum(arr.slice(i - 19, i + 1), 'close') / 20,
+      }));
       const W = 900, H = 372, L = 12, R = 78, T = 30, B = 244, VT = 280, VB = 334;
       const x = (ms) => L + 5 + (ms - from) / (end - from || DAY) * (W - L - R - 10);
-      const prices = rows.flatMap((r) => [r.low, r.high, ...(r.ma7 === null ? [] : [r.ma7]), ...(r.ma20 === null ? [] : [r.ma20])]);
+      const prices = withMa.flatMap((r) => [r.low, r.high, ...(r.ma7 === null ? [] : [r.ma7]), ...(r.ma20 === null ? [] : [r.ma20])]);
       const low = Math.min(...prices), high = Math.max(...prices), padding = (high - low || high * .01) * .08;
-      const lo = low - padding, hi = high + padding;
-      const y = (v) => B - (v - lo) / (hi - lo) * (B - T);
-      const maxVolume = Math.max(...rows.map((r) => r.volume), 1);
+      const lo = Math.max(low - padding, low * 0.5);
+      const hi = high + padding;
+      const useLog = scaleMode === 'log' || (scaleMode === 'auto' && hi / Math.max(lo, 1e-9) > 8);
+      const y = useLog
+        ? (v) => B - (Math.log(Math.max(v, lo)) - Math.log(lo)) / (Math.log(hi) - Math.log(lo)) * (B - T)
+        : (v) => B - (v - lo) / (hi - lo) * (B - T);
+      const maxVolume = Math.max(...withMa.map((r) => r.volume), 1);
       const vy = (v) => VB - v / maxVolume * (VB - VT);
-      const bodyWidth = Math.max(.65, Math.min(9, DAY / (end - from || DAY) * (W - L - R - 10) * .68));
-      let body = text(L, 14, `일봉 OHLC / USD · ${(d.candles.symbolMap || {})[symbol] || symbol}`, 'axis-unit');
-      for (let i = 0; i <= 4; i++) {
-        const value = lo + (hi - lo) * i / 4;
-        body += line(L, y(value), W - R, y(value)) + text(W - 6, y(value) + 3, number(value, symbol === 'ETHUSD' ? 2 : 0), '', 'end');
+      const slot = (end - from || DAY) / Math.max(withMa.length, 1);
+      const bodyWidth = Math.max(.7, Math.min(11, slot / DAY * (W - L - R - 10) * .68));
+      const decimals = symbol === 'ETHUSD' ? 2 : 0;
+      let body = text(L, 14, `${meta.label || symbol} · ${res} · ${meta.venue || 'market'} · ${useLog ? 'LOG' : 'LIN'}`, 'axis-unit');
+      for (let i = 0; i <= 4; i += 1) {
+        const value = useLog
+          ? Math.exp(Math.log(lo) + (Math.log(hi) - Math.log(lo)) * i / 4)
+          : lo + (hi - lo) * i / 4;
+        body += line(L, y(value), W - R, y(value)) + text(W - 6, y(value) + 3, number(value, decimals), '', 'end');
       }
-      body += text(L, VT - 9, '시장 거래량 / BTC', 'axis-unit') + line(L, VB, W - R, VB) + text(W - 6, VT + 4, shortNumber(maxVolume), '', 'end') + text(W - 6, VB + 3, '0', '', 'end');
-      rows.forEach((r) => {
+      body += text(L, VT - 9, '시장 거래량', 'axis-unit') + line(L, VB, W - R, VB) + text(W - 6, VT + 4, shortNumber(maxVolume), '', 'end') + text(W - 6, VB + 3, '0', '', 'end');
+      withMa.forEach((r) => {
         const xx = x(dateMs(r.day)), color = `var(--${r.close >= r.open ? 'profit' : 'loss'})`;
         body += `<line class="candle-wick" x1="${xx}" x2="${xx}" y1="${y(r.high)}" y2="${y(r.low)}" stroke="${color}" stroke-width="1"/>`;
-        body += `<rect class="candle-body" data-day="${r.day}" x="${xx - bodyWidth / 2}" y="${Math.min(y(r.open), y(r.close))}" width="${bodyWidth}" height="${Math.max(1, Math.abs(y(r.open) - y(r.close)))}" fill="${color}"/>`;
-        body += `<rect class="candle-volume" data-day="${r.day}" x="${xx - bodyWidth / 2}" y="${vy(r.volume)}" width="${bodyWidth}" height="${Math.max(.5, VB - vy(r.volume))}" fill="${color}" opacity=".55"/>`;
+        body += `<rect class="candle-body" data-day="${r.day}" x="${(xx - bodyWidth / 2).toFixed(2)}" y="${Math.min(y(r.open), y(r.close)).toFixed(2)}" width="${bodyWidth.toFixed(2)}" height="${Math.max(1, Math.abs(y(r.open) - y(r.close))).toFixed(2)}" fill="${color}"/>`;
+        body += `<rect class="candle-volume" data-day="${r.day}" x="${(xx - bodyWidth / 2).toFixed(2)}" y="${vy(r.volume).toFixed(2)}" width="${bodyWidth.toFixed(2)}" height="${Math.max(.5, VB - vy(r.volume)).toFixed(2)}" fill="${color}" opacity=".55"/>`;
       });
-      const traded = rows.filter((r) => r.accountFills > 0);
-      body += text(L, VB - 6, `계좌 거래일 ${number(traded.length)} / ${number(rows.length)}`, 'axis-unit');
+      const traded = withMa.filter((r) => r.accountFills > 0);
+      body += text(L, VB - 6, `계좌 거래 ${number(traded.length)} / ${number(withMa.length)}봉`, 'axis-unit');
       traded.forEach((r) => {
         const xx = x(dateMs(r.day));
         body += `<rect class="candle-mark" x="${(xx - Math.max(bodyWidth, 2) / 2).toFixed(2)}" y="${VB - 4}" width="${Math.max(bodyWidth, 2).toFixed(2)}" height="4" fill="var(--brass)" opacity=".85"/>`;
       });
       for (const [key, color, dash] of [['ma7', 'var(--brass)', ''], ['ma20', 'var(--text)', 'stroke-dasharray="4 3"']]) {
         let path = '', previousDay = null;
-        rows.forEach((r) => {
+        withMa.forEach((r) => {
           if (r[key] === null) { previousDay = null; return; }
           const day = dateMs(r.day);
-          path += `${previousDay !== null && day - previousDay === DAY ? 'L' : 'M'}${x(day)},${y(r[key])}`;
+          path += `${previousDay !== null && day - previousDay <= 31 * DAY ? 'L' : 'M'}${x(day)},${y(r[key])}`;
           previousDay = day;
         });
         body += `<path class="${key}" d="${path}" fill="none" stroke="${color}" stroke-width="1.4" ${dash}/>`;
       }
       body += line(L, y(last.close), W - R, y(last.close), 'last-price-line');
-      rows.forEach((r) => {
+      withMa.forEach((r) => {
         const xx = x(dateMs(r.day));
-        const label = `${symbol} · ${r.day} · 일봉`
-          + `\nO ${number(r.open, 2)} / H ${number(r.high, 2)} / L ${number(r.low, 2)} / C ${number(r.close, 2)} USD`
-          + `\n시장 거래량 ${shortNumber(r.volume)} BTC`
+        const label = `${symbol} · ${r.day} · ${res}`
+          + `\nO ${number(r.open, 2)} / H ${number(r.high, 2)}`
+          + `\nL ${number(r.low, 2)} / C ${number(r.close, 2)} USD`
+          + `\n시장 거래량 ${shortNumber(r.volume)}`
           + `\nMA7 ${r.ma7 === null ? '구간 부족' : number(r.ma7, 2)} / MA20 ${r.ma20 === null ? '구간 부족' : number(r.ma20, 2)}`
           + `\n계좌 체결 ${number(r.accountFills)}건 (전 종목)`
-          + (r.accountFills ? ` · 명목 ${number(r.accountNotionalXbt, 3)} BTC` : ' · 이 날 거래 없음')
-          + `\n시장 시세는 Binance 기준, 계좌가 거래한 거래소가 아님`;
-        body += `<rect class="candle-mark" x="${xx - Math.max(bodyWidth, 4) / 2}" y="${T}" width="${Math.max(bodyWidth, 4)}" height="${VB - T}" fill="transparent" ${tip(label, `data-day="${r.day}" data-x="${xx}" data-y="${y(r.close)}" data-close="${r.close}" data-volume="${r.volume}" data-ma7="${r.ma7 ?? ''}" data-ma20="${r.ma20 ?? ''}"`)}/>`;
+          + (r.accountFills ? ` · 명목 ${number(r.accountNotionalXbt, 3)} BTC` : ' · 이 봉 거래 없음')
+          + `\n출처 ${meta.venue || 'market'} · ${meta.first || ''}부터`;
+        body += `<rect class="candle-mark" x="${(xx - Math.max(bodyWidth, 4) / 2).toFixed(2)}" y="${T}" width="${Math.max(bodyWidth, 4).toFixed(2)}" height="${VB - T}" fill="transparent" ${tip(label, `data-day="${r.day}" data-x="${xx}" data-y="${y(r.close)}" data-close="${r.close}" data-volume="${r.volume}" data-ma7="${r.ma7 ?? ''}" data-ma20="${r.ma20 ?? ''}"`)}/>`;
       });
       body += dateLabels(from, end, x, VB + 23, 3);
       const host = $('candle-chart');
-      host.innerHTML = svg(`${symbol} 일봉 시장 시세, 금색 눈금은 계좌가 거래한 날`, body, W, H);
-      Object.assign(host.dataset, { symbol, range, count: String(rows.length), from: isoDay(from), to: last.day });
+      host.innerHTML = svg(`${symbol} ${res} 시장 시세, 금색 눈금은 계좌가 거래한 봉`, body, W, H);
+      Object.assign(host.dataset, { symbol, range, resolution: res, count: String(withMa.length), from: isoDay(from), to: last.day });
       const delta = (last.close - previous.close) / previous.close;
       $('candle-last').textContent = number(last.close, 2);
       $('candle-last').className = delta >= 0 ? 'positive' : 'negative';
-      $('candle-change').textContent = `${signed(delta * 100, 2)}% · 전일 ${previous.day} 종가 대비`;
-      $('candle-change').className = delta >= 0 ? 'positive' : 'negative';
-      $('candle-note').textContent = `${isoDay(from)} → ${last.day} · ${number(rows.length)} / ${number(all.length)}일 · 3M=90일, 1Y=365일. MA7/20은 달력 일수 기준 단순이동평균입니다. 아래 금색 눈금은 계좌가 체결된 날이고, 이 구간에서 ${number(rows.filter((r) => r.accountFills > 0).length)}일입니다.`;
-      host.closest('figure').querySelector('.chart-readout').textContent = `${symbol} · ${last.day} 마지막 관측 · O ${number(last.open, 2)} / H ${number(last.high, 2)} / L ${number(last.low, 2)} / C ${number(last.close, 2)} USD`;
+      $('candle-change').textContent = `${signed(delta * 100, 2)}% · ${res} 기준 전봉 대비`;
+      $('candle-note').textContent = `${meta.label || symbol} · ${meta.venue || '시장'} · ${isoDay(from)} → ${last.day} · ${number(withMa.length)}봉 (${res}) · ${resolutionLabel}. MA7/20은 봉 기준 단순이동평균입니다. 금색 눈금은 계좌가 체결된 봉이고, 이 구간에서 ${number(traded.length)}봉입니다.`;
+      const readout = host.closest('figure').querySelector('.chart-readout');
+      if (readout) readout.textContent = `${symbol} · ${last.day} 마지막 봉 · O ${number(last.open, 2)} / H ${number(last.high, 2)} / L ${number(last.low, 2)} / C ${number(last.close, 2)} USD`;
     };
+
     tabGroup($('symbol-filter'), 'candle-chart', [['XBTUSD', 'XBTUSD'], ['ETHUSD', 'ETHUSD']], symbol, (next) => { symbol = next; render(); }, 'symbol');
-    tabGroup($('candle-periods'), 'candle-chart', [['3M', '3M'], ['1Y', '1Y'], ['all', 'ALL']], range, (next) => { range = next; render(); });
+    tabGroup($('candle-periods'), 'candle-chart', RANGES, range, (next) => { range = next; render(); });
+    tabGroup($('candle-scale'), 'candle-chart', [['auto', 'AUTO'], ['log', 'LOG'], ['lin', 'LIN']], scaleMode, (next) => { scaleMode = next; render(); }, 'scale');
+    render();
+    // The full daily history is ~9,400 bars, too large to embed for offline use.
+    // It is fetched over http(s) only; under file:// the embedded weekly series
+    // is what the chart shows, and the caption says so.
+    if (/^https?:/.test(location.protocol)) {
+      fetch(`data/candles-daily.json${DATA_VERSION}`, { cache: 'no-cache' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((payload) => {
+          if (!payload || !payload.series) return;
+          source = unpack(payload);
+          resolution = '1D';
+          resolutionLabel = '일봉 · 런타임 로드';
+          render();
+        })
+        .catch(() => {});
+    }
   }
   function monthlyPanels(d) {
     let pnl = 0n, out = 0n, peak = 0;

@@ -52,9 +52,81 @@ async function main() {
   const manifest = await readJson('manifest.json');
   const dailyActivity = await readCsv('results/daily-activity.csv');
   const candles = await readJson('results/candles.json');
-  const market = await readJson('results/market-ohlcv.json');
+  const marketHistory = await readJson('results/market-history.json');
 
   const activityByDay = new Map(dailyActivity.map((r) => [r.date, { fills: Number(r.fills), notionalXbt: Number(r.notional_xbt) }]));
+  const dayMs = 86400000;
+  const toDay = (sec) => new Date(sec * 1000).toISOString().slice(0, 10);
+  const px2 = (v) => Number(v.toFixed(2));
+  const vol3 = (v) => Number(v.toFixed(3));
+
+  // Bucket daily bars into weeks (Monday-anchored): open is the first open,
+  // close the last close, high/low the extremes, volume the sum.
+  const bucket = (bars, keyOf) => {
+    const out = [];
+    for (const b of bars) {
+      const key = keyOf(b);
+      const last = out[out.length - 1];
+      if (last && last.key === key) {
+        last.high = Math.max(last.high, b.high);
+        last.low = Math.min(last.low, b.low);
+        last.close = b.close;
+        last.volume += b.volume;
+      } else {
+        out.push({ key, symbol: b.symbol, day: b.day, open: b.open, high: b.high, low: b.low, close: b.close, volume: b.volume });
+      }
+    }
+    return out;
+  };
+  const weekKey = (b) => {
+    const d = new Date(`${b.day}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); // Monday anchor
+    return d.toISOString().slice(0, 10);
+  };
+  const withAccount = (bar, spanDays = 1) => {
+    // For aggregated bars the account fields must cover the whole bar, not just
+    // its first day, or a weekly bar would report only Monday's activity.
+    let fills = 0;
+    let notional = 0;
+    for (let i = 0; i < spanDays; i += 1) {
+      const day = activityByDay.get(new Date(Date.parse(`${bar.day}T00:00:00Z`) + i * 86400000).toISOString().slice(0, 10));
+      if (day) { fills += day.fills; notional += day.notionalXbt; }
+    }
+    return {
+      symbol: bar.symbol, day: bar.day,
+      open: px2(bar.open), high: px2(bar.high), low: px2(bar.low), close: px2(bar.close),
+      volume: vol3(bar.volume),
+      accountFills: fills,
+      accountNotionalXbt: Number(notional.toFixed(3)),
+    };
+  };
+  const panelOf = (p) => (p === 'BTC' ? 'XBTUSD' : 'ETHUSD');
+  const weeklySeries = [];
+  const dailySeries = [];
+  for (const s3 of marketHistory.series) {
+    const panel = panelOf(s3.panel);
+    const daily = s3.bars
+      .map((b) => ({ symbol: panel, day: toDay(b.t), open: b.open, high: b.high, low: b.low, close: b.close, volume: b.volume }))
+      .filter((b) => b.low > 0 && b.high >= Math.max(b.open, b.close) && b.low <= Math.min(b.open, b.close));
+    weeklySeries.push(...bucket(daily, weekKey).map((b) => withAccount(b, 7)));
+    const flat = [];
+    let prev = null;
+    for (const b of daily) {
+      const t = Math.floor(Date.parse(`${b.day}T00:00:00Z`) / dayMs);
+      flat.push(prev === null ? 0 : t - prev, px2(b.open), px2(b.high), px2(b.low), px2(b.close), vol3(b.volume));
+      prev = t;
+    }
+    const account = daily.map((b) => {
+      const d2 = activityByDay.get(b.day);
+      return d2 ? [d2.fills, Number(d2.notionalXbt.toFixed(3))] : null;
+    });
+    dailySeries.push({
+      panel, venue: s3.venue, label: s3.label, first: s3.first, last: s3.last,
+      t0: Math.floor(Date.parse(`${s3.first}T00:00:00Z`) / dayMs),
+      bars: flat, account,
+    });
+  }
+
   const w = summary.wallet;
   const h = insights.headline;
   // Use the audited order count (the all-zero placeholder is not an order),
@@ -266,38 +338,25 @@ async function main() {
       notes: insights.definitions,
     },
     'activity.json': activity,
+    // Two payloads, because the full daily history is too large to embed:
+    //   candles.json       weekly, whole history, small, embedded for offline use
+    //   candles-daily.json daily, whole history, fetched at runtime only
+    // Both carry the account's own activity per bar so the chart can mark it.
     'candles.json': {
-      source: market.source,
-      sourceUrl: market.sourceUrl,
-      fetchedAt: market.fetchedAt,
-      note: market.note,
-      // Panel symbol -> market symbol. The account traded BitMEX XBTUSD/ETHUSD;
-      // these are the closest liquid continuous series, from a different venue.
-      symbolMap: { XBTUSD: 'BTCUSDT', ETHUSD: 'ETHUSDT' },
-      // The fill-derived OHLC stays in results/candles.json. It is sparse (a few
-      // hundred prints a year, blank on days with no trades), which is why the
-      // chart uses market bars instead and marks the days the account traded.
-      reconstructedAvailable: true,
-      // Trim to the window the export covers and round to the precision the
-      // quotes actually carry: this payload is embedded in index.html for
-      // offline use, so unnecessary digits cost every reader bytes.
-      series: market.series.flatMap((s2) => {
-        const panel = s2.symbol === 'BTCUSDT' ? 'XBTUSD' : 'ETHUSD';
-        const px = (v) => Number(v.toFixed(2));
-        return s2.bars
-          .filter((b) => b.day >= '2018-03-05' && b.day <= '2021-12-24')
-          .map((b) => {
-            const day = activityByDay.get(b.day);
-            return {
-              symbol: panel,
-              day: b.day,
-              open: px(b.open), high: px(b.high), low: px(b.low), close: px(b.close),
-              volume: Number(b.volume.toFixed(3)),
-              accountFills: day ? day.fills : 0,
-              accountNotionalXbt: day ? Number(day.notionalXbt.toFixed(3)) : 0,
-            };
-          });
-      }),
+      resolution: '1W',
+      sources: marketHistory.series.map((s2) => ({ panel: s2.panel, venue: s2.venue, label: s2.label, first: s2.first, last: s2.last })),
+      fetchedAt: marketHistory.fetchedAt,
+      note: marketHistory.note,
+      offlineFallback: true,
+      series: weeklySeries,
+    },
+    'candles-daily.json': {
+      resolution: '1D',
+      sources: marketHistory.series.map((s2) => ({ panel: s2.panel, venue: s2.venue, label: s2.label, first: s2.first, last: s2.last })),
+      fetchedAt: marketHistory.fetchedAt,
+      note: marketHistory.note,
+      packing: '[dayOffset, open, high, low, close, volume] repeated; dayOffset is days since t0, first bar is 0',
+      series: dailySeries,
     },
     'balance.json': {
       // monthly end balances only: the daily series stays in the repo
@@ -332,9 +391,19 @@ async function main() {
   const indexPath = path.join(ROOT, 'site', 'index.html');
   const html = await fsp.readFile(indexPath, 'utf8');
   const marker = /(<script id="site-data" type="application\/json">)[\s\S]*?(<\/script>)/;
+  const dataVersion = crypto.createHash('sha256')
+    .update(Object.keys(payloads).sort().map((k) => k + JSON.stringify(payloads[k])).join('|'))
+    .digest('hex').slice(0, 12);
   if (!marker.test(html)) throw new Error('index.html is missing the offline data marker');
-  const embedded = JSON.stringify(payloads).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
-  await fsp.writeFile(indexPath, html.replace(marker, (_match, before, after) => before + embedded + after));
+  // candles-daily.json is deliberately left out: 9,358 bars would roughly
+  // double index.html. Offline readers get the embedded weekly series instead,
+  // and app.js labels the resolution when it falls back to it.
+  const { 'candles-daily.json': omittedDaily, ...embeddedPayloads } = payloads;
+  void omittedDaily;
+  const embedded = JSON.stringify(embeddedPayloads).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+  let outHtml = html.replace(marker, (_match, before, after) => before + embedded + after);
+  outHtml = outHtml.replace(/(<script src="app\.js)/, `<script>window.__dataVersion=${JSON.stringify(dataVersion)}</script>\n$1`);
+  await fsp.writeFile(indexPath, outHtml);
   // Cache-bust the two assets. GitHub Pages serves them with a 10-minute
   // max-age, so without this a content change can sit invisible behind a stale
   // copy for minutes after a deploy.
