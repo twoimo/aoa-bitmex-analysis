@@ -1,0 +1,2183 @@
+{
+  "generatedAt": "2026-09-22T10:04:06.171Z",
+  "definitions": {
+    "holdingPeriod": "FIFO queue matching of fills; time between opening and closing exposure, not an exchange-reported position lifetime.",
+    "exposureRatio": "daily traded notional (sum of |foreignNotional|) divided by that day's closing wallet equity.",
+    "winRate": "share of profitable RealisedPNL ledger entries (position-close events), not orders.",
+    "kst": "execution timestamps are UTC; day/hour buckets are KST (UTC+9)."
+  },
+  "headline": {
+    "firstFill": "2018-03-05 07:28:18.063937",
+    "lastFill": "2021-12-24 09:21:46.227714",
+    "fills": 1439207,
+    "roundTrips": 1417925,
+    "finalEquityXBt": 737.2697,
+    "realisedPnlXBt": 3537.3237,
+    "depositedXBt": 14.4893,
+    "withdrawnXBt": -2814.5432,
+    "withdrawnShareOfProfit": 0.7957,
+    "feesXBt": 682.61737401,
+    "feesNote": "gross of rebates: |maker rebate| + taker fee",
+    "netTradeFeeXBt": 75.04546939,
+    "fundingXBt": -149.57544093,
+    "fundingNote": "negative execComm on funding rows means the account received it",
+    "fundingReceivedXBt": 149.57544093,
+    "netFeePlusFundingXBt": -74.52997154,
+    "netFeePlusFundingShareOfProfit": -0.0211,
+    "maxDrawdownPct": 1.6196,
+    "maxDrawdownXBt": 2.7676,
+    "maxDrawdownByAbsoluteXBt": {
+      "dropXBt": 590.9771,
+      "pct": 0.1436,
+      "peakDay": "2021-10-12",
+      "troughDay": "2021-12-22"
+    },
+    "maxDrawdownBasis": "cumulative ledger profit high-water mark",
+    "maxDrawdownPeakDay": "2018-03-20",
+    "maxDrawdownTroughDay": "2018-04-03",
+    "balanceColumnMaxDrawdownPct": 1,
+    "balanceColumnMaxDrawdownNote": "wallet-balance drawdown; includes withdrawals and a rounded day-level balance column, so it overstates strategy drawdown",
+    "makerShare": 0.6716
+  },
+  "symbolAttribution": [
+    {
+      "symbol": "XBTUSD",
+      "closes": 1377,
+      "pnlXBt": 2007.0846,
+      "shareOfPnl": 0.5674,
+      "winRate": 0.6296,
+      "bestXBt": 141.7365,
+      "worstXBt": -146.1262
+    },
+    {
+      "symbol": "ETHUSD",
+      "closes": 312,
+      "pnlXBt": 830.3645,
+      "shareOfPnl": 0.2347,
+      "winRate": 0.6731,
+      "bestXBt": 107.8406,
+      "worstXBt": -147.7397
+    },
+    {
+      "symbol": "XBTU21",
+      "closes": 11,
+      "pnlXBt": 246.3337,
+      "shareOfPnl": 0.0696,
+      "winRate": 0.7273,
+      "bestXBt": 125.6941,
+      "worstXBt": -26.9473
+    },
+    {
+      "symbol": "XRPUSD",
+      "closes": 109,
+      "pnlXBt": 173.8614,
+      "shareOfPnl": 0.0492,
+      "winRate": 0.8991,
+      "bestXBt": 45.0907,
+      "worstXBt": -8.1003
+    },
+    {
+      "symbol": "ETHUSDM21",
+      "closes": 5,
+      "pnlXBt": 140.9343,
+      "shareOfPnl": 0.0398,
+      "winRate": 0.8,
+      "bestXBt": 139.9202,
+      "worstXBt": -0.0188
+    },
+    {
+      "symbol": "XBTH20",
+      "closes": 14,
+      "pnlXBt": 119.2016,
+      "shareOfPnl": 0.0337,
+      "winRate": 0.7857,
+      "bestXBt": 133.8014,
+      "worstXBt": -23.7354
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "closes": 19,
+      "pnlXBt": 52.607,
+      "shareOfPnl": 0.0149,
+      "winRate": 0.8947,
+      "bestXBt": 17.4086,
+      "worstXBt": -0.0022
+    },
+    {
+      "symbol": "BNBUSDT",
+      "closes": 9,
+      "pnlXBt": 19.1529,
+      "shareOfPnl": 0.0054,
+      "winRate": 1,
+      "bestXBt": 11.9295,
+      "worstXBt": 0.0197
+    },
+    {
+      "symbol": "LTCUSD",
+      "closes": 35,
+      "pnlXBt": 16.8653,
+      "shareOfPnl": 0.0048,
+      "winRate": 0.9429,
+      "bestXBt": 15.715,
+      "worstXBt": -30.5784
+    },
+    {
+      "symbol": "DOTUSDT",
+      "closes": 23,
+      "pnlXBt": 16.4092,
+      "shareOfPnl": 0.0046,
+      "winRate": 0.8261,
+      "bestXBt": 9.4195,
+      "worstXBt": -5.5258
+    },
+    {
+      "symbol": "XBTZ18",
+      "closes": 4,
+      "pnlXBt": 12.3231,
+      "shareOfPnl": 0.0035,
+      "winRate": 0.75,
+      "bestXBt": 6.2305,
+      "worstXBt": 0
+    },
+    {
+      "symbol": "XBTH19",
+      "closes": 4,
+      "pnlXBt": 8.1673,
+      "shareOfPnl": 0.0023,
+      "winRate": 0.25,
+      "bestXBt": 15.3689,
+      "worstXBt": -7.185
+    },
+    {
+      "symbol": "EOSH21",
+      "closes": 3,
+      "pnlXBt": 6.8589,
+      "shareOfPnl": 0.0019,
+      "winRate": 0.6667,
+      "bestXBt": 5.1671,
+      "worstXBt": -0.0204
+    },
+    {
+      "symbol": "TRXU18",
+      "closes": 18,
+      "pnlXBt": 3.8845,
+      "shareOfPnl": 0.0011,
+      "winRate": 0.9444,
+      "bestXBt": 0.7138,
+      "worstXBt": 0
+    },
+    {
+      "symbol": "XBTU18",
+      "closes": 3,
+      "pnlXBt": 3.832,
+      "shareOfPnl": 0.0011,
+      "winRate": 0.6667,
+      "bestXBt": 3.8879,
+      "worstXBt": -0.0596
+    },
+    {
+      "symbol": "XRPH21",
+      "closes": 2,
+      "pnlXBt": 3.7393,
+      "shareOfPnl": 0.0011,
+      "winRate": 0.5,
+      "bestXBt": 5.6388,
+      "worstXBt": -1.8995
+    },
+    {
+      "symbol": "BCHZ18",
+      "closes": 15,
+      "pnlXBt": 2.3688,
+      "shareOfPnl": 0.0007,
+      "winRate": 0.7333,
+      "bestXBt": 2.4176,
+      "worstXBt": -3.9713
+    },
+    {
+      "symbol": "EOSU18",
+      "closes": 38,
+      "pnlXBt": 1.929,
+      "shareOfPnl": 0.0005,
+      "winRate": 0.6842,
+      "bestXBt": 1.1781,
+      "worstXBt": -1.2359
+    },
+    {
+      "symbol": "EOSM18",
+      "closes": 7,
+      "pnlXBt": 1.1928,
+      "shareOfPnl": 0.0003,
+      "winRate": 0.7143,
+      "bestXBt": 1.195,
+      "worstXBt": -0.978
+    },
+    {
+      "symbol": "EOSZ18",
+      "closes": 4,
+      "pnlXBt": 1.0345,
+      "shareOfPnl": 0.0003,
+      "winRate": 0.75,
+      "bestXBt": 1.2472,
+      "worstXBt": -0.6915
+    },
+    {
+      "symbol": "TRXZ18",
+      "closes": 3,
+      "pnlXBt": 0.5906,
+      "shareOfPnl": 0.0002,
+      "winRate": 1,
+      "bestXBt": 0.3514,
+      "worstXBt": 0.0511
+    },
+    {
+      "symbol": "XRPM19",
+      "closes": 1,
+      "pnlXBt": 0.4216,
+      "shareOfPnl": 0.0001,
+      "winRate": 1,
+      "bestXBt": 0.4216,
+      "worstXBt": 0.4216
+    },
+    {
+      "symbol": "XRPZ18",
+      "closes": 12,
+      "pnlXBt": 0.4204,
+      "shareOfPnl": 0.0001,
+      "winRate": 0.6667,
+      "bestXBt": 1.1353,
+      "worstXBt": -1.468
+    },
+    {
+      "symbol": "XRPM18",
+      "closes": 3,
+      "pnlXBt": 0.3191,
+      "shareOfPnl": 0.0001,
+      "winRate": 1,
+      "bestXBt": 0.1576,
+      "worstXBt": 0.0056
+    },
+    {
+      "symbol": "BCHM18",
+      "closes": 3,
+      "pnlXBt": 0.175,
+      "shareOfPnl": 0,
+      "winRate": 1,
+      "bestXBt": 0.0742,
+      "worstXBt": 0.0383
+    },
+    {
+      "symbol": "BCHU18",
+      "closes": 2,
+      "pnlXBt": 0.1619,
+      "shareOfPnl": 0,
+      "winRate": 1,
+      "bestXBt": 0.1554,
+      "worstXBt": 0.0065
+    },
+    {
+      "symbol": "XRPH19",
+      "closes": 2,
+      "pnlXBt": 0.1564,
+      "shareOfPnl": 0,
+      "winRate": 1,
+      "bestXBt": 0.1452,
+      "worstXBt": 0.0111
+    },
+    {
+      "symbol": "LTCU18",
+      "closes": 1,
+      "pnlXBt": 0.124,
+      "shareOfPnl": 0,
+      "winRate": 1,
+      "bestXBt": 0.124,
+      "worstXBt": 0.124
+    },
+    {
+      "symbol": "YFIUSDTZ20",
+      "closes": 1,
+      "pnlXBt": 0.1069,
+      "shareOfPnl": 0,
+      "winRate": 1,
+      "bestXBt": 0.1069,
+      "worstXBt": 0.1069
+    },
+    {
+      "symbol": "ADAUSDT",
+      "closes": 2,
+      "pnlXBt": 0.0221,
+      "shareOfPnl": 0,
+      "winRate": 0.5,
+      "bestXBt": 0.0319,
+      "worstXBt": -0.0098
+    },
+    {
+      "symbol": "ETHM18",
+      "closes": 1,
+      "pnlXBt": -0.0029,
+      "shareOfPnl": 0,
+      "winRate": 0,
+      "bestXBt": -0.0029,
+      "worstXBt": -0.0029
+    },
+    {
+      "symbol": "XBT7D_U110",
+      "closes": 1,
+      "pnlXBt": -0.0091,
+      "shareOfPnl": 0,
+      "winRate": 0,
+      "bestXBt": -0.0091,
+      "worstXBt": -0.0091
+    },
+    {
+      "symbol": "ADAM19",
+      "closes": 1,
+      "pnlXBt": -0.0647,
+      "shareOfPnl": 0,
+      "winRate": 0,
+      "bestXBt": -0.0647,
+      "worstXBt": -0.0647
+    },
+    {
+      "symbol": "LTCH19",
+      "closes": 2,
+      "pnlXBt": -0.0758,
+      "shareOfPnl": 0,
+      "winRate": 0.5,
+      "bestXBt": 0.743,
+      "worstXBt": -0.8187
+    },
+    {
+      "symbol": "ADAZ18",
+      "closes": 2,
+      "pnlXBt": -0.0975,
+      "shareOfPnl": 0,
+      "winRate": 0.5,
+      "bestXBt": 0.0882,
+      "worstXBt": -0.1857
+    },
+    {
+      "symbol": "ADAM18",
+      "closes": 15,
+      "pnlXBt": -0.1924,
+      "shareOfPnl": -0.0001,
+      "winRate": 0.8667,
+      "bestXBt": 0.45,
+      "worstXBt": -1.9183
+    },
+    {
+      "symbol": "XBTM18",
+      "closes": 11,
+      "pnlXBt": -0.4167,
+      "shareOfPnl": -0.0001,
+      "winRate": 0.6364,
+      "bestXBt": 0.0601,
+      "worstXBt": -0.274
+    },
+    {
+      "symbol": "TRXH19",
+      "closes": 1,
+      "pnlXBt": -0.555,
+      "shareOfPnl": -0.0002,
+      "winRate": 0,
+      "bestXBt": -0.555,
+      "worstXBt": -0.555
+    },
+    {
+      "symbol": "BCHM19",
+      "closes": 1,
+      "pnlXBt": -1.2877,
+      "shareOfPnl": -0.0004,
+      "winRate": 0,
+      "bestXBt": -1.2877,
+      "worstXBt": -1.2877
+    },
+    {
+      "symbol": "ADAU18",
+      "closes": 27,
+      "pnlXBt": -1.4863,
+      "shareOfPnl": -0.0004,
+      "winRate": 0.6667,
+      "bestXBt": 0.169,
+      "worstXBt": -0.7484
+    },
+    {
+      "symbol": "ETHU18",
+      "closes": 11,
+      "pnlXBt": -2.5915,
+      "shareOfPnl": -0.0007,
+      "winRate": 0.3636,
+      "bestXBt": 0.0788,
+      "worstXBt": -1.1137
+    },
+    {
+      "symbol": "TRXU19",
+      "closes": 2,
+      "pnlXBt": -6.2596,
+      "shareOfPnl": -0.0018,
+      "winRate": 0.5,
+      "bestXBt": 0.0341,
+      "worstXBt": -6.2937
+    },
+    {
+      "symbol": "XBTM19",
+      "closes": 3,
+      "pnlXBt": -14.7575,
+      "shareOfPnl": -0.0042,
+      "winRate": 0.6667,
+      "bestXBt": 0.0414,
+      "worstXBt": -14.7995
+    },
+    {
+      "symbol": "XRPU18",
+      "closes": 14,
+      "pnlXBt": -17.7415,
+      "shareOfPnl": -0.005,
+      "winRate": 0.7143,
+      "bestXBt": 1.0575,
+      "worstXBt": -15.2576
+    },
+    {
+      "symbol": "LINKUSDT",
+      "closes": 18,
+      "pnlXBt": -17.8463,
+      "shareOfPnl": -0.005,
+      "winRate": 0.7778,
+      "bestXBt": 2.7638,
+      "worstXBt": -15.9562
+    },
+    {
+      "symbol": "BCHUSD",
+      "closes": 20,
+      "pnlXBt": -69.935,
+      "shareOfPnl": -0.0198,
+      "winRate": 0.6,
+      "bestXBt": 6.964,
+      "worstXBt": -63.1428
+    }
+  ],
+  "exposure": {
+    "days": 1067,
+    "excludedDaysWithEquityUnder1Xbt": 15,
+    "unit": "XBt-equivalent traded notional per day divided by that day's closing wallet equity",
+    "median": 5.321,
+    "p90": 110.668,
+    "p99": 8405.442,
+    "max": 86790.876,
+    "maxDay": "2020-12-24"
+  },
+  "holdingPeriod": {
+    "trips": 1417925,
+    "median": "13.2h",
+    "p10": "15.6m",
+    "p25": "1.8h",
+    "p75": "3.0d",
+    "p90": "9.3d",
+    "shareUnder1h": 0.1982,
+    "shareUnder1d": 0.5995,
+    "long": {
+      "trips": 402351,
+      "notionalUsd": 4356059627,
+      "median": "4.7h"
+    },
+    "short": {
+      "trips": 1015574,
+      "notionalUsd": 9625779679,
+      "median": "20.3h"
+    },
+    "bySymbol": [
+      {
+        "symbol": "XBTUSD",
+        "trips": 938141,
+        "medianHold": "5.1h",
+        "p10": "8.9m",
+        "p90": "2.2d"
+      },
+      {
+        "symbol": "ETHUSD",
+        "trips": 323759,
+        "medianHold": "4.1d",
+        "p10": "3.1h",
+        "p90": "28.3d"
+      },
+      {
+        "symbol": "XRPUSD",
+        "trips": 52824,
+        "medianHold": "28.7d",
+        "p10": "1.1d",
+        "p90": "57.3d"
+      },
+      {
+        "symbol": "XBTU21",
+        "trips": 25504,
+        "medianHold": "2.8d",
+        "p10": "2.4d",
+        "p90": "53.5d"
+      },
+      {
+        "symbol": "LTCUSD",
+        "trips": 16303,
+        "medianHold": "8.0d",
+        "p10": "6.4d",
+        "p90": "9.9d"
+      },
+      {
+        "symbol": "DOTUSDT",
+        "trips": 9941,
+        "medianHold": "8.9d",
+        "p10": "6.0d",
+        "p90": "10.1d"
+      },
+      {
+        "symbol": "DOGEUSDT",
+        "trips": 9868,
+        "medianHold": "8.0d",
+        "p10": "5.2d",
+        "p90": "96.1d"
+      },
+      {
+        "symbol": "BCHUSD",
+        "trips": 7741,
+        "medianHold": "5.1d",
+        "p10": "4.5d",
+        "p90": "5.2d"
+      },
+      {
+        "symbol": "LINKUSDT",
+        "trips": 6209,
+        "medianHold": "7.4d",
+        "p10": "2.1d",
+        "p90": "10.0d"
+      },
+      {
+        "symbol": "XBTH20",
+        "trips": 5912,
+        "medianHold": "7.7h",
+        "p10": "6.0h",
+        "p90": "10.5d"
+      }
+    ]
+  },
+  "withdrawalDiscipline": {
+    "withdrawals": 56,
+    "deposits": 18,
+    "totalWithdrawnXBt": -2814.5432,
+    "totalDepositedXBt": 14.4893,
+    "withdrawalShareOfRealised": 0.7957,
+    "withdrawalsWithin5DaysOfAnEquityPeak": 27,
+    "peakDaysDetected": 61,
+    "curve": [
+      {
+        "day": "2018-03-22",
+        "cumPnl": -0.24713766,
+        "cumOut": 1.96801713,
+        "cumIn": 2.21515479,
+        "balance": 0
+      },
+      {
+        "day": "2018-03-30",
+        "cumPnl": 0.40073847,
+        "cumOut": 2.16921713,
+        "cumIn": 3.9788366,
+        "balance": 2.21035794
+      },
+      {
+        "day": "2018-03-31",
+        "cumPnl": 0.7537533,
+        "cumOut": 2.37041713,
+        "cumIn": 3.9788366,
+        "balance": 2.36217277
+      },
+      {
+        "day": "2018-04-01",
+        "cumPnl": 0.51055761,
+        "cumOut": 2.37041713,
+        "cumIn": 3.9788366,
+        "balance": 1.72513107
+      },
+      {
+        "day": "2018-04-01",
+        "cumPnl": 0.1167116,
+        "cumOut": 2.37041713,
+        "cumIn": 3.9788366,
+        "balance": 1.72513107
+      },
+      {
+        "day": "2018-04-18",
+        "cumPnl": 1.9974575,
+        "cumOut": 3.37161713,
+        "cumIn": 4.71234324,
+        "balance": 3.33818361
+      },
+      {
+        "day": "2018-04-24",
+        "cumPnl": 2.68655768,
+        "cumOut": 4.37281713,
+        "cumIn": 4.71234324,
+        "balance": 3.02608379
+      },
+      {
+        "day": "2018-04-25",
+        "cumPnl": 2.70745623,
+        "cumOut": 4.87441713,
+        "cumIn": 4.71234324,
+        "balance": 2.54538234
+      },
+      {
+        "day": "2018-04-27",
+        "cumPnl": 4.42668691,
+        "cumOut": 5.87561713,
+        "cumIn": 4.71234324,
+        "balance": 3.80937178
+      },
+      {
+        "day": "2018-05-12",
+        "cumPnl": 8.82414973,
+        "cumOut": 7.87681713,
+        "cumIn": 4.71234324,
+        "balance": 5.65967584
+      },
+      {
+        "day": "2018-06-01",
+        "cumPnl": 7.86353665,
+        "cumOut": 7.87681713,
+        "cumIn": 8.17189425,
+        "balance": 8.15861377
+      },
+      {
+        "day": "2018-07-01",
+        "cumPnl": 13.34108782,
+        "cumOut": 7.87681713,
+        "cumIn": 8.17189425,
+        "balance": 13.63616494
+      },
+      {
+        "day": "2018-07-28",
+        "cumPnl": 26.5892096,
+        "cumOut": 11.87801713,
+        "cumIn": 8.17189425,
+        "balance": 22.88308672
+      },
+      {
+        "day": "2018-08-01",
+        "cumPnl": 27.82017531,
+        "cumOut": 11.87801713,
+        "cumIn": 8.17189425,
+        "balance": 18.08249677
+      },
+      {
+        "day": "2018-08-01",
+        "cumPnl": 26.70302219,
+        "cumOut": 11.87801713,
+        "cumIn": 8.17189425,
+        "balance": 18.08249677
+      },
+      {
+        "day": "2018-08-01",
+        "cumPnl": 26.65377212,
+        "cumOut": 11.87801713,
+        "cumIn": 8.17189425,
+        "balance": 18.08249677
+      },
+      {
+        "day": "2018-08-01",
+        "cumPnl": 26.72848295,
+        "cumOut": 11.87801713,
+        "cumIn": 8.17189425,
+        "balance": 18.08249677
+      },
+      {
+        "day": "2018-08-01",
+        "cumPnl": 21.62097923,
+        "cumOut": 11.87801713,
+        "cumIn": 8.17189425,
+        "balance": 18.08249677
+      },
+      {
+        "day": "2018-08-01",
+        "cumPnl": 21.78861965,
+        "cumOut": 11.87801713,
+        "cumIn": 8.17189425,
+        "balance": 18.08249677
+      },
+      {
+        "day": "2018-08-10",
+        "cumPnl": 31.20218947,
+        "cumOut": 14.37921713,
+        "cumIn": 8.17189425,
+        "balance": 24.99486659
+      },
+      {
+        "day": "2018-08-13",
+        "cumPnl": 33.43605126,
+        "cumOut": 14.87961713,
+        "cumIn": 8.17189425,
+        "balance": 26.72832838
+      },
+      {
+        "day": "2018-09-01",
+        "cumPnl": 36.37258626,
+        "cumOut": 14.87961713,
+        "cumIn": 8.17189425,
+        "balance": 29.66486338
+      },
+      {
+        "day": "2018-09-05",
+        "cumPnl": 43.93553206,
+        "cumOut": 21.89161713,
+        "cumIn": 8.17189425,
+        "balance": 30.21580918
+      },
+      {
+        "day": "2018-10-01",
+        "cumPnl": 17.5728578,
+        "cumOut": 21.89161713,
+        "cumIn": 9.81501627,
+        "balance": 5.49625694
+      },
+      {
+        "day": "2018-11-01",
+        "cumPnl": 25.76904526,
+        "cumOut": 21.89161713,
+        "cumIn": 14.34587476,
+        "balance": 18.22330295
+      },
+      {
+        "day": "2018-11-01",
+        "cumPnl": 25.76904532,
+        "cumOut": 21.89161713,
+        "cumIn": 14.34587476,
+        "balance": 18.22330295
+      },
+      {
+        "day": "2018-11-25",
+        "cumPnl": 78.1676175,
+        "cumOut": 22.89281713,
+        "cumIn": 14.48925714,
+        "balance": 69.76405751
+      },
+      {
+        "day": "2018-11-28",
+        "cumPnl": 94.12751879,
+        "cumOut": 32.90481713,
+        "cumIn": 14.48925714,
+        "balance": 75.7119588
+      },
+      {
+        "day": "2018-11-29",
+        "cumPnl": 97.32455931,
+        "cumOut": 42.91681713,
+        "cumIn": 14.48925714,
+        "balance": 68.89699932
+      },
+      {
+        "day": "2018-12-01",
+        "cumPnl": 108.40608069,
+        "cumOut": 42.91681713,
+        "cumIn": 14.48925714,
+        "balance": 80.86558962
+      },
+      {
+        "day": "2018-12-01",
+        "cumPnl": 109.29314961,
+        "cumOut": 42.91681713,
+        "cumIn": 14.48925714,
+        "balance": 80.86558962
+      },
+      {
+        "day": "2018-12-07",
+        "cumPnl": 136.54892438,
+        "cumOut": 52.92881713,
+        "cumIn": 14.48925714,
+        "balance": 98.10936439
+      },
+      {
+        "day": "2018-12-23",
+        "cumPnl": 157.85495516,
+        "cumOut": 62.94081713,
+        "cumIn": 14.48925714,
+        "balance": 109.40339517
+      },
+      {
+        "day": "2018-12-29",
+        "cumPnl": 187.19184941,
+        "cumOut": 82.95281713,
+        "cumIn": 14.48925714,
+        "balance": 118.72828942
+      },
+      {
+        "day": "2019-01-01",
+        "cumPnl": 191.89297013,
+        "cumOut": 82.95281713,
+        "cumIn": 14.48925714,
+        "balance": 123.42941014
+      },
+      {
+        "day": "2019-01-11",
+        "cumPnl": 190.4899475,
+        "cumOut": 92.96481713,
+        "cumIn": 14.48925714,
+        "balance": 112.01438751
+      },
+      {
+        "day": "2019-01-15",
+        "cumPnl": 225.6828336,
+        "cumOut": 102.97681713,
+        "cumIn": 14.48925714,
+        "balance": 137.19527361
+      },
+      {
+        "day": "2019-02-01",
+        "cumPnl": 256.70991097,
+        "cumOut": 102.97681713,
+        "cumIn": 14.48925714,
+        "balance": 168.22235098
+      },
+      {
+        "day": "2019-02-09",
+        "cumPnl": 261.206015,
+        "cumOut": 122.98881713,
+        "cumIn": 14.48925714,
+        "balance": 152.70645501
+      },
+      {
+        "day": "2019-03-01",
+        "cumPnl": 276.29042211,
+        "cumOut": 122.98881713,
+        "cumIn": 14.48925714,
+        "balance": 169.30316993
+      },
+      {
+        "day": "2019-03-01",
+        "cumPnl": 277.79158007,
+        "cumOut": 122.98881713,
+        "cumIn": 14.48925714,
+        "balance": 169.30316993
+      },
+      {
+        "day": "2019-03-01",
+        "cumPnl": 277.80272992,
+        "cumOut": 122.98881713,
+        "cumIn": 14.48925714,
+        "balance": 169.30316993
+      },
+      {
+        "day": "2019-03-08",
+        "cumPnl": 290.21850101,
+        "cumOut": 130.99001713,
+        "cumIn": 14.48925714,
+        "balance": 173.71774102
+      },
+      {
+        "day": "2019-04-01",
+        "cumPnl": 308.15926686,
+        "cumOut": 130.99001713,
+        "cumIn": 14.48925714,
+        "balance": 191.65850687
+      },
+      {
+        "day": "2019-04-10",
+        "cumPnl": 286.82714418,
+        "cumOut": 151.00201713,
+        "cumIn": 14.48925714,
+        "balance": 150.31438419
+      },
+      {
+        "day": "2019-04-18",
+        "cumPnl": 303.03209553,
+        "cumOut": 161.01401713,
+        "cumIn": 14.48925714,
+        "balance": 156.50733554
+      },
+      {
+        "day": "2019-04-23",
+        "cumPnl": 325.19236019,
+        "cumOut": 181.02601713,
+        "cumIn": 14.48925714,
+        "balance": 158.6556002
+      },
+      {
+        "day": "2019-05-01",
+        "cumPnl": 332.44903688,
+        "cumOut": 181.02601713,
+        "cumIn": 14.48925714,
+        "balance": 165.91227689
+      },
+      {
+        "day": "2019-05-06",
+        "cumPnl": 357.60475567,
+        "cumOut": 201.03801713,
+        "cumIn": 14.48925714,
+        "balance": 171.05599568
+      },
+      {
+        "day": "2019-05-12",
+        "cumPnl": 364.86081525,
+        "cumOut": 221.05001713,
+        "cumIn": 14.48925714,
+        "balance": 158.30005526
+      },
+      {
+        "day": "2019-05-27",
+        "cumPnl": 402.88132075,
+        "cumOut": 241.06201713,
+        "cumIn": 14.48925714,
+        "balance": 176.30856076
+      },
+      {
+        "day": "2019-06-01",
+        "cumPnl": 398.07852245,
+        "cumOut": 241.06201713,
+        "cumIn": 14.48925714,
+        "balance": 171.50576246
+      },
+      {
+        "day": "2019-06-16",
+        "cumPnl": 414.79825954,
+        "cumOut": 261.07401713,
+        "cumIn": 14.48925714,
+        "balance": 168.21349955
+      },
+      {
+        "day": "2019-06-26",
+        "cumPnl": 424.91441883,
+        "cumOut": 281.08601713,
+        "cumIn": 14.48925714,
+        "balance": 158.31765884
+      },
+      {
+        "day": "2019-07-01",
+        "cumPnl": 437.07650146,
+        "cumOut": 281.08601713,
+        "cumIn": 14.48925714,
+        "balance": 170.47974147
+      },
+      {
+        "day": "2019-07-18",
+        "cumPnl": 488.1970484,
+        "cumOut": 301.09801713,
+        "cumIn": 14.48925714,
+        "balance": 201.58828841
+      },
+      {
+        "day": "2019-07-19",
+        "cumPnl": 483.8427339,
+        "cumOut": 321.11301713,
+        "cumIn": 14.48925714,
+        "balance": 177.21897391
+      },
+      {
+        "day": "2019-08-01",
+        "cumPnl": 474.44087237,
+        "cumOut": 321.11301713,
+        "cumIn": 14.48925714,
+        "balance": 167.81711238
+      },
+      {
+        "day": "2019-09-01",
+        "cumPnl": 518.84598007,
+        "cumOut": 321.11301713,
+        "cumIn": 14.48925714,
+        "balance": 212.22222008
+      },
+      {
+        "day": "2019-09-06",
+        "cumPnl": 527.23755078,
+        "cumOut": 341.12501713,
+        "cumIn": 14.48925714,
+        "balance": 200.60179079
+      },
+      {
+        "day": "2019-10-01",
+        "cumPnl": 545.55041587,
+        "cumOut": 341.12501713,
+        "cumIn": 14.48925714,
+        "balance": 218.91465588
+      },
+      {
+        "day": "2019-11-01",
+        "cumPnl": 541.38435682,
+        "cumOut": 341.12501713,
+        "cumIn": 14.48925714,
+        "balance": 214.74859683
+      },
+      {
+        "day": "2019-12-01",
+        "cumPnl": 649.1083555,
+        "cumOut": 341.12501713,
+        "cumIn": 14.48925714,
+        "balance": 322.47259551
+      },
+      {
+        "day": "2019-12-10",
+        "cumPnl": 655.87192958,
+        "cumOut": 341.13601713,
+        "cumIn": 14.48925714,
+        "balance": 329.22516959
+      },
+      {
+        "day": "2019-12-11",
+        "cumPnl": 688.22820764,
+        "cumOut": 342.13721713,
+        "cumIn": 14.48925714,
+        "balance": 360.58024765
+      },
+      {
+        "day": "2020-01-01",
+        "cumPnl": 705.78672769,
+        "cumOut": 342.13721713,
+        "cumIn": 14.48925714,
+        "balance": 378.1387677
+      },
+      {
+        "day": "2020-01-08",
+        "cumPnl": 727.31829471,
+        "cumOut": 362.14921713,
+        "cumIn": 14.48925714,
+        "balance": 379.65833472
+      },
+      {
+        "day": "2020-01-11",
+        "cumPnl": 778.35706381,
+        "cumOut": 392.16121713,
+        "cumIn": 14.48925714,
+        "balance": 400.68510382
+      },
+      {
+        "day": "2020-01-17",
+        "cumPnl": 783.52789311,
+        "cumOut": 442.17321713,
+        "cumIn": 14.48925714,
+        "balance": 355.84393312
+      },
+      {
+        "day": "2020-02-01",
+        "cumPnl": 861.03906419,
+        "cumOut": 442.17321713,
+        "cumIn": 14.48925714,
+        "balance": 433.3551042
+      },
+      {
+        "day": "2020-02-15",
+        "cumPnl": 879.90565134,
+        "cumOut": 492.18521713,
+        "cumIn": 14.48925714,
+        "balance": 402.20969135
+      },
+      {
+        "day": "2020-03-01",
+        "cumPnl": 898.97820688,
+        "cumOut": 492.18521713,
+        "cumIn": 14.48925714,
+        "balance": 421.28224689
+      },
+      {
+        "day": "2020-03-13",
+        "cumPnl": 1160.29511841,
+        "cumOut": 542.19721713,
+        "cumIn": 14.48925714,
+        "balance": 632.58715842
+      },
+      {
+        "day": "2020-03-24",
+        "cumPnl": 1104.15566722,
+        "cumOut": 592.20921713,
+        "cumIn": 14.48925714,
+        "balance": 526.43570723
+      },
+      {
+        "day": "2020-04-01",
+        "cumPnl": 1200.98531032,
+        "cumOut": 592.20921713,
+        "cumIn": 14.48925714,
+        "balance": 623.26535033
+      },
+      {
+        "day": "2020-05-01",
+        "cumPnl": 1167.45879788,
+        "cumOut": 592.20921713,
+        "cumIn": 14.48925714,
+        "balance": 589.73883789
+      },
+      {
+        "day": "2020-05-02",
+        "cumPnl": 1167.49192554,
+        "cumOut": 642.22121713,
+        "cumIn": 14.48925714,
+        "balance": 539.75996555
+      },
+      {
+        "day": "2020-05-11",
+        "cumPnl": 1226.23360393,
+        "cumOut": 692.23621713,
+        "cumIn": 14.48925714,
+        "balance": 548.48664394
+      },
+      {
+        "day": "2020-06-01",
+        "cumPnl": 1215.68842574,
+        "cumOut": 692.23621713,
+        "cumIn": 14.48925714,
+        "balance": 537.94146575
+      },
+      {
+        "day": "2020-07-01",
+        "cumPnl": 1262.38454907,
+        "cumOut": 692.23621713,
+        "cumIn": 14.48925714,
+        "balance": 584.63758908
+      },
+      {
+        "day": "2020-08-01",
+        "cumPnl": 1305.38580936,
+        "cumOut": 692.23621713,
+        "cumIn": 14.48925714,
+        "balance": 627.63884937
+      },
+      {
+        "day": "2020-08-02",
+        "cumPnl": 1344.3134074,
+        "cumOut": 764.24821713,
+        "cumIn": 14.48925714,
+        "balance": 594.55444741
+      },
+      {
+        "day": "2020-08-19",
+        "cumPnl": 1420.78133155,
+        "cumOut": 814.26021713,
+        "cumIn": 14.48925714,
+        "balance": 621.01037156
+      },
+      {
+        "day": "2020-08-24",
+        "cumPnl": 1440.69219914,
+        "cumOut": 864.26221713,
+        "cumIn": 14.48925714,
+        "balance": 590.91923915
+      },
+      {
+        "day": "2020-09-01",
+        "cumPnl": 1430.6535636,
+        "cumOut": 864.26221713,
+        "cumIn": 14.48925714,
+        "balance": 580.88060361
+      },
+      {
+        "day": "2020-10-01",
+        "cumPnl": 1532.82662336,
+        "cumOut": 864.26221713,
+        "cumIn": 14.48925714,
+        "balance": 683.05366337
+      },
+      {
+        "day": "2020-10-02",
+        "cumPnl": 1543.73674232,
+        "cumOut": 914.27421713,
+        "cumIn": 14.48925714,
+        "balance": 643.95178233
+      },
+      {
+        "day": "2020-11-01",
+        "cumPnl": 1502.45587915,
+        "cumOut": 914.27421713,
+        "cumIn": 14.48925714,
+        "balance": 602.67091916
+      },
+      {
+        "day": "2020-12-01",
+        "cumPnl": 1475.26016857,
+        "cumOut": 914.27421713,
+        "cumIn": 14.48925714,
+        "balance": 575.47520858
+      },
+      {
+        "day": "2020-12-20",
+        "cumPnl": 1522.96416241,
+        "cumOut": 964.28621713,
+        "cumIn": 14.48925714,
+        "balance": 573.16720242
+      },
+      {
+        "day": "2021-01-01",
+        "cumPnl": 1468.86676226,
+        "cumOut": 964.28621713,
+        "cumIn": 14.48925714,
+        "balance": 519.17401509
+      },
+      {
+        "day": "2021-01-01",
+        "cumPnl": 1468.97097508,
+        "cumOut": 964.28621713,
+        "cumIn": 14.48925714,
+        "balance": 519.17401509
+      },
+      {
+        "day": "2021-01-29",
+        "cumPnl": 1802.27954481,
+        "cumOut": 1064.29821713,
+        "cumIn": 14.48925714,
+        "balance": 752.47058482
+      },
+      {
+        "day": "2021-02-01",
+        "cumPnl": 1797.20356021,
+        "cumOut": 1064.29821713,
+        "cumIn": 14.48925714,
+        "balance": 755.6452237
+      },
+      {
+        "day": "2021-02-01",
+        "cumPnl": 1805.45418369,
+        "cumOut": 1064.29821713,
+        "cumIn": 14.48925714,
+        "balance": 755.6452237
+      },
+      {
+        "day": "2021-03-01",
+        "cumPnl": 1753.24370958,
+        "cumOut": 1064.29821713,
+        "cumIn": 14.48925714,
+        "balance": 703.3686471
+      },
+      {
+        "day": "2021-03-01",
+        "cumPnl": 1753.17760709,
+        "cumOut": 1064.29821713,
+        "cumIn": 14.48925714,
+        "balance": 703.3686471
+      },
+      {
+        "day": "2021-03-08",
+        "cumPnl": 1802.80067667,
+        "cumOut": 1114.31021713,
+        "cumIn": 14.48925714,
+        "balance": 702.97971668
+      },
+      {
+        "day": "2021-04-01",
+        "cumPnl": 1798.68119776,
+        "cumOut": 1114.31021713,
+        "cumIn": 14.48925714,
+        "balance": 698.86023777
+      },
+      {
+        "day": "2021-04-05",
+        "cumPnl": 1790.28247112,
+        "cumOut": 1214.32221713,
+        "cumIn": 14.48925714,
+        "balance": 590.44951113
+      },
+      {
+        "day": "2021-05-01",
+        "cumPnl": 1913.16243648,
+        "cumOut": 1214.32221713,
+        "cumIn": 14.48925714,
+        "balance": 714.46526802
+      },
+      {
+        "day": "2021-05-01",
+        "cumPnl": 1913.42238431,
+        "cumOut": 1214.32221713,
+        "cumIn": 14.48925714,
+        "balance": 714.46526802
+      },
+      {
+        "day": "2021-05-01",
+        "cumPnl": 1913.83982367,
+        "cumOut": 1214.32221713,
+        "cumIn": 14.48925714,
+        "balance": 714.46526802
+      },
+      {
+        "day": "2021-05-01",
+        "cumPnl": 1914.08701103,
+        "cumOut": 1214.32221713,
+        "cumIn": 14.48925714,
+        "balance": 714.46526802
+      },
+      {
+        "day": "2021-05-01",
+        "cumPnl": 1914.07439691,
+        "cumOut": 1214.32221713,
+        "cumIn": 14.48925714,
+        "balance": 714.46526802
+      },
+      {
+        "day": "2021-05-01",
+        "cumPnl": 1914.29822801,
+        "cumOut": 1214.32221713,
+        "cumIn": 14.48925714,
+        "balance": 714.46526802
+      },
+      {
+        "day": "2021-06-01",
+        "cumPnl": 2020.12963327,
+        "cumOut": 1214.32221713,
+        "cumIn": 14.48925714,
+        "balance": 861.19478121
+      },
+      {
+        "day": "2021-06-01",
+        "cumPnl": 2061.0277412,
+        "cumOut": 1214.32221713,
+        "cumIn": 14.48925714,
+        "balance": 861.19478121
+      },
+      {
+        "day": "2021-06-20",
+        "cumPnl": 2674.98819261,
+        "cumOut": 1514.34321713,
+        "cumIn": 14.48925714,
+        "balance": 1175.13
+      },
+      {
+        "day": "2021-07-01",
+        "cumPnl": 2588.01187994,
+        "cumOut": 1514.34321713,
+        "cumIn": 14.48925714,
+        "balance": 1113.18
+      },
+      {
+        "day": "2021-07-01",
+        "cumPnl": 2588.04200022,
+        "cumOut": 1514.34321713,
+        "cumIn": 14.48925714,
+        "balance": 1113.18
+      },
+      {
+        "day": "2021-07-01",
+        "cumPnl": 2613.03516938,
+        "cumOut": 1514.34321713,
+        "cumIn": 14.48925714,
+        "balance": 1113.18
+      },
+      {
+        "day": "2021-07-27",
+        "cumPnl": 2764.31919271,
+        "cumOut": 1814.39321713,
+        "cumIn": 14.48925714,
+        "balance": 964.41523272
+      },
+      {
+        "day": "2021-08-01",
+        "cumPnl": 2787.75657869,
+        "cumOut": 1814.39321713,
+        "cumIn": 14.48925714,
+        "balance": 988.13910398
+      },
+      {
+        "day": "2021-08-01",
+        "cumPnl": 2788.04306397,
+        "cumOut": 1814.39321713,
+        "cumIn": 14.48925714,
+        "balance": 988.13910398
+      },
+      {
+        "day": "2021-08-19",
+        "cumPnl": 3270.17871983,
+        "cumOut": 2214.44321713,
+        "cumIn": 14.48925714,
+        "balance": 1070.22
+      },
+      {
+        "day": "2021-09-01",
+        "cumPnl": 3412.96164391,
+        "cumOut": 2214.44321713,
+        "cumIn": 14.48925714,
+        "balance": 1213.01
+      },
+      {
+        "day": "2021-09-03",
+        "cumPnl": 3429.5097983,
+        "cumOut": 2514.49321713,
+        "cumIn": 14.48925714,
+        "balance": 929.50583831
+      },
+      {
+        "day": "2021-09-23",
+        "cumPnl": 3895.07476818,
+        "cumOut": 2814.54321713,
+        "cumIn": 14.48925714,
+        "balance": 1095.02
+      },
+      {
+        "day": "2021-10-01",
+        "cumPnl": 4106.45887577,
+        "cumOut": 2814.54321713,
+        "cumIn": 14.48925714,
+        "balance": 1306.59
+      },
+      {
+        "day": "2021-10-01",
+        "cumPnl": 4106.49828576,
+        "cumOut": 2814.54321713,
+        "cumIn": 14.48925714,
+        "balance": 1306.59
+      },
+      {
+        "day": "2021-10-01",
+        "cumPnl": 4106.64766915,
+        "cumOut": 2814.54321713,
+        "cumIn": 14.48925714,
+        "balance": 1306.59
+      },
+      {
+        "day": "2021-11-01",
+        "cumPnl": 3890.870945,
+        "cumOut": 2814.54321713,
+        "cumIn": 14.48925714,
+        "balance": 1091.1
+      },
+      {
+        "day": "2021-11-01",
+        "cumPnl": 3890.9205401,
+        "cumOut": 2814.54321713,
+        "cumIn": 14.48925714,
+        "balance": 1091.1
+      },
+      {
+        "day": "2021-11-01",
+        "cumPnl": 3891.15552029,
+        "cumOut": 2814.54321713,
+        "cumIn": 14.48925714,
+        "balance": 1091.1
+      },
+      {
+        "day": "2021-12-01",
+        "cumPnl": 3691.67338975,
+        "cumOut": 2814.54321713,
+        "cumIn": 14.48925714,
+        "balance": 891.61942976
+      }
+    ]
+  },
+  "concentration": {
+    "closes": 2172,
+    "top10Share": 0.1366,
+    "top1pctShare": 0.2311,
+    "top5pctShare": 0.5817,
+    "grossProfitXBt": 8585.9411
+  },
+  "behaviour": {
+    "daysAfterWin": 727,
+    "medianExposureRatioAfterWin": 6.119,
+    "daysAfterLoss": 346,
+    "medianExposureRatioAfterLoss": 3.876
+  },
+  "timing": {
+    "hourFillsKST": [
+      58980,
+      86126,
+      53312,
+      64632,
+      48662,
+      71356,
+      62494,
+      66568,
+      49007,
+      49681,
+      50591,
+      44610,
+      57363,
+      48836,
+      52491,
+      64780,
+      48973,
+      53272,
+      52935,
+      63446,
+      57686,
+      73410,
+      67228,
+      92768
+    ],
+    "hourNotionalKST": [
+      1326785912,
+      1753634810,
+      1076222890,
+      1091451888,
+      905824069,
+      1471584160,
+      949782956,
+      987334602,
+      969602386,
+      1183126355,
+      1023471694,
+      898575036,
+      927575806,
+      935107485,
+      1006698165,
+      1073364244,
+      851701831,
+      1107189628,
+      1190967331,
+      1379896948,
+      1186910783,
+      1600010060,
+      1403975568,
+      1777315461
+    ],
+    "dowFills": [
+      131976,
+      228146,
+      223297,
+      208161,
+      239566,
+      243633,
+      164428
+    ],
+    "dowNotional": [
+      2266935701,
+      4356397806,
+      4326478990,
+      4166492505,
+      4823999898,
+      5085332000,
+      3052473166
+    ]
+  },
+  "drawdowns": [
+    {
+      "drawdownPct": 1.6196,
+      "basis": "cumulative ledger profit",
+      "peakXBt": 1.7088,
+      "troughXBt": -1.0588,
+      "peakDay": "2018-03-20",
+      "troughDay": "2018-04-03",
+      "recoveredDay": null
+    },
+    {
+      "drawdownPct": 0.6439,
+      "basis": "cumulative ledger profit",
+      "peakXBt": 43.9355,
+      "troughXBt": 15.646,
+      "peakDay": "2018-09-05",
+      "troughDay": "2018-09-22",
+      "recoveredDay": null
+    },
+    {
+      "drawdownPct": 0.6036,
+      "basis": "cumulative ledger profit",
+      "peakXBt": 1.9975,
+      "troughXBt": 0.7918,
+      "peakDay": "2018-04-18",
+      "troughDay": "2018-04-19",
+      "recoveredDay": null
+    },
+    {
+      "drawdownPct": 0.5289,
+      "basis": "cumulative ledger profit",
+      "peakXBt": 10.3074,
+      "troughXBt": 4.8553,
+      "peakDay": "2018-05-22",
+      "troughDay": "2018-05-24",
+      "recoveredDay": null
+    },
+    {
+      "drawdownPct": 0.292,
+      "basis": "cumulative ledger profit",
+      "peakXBt": 28.4842,
+      "troughXBt": 20.1682,
+      "peakDay": "2018-07-31",
+      "troughDay": "2018-08-05",
+      "recoveredDay": null
+    }
+  ],
+  "drawdownsOnWalletBalance": [
+    {
+      "drawdownPct": 1,
+      "basis": "wallet balance column (includes withdrawals; rounded day-level snapshot)",
+      "peakDay": "2018-03-20",
+      "troughDay": "2018-03-22"
+    },
+    {
+      "drawdownPct": 0.9074,
+      "basis": "wallet balance column (includes withdrawals; rounded day-level snapshot)",
+      "peakDay": "2018-08-24",
+      "troughDay": "2018-09-22"
+    },
+    {
+      "drawdownPct": 0.6274,
+      "basis": "wallet balance column (includes withdrawals; rounded day-level snapshot)",
+      "peakDay": "2018-03-09",
+      "troughDay": "2018-03-11"
+    },
+    {
+      "drawdownPct": 0.5628,
+      "basis": "wallet balance column (includes withdrawals; rounded day-level snapshot)",
+      "peakDay": "2020-09-08",
+      "troughDay": "2021-05-20"
+    },
+    {
+      "drawdownPct": 0.526,
+      "basis": "wallet balance column (includes withdrawals; rounded day-level snapshot)",
+      "peakDay": "2021-06-19",
+      "troughDay": "2021-12-22"
+    }
+  ],
+  "monthly": [
+    {
+      "month": "2018-03",
+      "closes": 23,
+      "winRate": 0.522,
+      "realisedXBt": 0.7538,
+      "fundingXBt": -0.0263,
+      "feesXBt": 3.5777,
+      "notionalUsd": 54593456,
+      "depositsXBt": 3.9788,
+      "withdrawalsXBt": -2.3704,
+      "endBalanceXBt": 2.3622
+    },
+    {
+      "month": "2018-04",
+      "closes": 42,
+      "winRate": 0.762,
+      "realisedXBt": 4.5467,
+      "fundingXBt": 0.0427,
+      "feesXBt": 9.178,
+      "notionalUsd": 151418121,
+      "depositsXBt": 0.7335,
+      "withdrawalsXBt": -3.5052,
+      "endBalanceXBt": 4.1372
+    },
+    {
+      "month": "2018-05",
+      "closes": 34,
+      "winRate": 0.735,
+      "realisedXBt": 2.0984,
+      "fundingXBt": 0.0603,
+      "feesXBt": 3.6557,
+      "notionalUsd": 93762957,
+      "depositsXBt": 3.4596,
+      "withdrawalsXBt": -2.0012,
+      "endBalanceXBt": 7.6939
+    },
+    {
+      "month": "2018-06",
+      "closes": 48,
+      "winRate": 0.813,
+      "realisedXBt": 5.7573,
+      "fundingXBt": 0.0529,
+      "feesXBt": 5.3402,
+      "notionalUsd": 100594019,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 13.4512
+    },
+    {
+      "month": "2018-07",
+      "closes": 86,
+      "winRate": 0.767,
+      "realisedXBt": 15.3281,
+      "fundingXBt": 0.2911,
+      "feesXBt": 8.3228,
+      "notionalUsd": 171226679,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -4.0012,
+      "endBalanceXBt": 24.7781
+    },
+    {
+      "month": "2018-08",
+      "closes": 76,
+      "winRate": 0.671,
+      "realisedXBt": 7.9258,
+      "fundingXBt": -0.002,
+      "feesXBt": 12.3518,
+      "notionalUsd": 220436518,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -3.0016,
+      "endBalanceXBt": 29.7023
+    },
+    {
+      "month": "2018-09",
+      "closes": 60,
+      "winRate": 0.533,
+      "realisedXBt": -18.8372,
+      "fundingXBt": 0.1716,
+      "feesXBt": 10.0385,
+      "notionalUsd": 141553330,
+      "depositsXBt": 1.6431,
+      "withdrawalsXBt": -7.012,
+      "endBalanceXBt": 5.4963
+    },
+    {
+      "month": "2018-10",
+      "closes": 67,
+      "winRate": 0.761,
+      "realisedXBt": 8.1962,
+      "fundingXBt": 0.0282,
+      "feesXBt": 2.78,
+      "notionalUsd": 32369668,
+      "depositsXBt": 4.5309,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 18.2233
+    },
+    {
+      "month": "2018-11",
+      "closes": 82,
+      "winRate": 0.732,
+      "realisedXBt": 82.637,
+      "fundingXBt": 2.0393,
+      "feesXBt": 33.5773,
+      "notionalUsd": 244770239,
+      "depositsXBt": 0.1434,
+      "withdrawalsXBt": -21.0252,
+      "endBalanceXBt": 79.9785
+    },
+    {
+      "month": "2018-12",
+      "closes": 57,
+      "winRate": 0.509,
+      "realisedXBt": 80.0196,
+      "fundingXBt": 2.4054,
+      "feesXBt": 47.2314,
+      "notionalUsd": 400587591,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -40.036,
+      "endBalanceXBt": 119.9622
+    },
+    {
+      "month": "2019-01",
+      "closes": 36,
+      "winRate": 0.639,
+      "realisedXBt": 67.5656,
+      "fundingXBt": 1.5425,
+      "feesXBt": 5.9772,
+      "notionalUsd": 61342982,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -20.024,
+      "endBalanceXBt": 167.5038
+    },
+    {
+      "month": "2019-02",
+      "closes": 30,
+      "winRate": 0.767,
+      "realisedXBt": 19.3914,
+      "fundingXBt": 0.2009,
+      "feesXBt": 8.7658,
+      "notionalUsd": 83083563,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -20.012,
+      "endBalanceXBt": 166.8832
+    },
+    {
+      "month": "2019-03",
+      "closes": 41,
+      "winRate": 0.585,
+      "realisedXBt": 33.2637,
+      "fundingXBt": 2.0649,
+      "feesXBt": 5.9473,
+      "notionalUsd": 61117449,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -8.0012,
+      "endBalanceXBt": 192.1457
+    },
+    {
+      "month": "2019-04",
+      "closes": 34,
+      "winRate": 0.765,
+      "realisedXBt": 31.8567,
+      "fundingXBt": 2.8078,
+      "feesXBt": 33.8617,
+      "notionalUsd": 444034421,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.036,
+      "endBalanceXBt": 173.9663
+    },
+    {
+      "month": "2019-05",
+      "closes": 34,
+      "winRate": 0.588,
+      "realisedXBt": 60.1139,
+      "fundingXBt": 1.2631,
+      "feesXBt": 44.3109,
+      "notionalUsd": 818184964,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -60.036,
+      "endBalanceXBt": 174.0443
+    },
+    {
+      "month": "2019-06",
+      "closes": 33,
+      "winRate": 0.667,
+      "realisedXBt": 36.0735,
+      "fundingXBt": -2.1087,
+      "feesXBt": 11.3315,
+      "notionalUsd": 291879074,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -40.024,
+      "endBalanceXBt": 170.0938
+    },
+    {
+      "month": "2019-07",
+      "closes": 33,
+      "winRate": 0.636,
+      "realisedXBt": 47.5374,
+      "fundingXBt": -0.7711,
+      "feesXBt": 15.762,
+      "notionalUsd": 347022673,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -40.027,
+      "endBalanceXBt": 177.6042
+    },
+    {
+      "month": "2019-08",
+      "closes": 31,
+      "winRate": 0.613,
+      "realisedXBt": 39.0277,
+      "fundingXBt": 1.0601,
+      "feesXBt": 14.584,
+      "notionalUsd": 308229750,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 216.6319
+    },
+    {
+      "month": "2019-09",
+      "closes": 33,
+      "winRate": 0.727,
+      "realisedXBt": 26.9507,
+      "fundingXBt": -0.2953,
+      "feesXBt": 7.8192,
+      "notionalUsd": 175356695,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -20.012,
+      "endBalanceXBt": 223.5706
+    },
+    {
+      "month": "2019-10",
+      "closes": 31,
+      "winRate": 0.548,
+      "realisedXBt": -8.822,
+      "fundingXBt": 0.5812,
+      "feesXBt": 6.3259,
+      "notionalUsd": 138872476,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 214.7486
+    },
+    {
+      "month": "2019-11",
+      "closes": 30,
+      "winRate": 0.7,
+      "realisedXBt": 94.1081,
+      "fundingXBt": -0.3186,
+      "feesXBt": 8.9308,
+      "notionalUsd": 204244632,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 308.8567
+    },
+    {
+      "month": "2019-12",
+      "closes": 31,
+      "winRate": 0.613,
+      "realisedXBt": 69.3062,
+      "fundingXBt": 0.2659,
+      "feesXBt": 18.4062,
+      "notionalUsd": 287024579,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -1.0122,
+      "endBalanceXBt": 377.1506
+    },
+    {
+      "month": "2020-01",
+      "closes": 39,
+      "winRate": 0.718,
+      "realisedXBt": 152.7913,
+      "fundingXBt": -0.1196,
+      "feesXBt": 18.23,
+      "notionalUsd": 385725675,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.036,
+      "endBalanceXBt": 429.9059
+    },
+    {
+      "month": "2020-02",
+      "closes": 36,
+      "winRate": 0.722,
+      "realisedXBt": 37.7032,
+      "fundingXBt": -6.6365,
+      "feesXBt": 21.5641,
+      "notionalUsd": 499340317,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.012,
+      "endBalanceXBt": 417.5971
+    },
+    {
+      "month": "2020-03",
+      "closes": 34,
+      "winRate": 0.706,
+      "realisedXBt": 299.3407,
+      "fundingXBt": 20.7613,
+      "feesXBt": 34.1731,
+      "notionalUsd": 549821608,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.024,
+      "endBalanceXBt": 616.9139
+    },
+    {
+      "month": "2020-04",
+      "closes": 30,
+      "winRate": 0.567,
+      "realisedXBt": -50.7892,
+      "fundingXBt": 7.5137,
+      "feesXBt": 18.4653,
+      "notionalUsd": 265208269,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 566.1247
+    },
+    {
+      "month": "2020-05",
+      "closes": 31,
+      "winRate": 0.548,
+      "realisedXBt": 71.8438,
+      "fundingXBt": -0.346,
+      "feesXBt": 14.1162,
+      "notionalUsd": 312504104,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.027,
+      "endBalanceXBt": 537.9415
+    },
+    {
+      "month": "2020-06",
+      "closes": 30,
+      "winRate": 0.533,
+      "realisedXBt": 47.0314,
+      "fundingXBt": -1.1953,
+      "feesXBt": 11.2845,
+      "notionalUsd": 210872875,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 584.9729
+    },
+    {
+      "month": "2020-07",
+      "closes": 38,
+      "winRate": 0.474,
+      "realisedXBt": 14.4507,
+      "fundingXBt": -2.8553,
+      "feesXBt": 12.3108,
+      "notionalUsd": 282284187,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 599.4235
+    },
+    {
+      "month": "2020-08",
+      "closes": 31,
+      "winRate": 0.677,
+      "realisedXBt": 154.1347,
+      "fundingXBt": 1.4546,
+      "feesXBt": 29.3241,
+      "notionalUsd": 669851975,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -172.026,
+      "endBalanceXBt": 581.5322
+    },
+    {
+      "month": "2020-09",
+      "closes": 30,
+      "winRate": 0.567,
+      "realisedXBt": 101.4599,
+      "fundingXBt": -2.5043,
+      "feesXBt": 25.8464,
+      "notionalUsd": 664025025,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 682.9921
+    },
+    {
+      "month": "2020-10",
+      "closes": 38,
+      "winRate": 0.316,
+      "realisedXBt": -30.5098,
+      "fundingXBt": 2.0701,
+      "feesXBt": 16.8897,
+      "notionalUsd": 579301126,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.012,
+      "endBalanceXBt": 602.4703
+    },
+    {
+      "month": "2020-11",
+      "closes": 31,
+      "winRate": 0.548,
+      "realisedXBt": 34.597,
+      "fundingXBt": -0.7708,
+      "feesXBt": 30.424,
+      "notionalUsd": 1348072234,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 637.0673
+    },
+    {
+      "month": "2020-12",
+      "closes": 43,
+      "winRate": 0.535,
+      "realisedXBt": -68.411,
+      "fundingXBt": -6.9974,
+      "feesXBt": 14.5182,
+      "notionalUsd": 964719878,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.012,
+      "endBalanceXBt": 518.6443
+    },
+    {
+      "month": "2021-01",
+      "closes": 42,
+      "winRate": 0.762,
+      "realisedXBt": 315.5665,
+      "fundingXBt": -11.5024,
+      "feesXBt": 15.9721,
+      "notionalUsd": 1726789538,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.012,
+      "endBalanceXBt": 734.1988
+    },
+    {
+      "month": "2021-02",
+      "closes": 43,
+      "winRate": 0.651,
+      "realisedXBt": -29.9269,
+      "fundingXBt": -22.7423,
+      "feesXBt": 11.4841,
+      "notionalUsd": 1646033854,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 704.2719
+    },
+    {
+      "month": "2021-03",
+      "closes": 35,
+      "winRate": 0.686,
+      "realisedXBt": 42.5683,
+      "fundingXBt": -14.7644,
+      "feesXBt": 4.9527,
+      "notionalUsd": 731411423,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.012,
+      "endBalanceXBt": 696.8282
+    },
+    {
+      "month": "2021-04",
+      "closes": 34,
+      "winRate": 0.735,
+      "realisedXBt": 116.1409,
+      "fundingXBt": -12.3464,
+      "feesXBt": 7.4824,
+      "notionalUsd": 1017618409,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.012,
+      "endBalanceXBt": 712.9571
+    },
+    {
+      "month": "2021-05",
+      "closes": 137,
+      "winRate": 0.715,
+      "realisedXBt": 82.6891,
+      "fundingXBt": -16.3045,
+      "feesXBt": 19.0387,
+      "notionalUsd": 2508996793,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 795.6462
+    },
+    {
+      "month": "2021-06",
+      "closes": 114,
+      "winRate": 0.746,
+      "realisedXBt": 644.2473,
+      "fundingXBt": 7.5605,
+      "feesXBt": 25.8751,
+      "notionalUsd": 2724655546,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -300.021,
+      "endBalanceXBt": 1139.87
+    },
+    {
+      "month": "2021-07",
+      "closes": 45,
+      "winRate": 0.622,
+      "realisedXBt": 147.6686,
+      "fundingXBt": -5.6985,
+      "feesXBt": 11.6722,
+      "notionalUsd": 1072183979,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -300.05,
+      "endBalanceXBt": 987.4911
+    },
+    {
+      "month": "2021-08",
+      "closes": 57,
+      "winRate": 0.825,
+      "realisedXBt": 625.8195,
+      "fundingXBt": -18.5895,
+      "feesXBt": 12.8072,
+      "notionalUsd": 2213499744,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -400.05,
+      "endBalanceXBt": 1213.26
+    },
+    {
+      "month": "2021-09",
+      "closes": 87,
+      "winRate": 0.701,
+      "realisedXBt": 691.7698,
+      "fundingXBt": 20.8878,
+      "feesXBt": 5.8346,
+      "notionalUsd": 1957751134,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -600.1,
+      "endBalanceXBt": 1304.93
+    },
+    {
+      "month": "2021-10",
+      "closes": 93,
+      "winRate": 0.849,
+      "realisedXBt": -215.7712,
+      "fundingXBt": -67.7664,
+      "feesXBt": 0.9658,
+      "notionalUsd": 393684554,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 1089.16
+    },
+    {
+      "month": "2021-11",
+      "closes": 71,
+      "winRate": 0.634,
+      "realisedXBt": -196.702,
+      "fundingXBt": -29.5961,
+      "feesXBt": 0.944,
+      "notionalUsd": 400358582,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 892.4572
+    },
+    {
+      "month": "2021-12",
+      "closes": 31,
+      "winRate": 0.355,
+      "realisedXBt": -155.1875,
+      "fundingXBt": -0.4524,
+      "feesXBt": 0.366,
+      "notionalUsd": 121693400,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 737.2697
+    },
+    {
+      "month": "2022-01",
+      "closes": 0,
+      "winRate": null,
+      "realisedXBt": 0,
+      "fundingXBt": 0.0089,
+      "feesXBt": 0,
+      "notionalUsd": 0,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 0
+    }
+  ]
+}

@@ -1,0 +1,1200 @@
+{
+  "generatedAt": "2026-09-22T10:02:19.747Z",
+  "source": {
+    "post": "https://gall.dcinside.com/mgallery/board/view/?id=chartanalysis&no=5051684",
+    "driveFileId": "1XDwxbriz_kOq44iH-mHcjsYTBklMnMW3",
+    "archive": "aoa_public_2021-12-31_with_letter.zip",
+    "sha256": "b6f1dc7aadf8209bf6c99fd516a06c0cabdc77c5f16f9fc8df92fdf1d8d01b9a"
+  },
+  "coverage": {
+    "executionFiles": [
+      "aoa-execution-2018-03-01-2018-12-31.csv",
+      "aoa-execution-2019-01-01-2020-12-31.csv",
+      "aoa-execution-2021-01-01-2021-06-30.csv",
+      "aoa-execution-2021-07-01-2021-12-31.csv"
+    ],
+    "walletFiles": [
+      "aoa-wallet-2018-03-01-2021-12-31.csv"
+    ],
+    "accountIds": [
+      "aoa"
+    ],
+    "firstFill": "2018-03-05 07:28:18.063937",
+    "lastFill": "2021-12-24 09:21:46.227714",
+    "firstWalletEvent": "2018-03-05",
+    "lastWalletEvent": "2021-12-31",
+    "spanningDays": 1380
+  },
+  "executions": {
+    "totalRows": 1444583,
+    "tradeFills": 1439207,
+    "fundingRows": 5368,
+    "settlementRows": 8,
+    "uniqueOrders": 23417,
+    "notionalByCurrency": {
+      "USD": 27984055048.42323,
+      "XBT": 10634.715124039847,
+      "USDT": 94044382.86320989
+    },
+    "side": {
+      "Buy": {
+        "fills": 709607,
+        "notional": 13986719781.147604
+      },
+      "Sell": {
+        "fills": 729600,
+        "notional": 14091390284.851612
+      }
+    },
+    "liquidity": {
+      "maker": {
+        "fills": 966607,
+        "notional": 21300349244.26646
+      },
+      "taker": {
+        "fills": 472600,
+        "notional": 6777760821.733087
+      },
+      "unknown": {
+        "fills": 0,
+        "notional": 0
+      }
+    },
+    "commissionXBt": 78.00012971,
+    "fundingXBt": -149.57544093
+  },
+  "wallet": {
+    "transactions": 2253,
+    "startingBalanceXBt": 0,
+    "finalBalanceXBt": 737.26973405,
+    "deposits": {
+      "count": 18,
+      "totalXBt": 14.48925714
+    },
+    "withdrawals": {
+      "count": 56,
+      "totalXBt": -2814.54321713
+    },
+    "netExternalFlowXBt": -2800.05395999,
+    "netPnlXBt": 3537.32369404,
+    "byType": {
+      "Deposit": {
+        "count": 18,
+        "totalXBt": 14.48925714,
+        "cancelled": 0
+      },
+      "RealisedPNL": {
+        "count": 2172,
+        "totalXBt": 3537.32369404,
+        "cancelled": 0
+      },
+      "Withdrawal": {
+        "count": 63,
+        "totalXBt": -2832.52903426,
+        "cancelled": 7
+      }
+    },
+    "realisedPnl": {
+      "count": 2172,
+      "totalXBt": 3537.32369404,
+      "wins": 1455,
+      "losses": 717,
+      "winRate": 0.6699,
+      "grossProfitXBt": 8585.94105876,
+      "grossLossXBt": 5048.61736472,
+      "profitFactor": 1.7007,
+      "avgWinXBt": 5.90099042,
+      "avgLossXBt": 7.04130734,
+      "bestXBt": 141.73651314,
+      "worstXBt": -147.73970756
+    },
+    "maxDrawdown": {
+      "pct": 1,
+      "peakXBt": 3.92392206,
+      "troughXBt": 0,
+      "peakDay": "2018-03-20",
+      "troughDay": "2018-03-22",
+      "caveat": "Measured on the wallet balance column, which is a rounded day-level snapshot. Withdrawals also reduce it, so this is NOT the strategy drawdown."
+    },
+    "twr": {
+      "totalPct": null,
+      "countedDays": 1378,
+      "skippedDays": 2,
+      "reason": "Not computable defensibly: the ledger has no per-transaction timestamps (only dates, with 5 date inversions in file order) and no unrealised PnL, so a true time-weighted return cannot be built. The earlier flow-adjusted number was an approximation and has been withdrawn."
+    },
+    "feeComponents": {
+      "makerRebateXBt": -302.30862215,
+      "takerFeeXBt": 380.30875186,
+      "netTradeFeeXBt": 78.00012971,
+      "fundingReceivedXBt": 149.57544093
+    }
+  },
+  "reconciliation": {
+    "ledgerRealisedXBt": 3537.32369404,
+    "equityDeltaXBt": 3537.32369404,
+    "differenceXBt": 0,
+    "verdict": "Ledger amounts reconcile to the final balance to the satoshi. Execution-file funding and fees are components inside ledger RealisedPNL, not separate cash flows."
+  },
+  "monthly": [
+    {
+      "month": "2018-03",
+      "fills": 6006,
+      "orders": 1407,
+      "notionalUsd": 55713456,
+      "realisedXBt": 0.7537533,
+      "fundingXBt": -0.02630443,
+      "netPnlXBt": 0.7537533,
+      "depositsXBt": 3.9788366,
+      "withdrawalsXBt": -2.37041713,
+      "endBalanceXBt": 2.36217277
+    },
+    {
+      "month": "2018-04",
+      "fills": 13179,
+      "orders": 1622,
+      "notionalUsd": 150298121.27,
+      "realisedXBt": 4.54668307,
+      "fundingXBt": 0.04268082,
+      "netPnlXBt": 4.54668307,
+      "depositsXBt": 0.73350664,
+      "withdrawalsXBt": -3.5052,
+      "endBalanceXBt": 4.13716248
+    },
+    {
+      "month": "2018-05",
+      "fills": 5146,
+      "orders": 593,
+      "notionalUsd": 94078733.43,
+      "realisedXBt": 2.09836688,
+      "fundingXBt": 0.06027604,
+      "netPnlXBt": 2.09836688,
+      "depositsXBt": 3.45955101,
+      "withdrawalsXBt": -2.0012,
+      "endBalanceXBt": 7.69388037
+    },
+    {
+      "month": "2018-06",
+      "fills": 6854,
+      "orders": 761,
+      "notionalUsd": 100278242.84,
+      "realisedXBt": 5.75734346,
+      "fundingXBt": 0.0529344,
+      "netPnlXBt": 5.75734346,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 13.45122383
+    },
+    {
+      "month": "2018-07",
+      "fills": 10105,
+      "orders": 1210,
+      "notionalUsd": 178476713.66,
+      "realisedXBt": 15.32807846,
+      "fundingXBt": 0.37909279,
+      "netPnlXBt": 15.32807846,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -4.0012,
+      "endBalanceXBt": 24.77810229
+    },
+    {
+      "month": "2018-08",
+      "fills": 14962,
+      "orders": 1192,
+      "notionalUsd": 213186483.94,
+      "realisedXBt": 7.92584599,
+      "fundingXBt": -0.08998419,
+      "netPnlXBt": 7.92584599,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -3.0016,
+      "endBalanceXBt": 29.70234828
+    },
+    {
+      "month": "2018-09",
+      "fills": 17263,
+      "orders": 1371,
+      "notionalUsd": 141553330.33,
+      "realisedXBt": -18.83721327,
+      "fundingXBt": 0.17160537,
+      "netPnlXBt": -18.83721327,
+      "depositsXBt": 1.64312202,
+      "withdrawalsXBt": -7.012,
+      "endBalanceXBt": 5.49625703
+    },
+    {
+      "month": "2018-10",
+      "fills": 4586,
+      "orders": 242,
+      "notionalUsd": 32369668.07,
+      "realisedXBt": 8.19618724,
+      "fundingXBt": 0.02819603,
+      "netPnlXBt": 8.19618724,
+      "depositsXBt": 4.53085849,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 18.22330276
+    },
+    {
+      "month": "2018-11",
+      "fills": 34866,
+      "orders": 1922,
+      "notionalUsd": 249312006.82,
+      "realisedXBt": 82.63703558,
+      "fundingXBt": 2.03927635,
+      "netPnlXBt": 82.63703558,
+      "depositsXBt": 0.14338238,
+      "withdrawalsXBt": -21.0252,
+      "endBalanceXBt": 79.97852072
+    },
+    {
+      "month": "2018-12",
+      "fills": 50175,
+      "orders": 1541,
+      "notionalUsd": 396500346.9,
+      "realisedXBt": 80.01964161,
+      "fundingXBt": 2.39303482,
+      "netPnlXBt": 80.01964161,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -40.036,
+      "endBalanceXBt": 119.96216233
+    },
+    {
+      "month": "2019-01",
+      "fills": 7223,
+      "orders": 205,
+      "notionalUsd": 60888457.79,
+      "realisedXBt": 67.56562976,
+      "fundingXBt": 1.55478192,
+      "netPnlXBt": 67.56562976,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -20.024,
+      "endBalanceXBt": 167.50379209
+    },
+    {
+      "month": "2019-02",
+      "fills": 9597,
+      "orders": 231,
+      "notionalUsd": 85154817.66,
+      "realisedXBt": 19.39137567,
+      "fundingXBt": 0.20086246,
+      "netPnlXBt": 19.39137567,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -20.012,
+      "endBalanceXBt": 166.88316776
+    },
+    {
+      "month": "2019-03",
+      "fills": 6046,
+      "orders": 148,
+      "notionalUsd": 59046194.27,
+      "realisedXBt": 33.26369727,
+      "fundingXBt": 2.16503283,
+      "netPnlXBt": 33.26369727,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -8.0012,
+      "endBalanceXBt": 192.14566503
+    },
+    {
+      "month": "2019-04",
+      "fills": 29339,
+      "orders": 823,
+      "notionalUsd": 448036575.7,
+      "realisedXBt": 31.85668054,
+      "fundingXBt": 2.7074742,
+      "netPnlXBt": 31.85668054,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.036,
+      "endBalanceXBt": 173.96634557
+    },
+    {
+      "month": "2019-05",
+      "fills": 47510,
+      "orders": 1075,
+      "notionalUsd": 816882808.96,
+      "realisedXBt": 60.11394945,
+      "fundingXBt": 1.23009557,
+      "netPnlXBt": 60.11394945,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -60.036,
+      "endBalanceXBt": 174.04429502
+    },
+    {
+      "month": "2019-06",
+      "fills": 13300,
+      "orders": 275,
+      "notionalUsd": 289179074,
+      "realisedXBt": 36.07352997,
+      "fundingXBt": -2.07558069,
+      "netPnlXBt": 36.07352997,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -40.024,
+      "endBalanceXBt": 170.09382499
+    },
+    {
+      "month": "2019-07",
+      "fills": 19316,
+      "orders": 277,
+      "notionalUsd": 347022673.3,
+      "realisedXBt": 47.53738194,
+      "fundingXBt": -0.79107369,
+      "netPnlXBt": 47.53738194,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -40.027,
+      "endBalanceXBt": 177.60420693
+    },
+    {
+      "month": "2019-08",
+      "fills": 20769,
+      "orders": 237,
+      "notionalUsd": 308229750,
+      "realisedXBt": 39.02770303,
+      "fundingXBt": 1.05923152,
+      "netPnlXBt": 39.02770303,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 216.63190996
+    },
+    {
+      "month": "2019-09",
+      "fills": 12085,
+      "orders": 132,
+      "notionalUsd": 184470894.6,
+      "realisedXBt": 26.95072443,
+      "fundingXBt": -0.22617,
+      "netPnlXBt": 26.95072443,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -20.012,
+      "endBalanceXBt": 223.57063439
+    },
+    {
+      "month": "2019-10",
+      "fills": 7838,
+      "orders": 90,
+      "notionalUsd": 129758276,
+      "realisedXBt": -8.82202127,
+      "fundingXBt": 0.5329628,
+      "netPnlXBt": -8.82202127,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 214.74861312
+    },
+    {
+      "month": "2019-11",
+      "fills": 14382,
+      "orders": 161,
+      "notionalUsd": 210244632,
+      "realisedXBt": 94.10807098,
+      "fundingXBt": -0.31858923,
+      "netPnlXBt": 94.10807098,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 308.8566841
+    },
+    {
+      "month": "2019-12",
+      "fills": 24294,
+      "orders": 204,
+      "notionalUsd": 281024579,
+      "realisedXBt": 69.30616248,
+      "fundingXBt": 0.26590934,
+      "netPnlXBt": 69.30616248,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -1.0122,
+      "endBalanceXBt": 377.15064658
+    },
+    {
+      "month": "2020-01",
+      "fills": 24589,
+      "orders": 346,
+      "notionalUsd": 388725675.3,
+      "realisedXBt": 152.79130125,
+      "fundingXBt": -0.20389191,
+      "netPnlXBt": 152.79130125,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.036,
+      "endBalanceXBt": 429.90594783
+    },
+    {
+      "month": "2020-02",
+      "fills": 30864,
+      "orders": 388,
+      "notionalUsd": 496340317.12,
+      "realisedXBt": 37.70319038,
+      "fundingXBt": -6.62276048,
+      "netPnlXBt": 37.70319038,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.012,
+      "endBalanceXBt": 417.59713821
+    },
+    {
+      "month": "2020-03",
+      "fills": 35132,
+      "orders": 735,
+      "notionalUsd": 549821608,
+      "realisedXBt": 299.34071637,
+      "fundingXBt": 20.83185524,
+      "netPnlXBt": 299.34071637,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.024,
+      "endBalanceXBt": 616.91385458
+    },
+    {
+      "month": "2020-04",
+      "fills": 39562,
+      "orders": 215,
+      "notionalUsd": 297202937,
+      "realisedXBt": -50.78915233,
+      "fundingXBt": 7.44596758,
+      "netPnlXBt": -50.78915233,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 566.12470225
+    },
+    {
+      "month": "2020-05",
+      "fills": 19818,
+      "orders": 182,
+      "notionalUsd": 280509436,
+      "realisedXBt": 71.843762,
+      "fundingXBt": -0.27825814,
+      "netPnlXBt": 71.843762,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.027,
+      "endBalanceXBt": 537.94146425
+    },
+    {
+      "month": "2020-06",
+      "fills": 14226,
+      "orders": 128,
+      "notionalUsd": 215373875,
+      "realisedXBt": 47.03140181,
+      "fundingXBt": -1.19531683,
+      "netPnlXBt": 47.03140181,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 584.97286606
+    },
+    {
+      "month": "2020-07",
+      "fills": 13689,
+      "orders": 119,
+      "notionalUsd": 283848767.74,
+      "realisedXBt": 14.45065225,
+      "fundingXBt": -2.71077915,
+      "netPnlXBt": 14.45065225,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 599.42351831
+    },
+    {
+      "month": "2020-08",
+      "fills": 32740,
+      "orders": 269,
+      "notionalUsd": 663786394,
+      "realisedXBt": 154.134674,
+      "fundingXBt": 1.13112394,
+      "netPnlXBt": 154.134674,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -172.026,
+      "endBalanceXBt": 581.53219231
+    },
+    {
+      "month": "2020-09",
+      "fills": 28166,
+      "orders": 289,
+      "notionalUsd": 664025025,
+      "realisedXBt": 101.45987169,
+      "fundingXBt": -2.40930613,
+      "netPnlXBt": 101.45987169,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 682.992064
+    },
+    {
+      "month": "2020-10",
+      "fills": 19144,
+      "orders": 207,
+      "notionalUsd": 579301126.07,
+      "realisedXBt": -30.50979282,
+      "fundingXBt": 2.08161929,
+      "netPnlXBt": -30.50979282,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.012,
+      "endBalanceXBt": 602.47027118
+    },
+    {
+      "month": "2020-11",
+      "fills": 36287,
+      "orders": 514,
+      "notionalUsd": 1441146253.49,
+      "realisedXBt": 34.5970145,
+      "fundingXBt": -0.69834519,
+      "netPnlXBt": 34.5970145,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 637.06728568
+    },
+    {
+      "month": "2020-12",
+      "fills": 21465,
+      "orders": 369,
+      "notionalUsd": 871645859.32,
+      "realisedXBt": -68.41099361,
+      "fundingXBt": -7.21237919,
+      "netPnlXBt": -68.41099361,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.012,
+      "endBalanceXBt": 518.64429207
+    },
+    {
+      "month": "2021-01",
+      "fills": 30848,
+      "orders": 412,
+      "notionalUsd": 1736789537.68,
+      "realisedXBt": 315.56650948,
+      "fundingXBt": -11.31779179,
+      "netPnlXBt": 315.56650948,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.012,
+      "endBalanceXBt": 734.19880155
+    },
+    {
+      "month": "2021-02",
+      "fills": 35491,
+      "orders": 573,
+      "notionalUsd": 1636033854.11,
+      "realisedXBt": -29.92691408,
+      "fundingXBt": -22.42425813,
+      "netPnlXBt": -29.92691408,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 704.27188747
+    },
+    {
+      "month": "2021-03",
+      "fills": 17928,
+      "orders": 143,
+      "notionalUsd": 731411423.27,
+      "realisedXBt": 42.56828809,
+      "fundingXBt": -15.66551118,
+      "netPnlXBt": 42.56828809,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -50.012,
+      "endBalanceXBt": 696.82817556
+    },
+    {
+      "month": "2021-04",
+      "fills": 35343,
+      "orders": 267,
+      "notionalUsd": 1061906448.66,
+      "realisedXBt": 116.14089998,
+      "fundingXBt": -11.76242405,
+      "netPnlXBt": 116.14089998,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -100.012,
+      "endBalanceXBt": 712.95707554
+    },
+    {
+      "month": "2021-05",
+      "fills": 146466,
+      "orders": 793,
+      "notionalUsd": 2508216151.07,
+      "realisedXBt": 82.68913158,
+      "fundingXBt": -16.24266442,
+      "netPnlXBt": 82.68913158,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 795.64620712
+    },
+    {
+      "month": "2021-06",
+      "fills": 190450,
+      "orders": 739,
+      "notionalUsd": 2769545060.15,
+      "realisedXBt": 644.24728331,
+      "fundingXBt": 7.11827561,
+      "netPnlXBt": 644.24728331,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -300.021,
+      "endBalanceXBt": 1139.87
+    },
+    {
+      "month": "2021-07",
+      "fills": 39839,
+      "orders": 175,
+      "notionalUsd": 983787066.49,
+      "realisedXBt": 147.66864181,
+      "fundingXBt": -5.57278244,
+      "netPnlXBt": 147.66864181,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -300.05,
+      "endBalanceXBt": 987.49113224
+    },
+    {
+      "month": "2021-08",
+      "fills": 91375,
+      "orders": 406,
+      "notionalUsd": 2213499744.08,
+      "realisedXBt": 625.81948368,
+      "fundingXBt": -18.22084273,
+      "netPnlXBt": 625.81948368,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -400.05,
+      "endBalanceXBt": 1213.26
+    },
+    {
+      "month": "2021-09",
+      "fills": 87674,
+      "orders": 307,
+      "notionalUsd": 1957751133.61,
+      "realisedXBt": 691.76978566,
+      "fundingXBt": 19.97214731,
+      "netPnlXBt": 691.76978566,
+      "depositsXBt": 0,
+      "withdrawalsXBt": -600.1,
+      "endBalanceXBt": 1304.93
+    },
+    {
+      "month": "2021-10",
+      "fills": 19389,
+      "orders": 61,
+      "notionalUsd": 393684554.05,
+      "realisedXBt": -215.77121649,
+      "fundingXBt": -67.22126695,
+      "netPnlXBt": -215.77121649,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 1089.16
+    },
+    {
+      "month": "2021-11",
+      "fills": 50623,
+      "orders": 58,
+      "notionalUsd": 421275182.23,
+      "realisedXBt": -196.70196146,
+      "fundingXBt": -29.22313007,
+      "netPnlXBt": -196.70196146,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 892.45722363
+    },
+    {
+      "month": "2021-12",
+      "fills": 3258,
+      "orders": 11,
+      "notionalUsd": 100776800,
+      "realisedXBt": -155.18748958,
+      "fundingXBt": -0.53046615,
+      "netPnlXBt": -155.18748958,
+      "depositsXBt": 0,
+      "withdrawalsXBt": 0,
+      "endBalanceXBt": 737.26973405
+    }
+  ],
+  "symbols": [
+    {
+      "symbol": "XBTUSD",
+      "currency": "USD",
+      "fills": 941007,
+      "buys": 458263,
+      "sells": 482744,
+      "notionalUsd": 23574456258,
+      "makerFills": 504390,
+      "takerFills": 436617,
+      "commission": 85.15015014
+    },
+    {
+      "symbol": "ETHUSD",
+      "currency": "USD",
+      "fills": 327428,
+      "buys": 167317,
+      "sells": 160111,
+      "notionalUsd": 3938842492.06,
+      "makerFills": 301437,
+      "takerFills": 25991,
+      "commission": -8.94099452
+    },
+    {
+      "symbol": "XRPUSD",
+      "currency": "USD",
+      "fills": 55495,
+      "buys": 30139,
+      "sells": 25356,
+      "notionalUsd": 176111869.01,
+      "makerFills": 53592,
+      "takerFills": 1903,
+      "commission": -0.57677649
+    },
+    {
+      "symbol": "XBTU21",
+      "currency": "USD",
+      "fills": 25747,
+      "buys": 16124,
+      "sells": 9623,
+      "notionalUsd": 147283600,
+      "makerFills": 24318,
+      "takerFills": 1429,
+      "commission": -0.3979223
+    },
+    {
+      "symbol": "LTCUSD",
+      "currency": "USD",
+      "fills": 17201,
+      "buys": 7033,
+      "sells": 10168,
+      "notionalUsd": 49669317.28,
+      "makerFills": 16489,
+      "takerFills": 712,
+      "commission": -0.10576111
+    },
+    {
+      "symbol": "XBTH20",
+      "currency": "USD",
+      "fills": 5922,
+      "buys": 2293,
+      "sells": 3629,
+      "notionalUsd": 39131325,
+      "makerFills": 5652,
+      "takerFills": 270,
+      "commission": -0.02404514
+    },
+    {
+      "symbol": "BCHUSD",
+      "currency": "USD",
+      "fills": 9217,
+      "buys": 4036,
+      "sells": 5181,
+      "notionalUsd": 35080265.51,
+      "makerFills": 8943,
+      "takerFills": 274,
+      "commission": -0.10474123
+    },
+    {
+      "symbol": "LINKUSDT",
+      "currency": "USDT",
+      "fills": 6381,
+      "buys": 3308,
+      "sells": 3073,
+      "notionalUsd": 29790133.59,
+      "makerFills": 6166,
+      "takerFills": 215,
+      "commission": -0.07811522
+    },
+    {
+      "symbol": "DOTUSDT",
+      "currency": "USDT",
+      "fills": 11351,
+      "buys": 4999,
+      "sells": 6352,
+      "notionalUsd": 28196196.85,
+      "makerFills": 11275,
+      "takerFills": 76,
+      "commission": -0.11342602
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "currency": "USDT",
+      "fills": 11183,
+      "buys": 5528,
+      "sells": 5655,
+      "notionalUsd": 25237246.92,
+      "makerFills": 10744,
+      "takerFills": 439,
+      "commission": -0.04409055
+    },
+    {
+      "symbol": "ETHUSDM21",
+      "currency": "USD",
+      "fills": 5356,
+      "buys": 248,
+      "sells": 5108,
+      "notionalUsd": 16579593.56,
+      "makerFills": 5221,
+      "takerFills": 135,
+      "commission": -0.0217466
+    },
+    {
+      "symbol": "BNBUSDT",
+      "currency": "USDT",
+      "fills": 4785,
+      "buys": 3118,
+      "sells": 1667,
+      "notionalUsd": 8029998.96,
+      "makerFills": 4768,
+      "takerFills": 17,
+      "commission": -0.04540563
+    },
+    {
+      "symbol": "ADAUSDT",
+      "currency": "USDT",
+      "fills": 485,
+      "buys": 216,
+      "sells": 269,
+      "notionalUsd": 2626346.36,
+      "makerFills": 463,
+      "takerFills": 22,
+      "commission": -0.01279504
+    },
+    {
+      "symbol": "XBTZ18",
+      "currency": "USD",
+      "fills": 179,
+      "buys": 76,
+      "sells": 103,
+      "notionalUsd": 2202679,
+      "makerFills": 147,
+      "takerFills": 32,
+      "commission": -0.04135877
+    },
+    {
+      "symbol": "XBTH19",
+      "currency": "USD",
+      "fills": 531,
+      "buys": 220,
+      "sells": 311,
+      "notionalUsd": 1810661,
+      "makerFills": 297,
+      "takerFills": 234,
+      "commission": -0.02150469
+    },
+    {
+      "symbol": "XBTM19",
+      "currency": "USD",
+      "fills": 169,
+      "buys": 1,
+      "sells": 168,
+      "notionalUsd": 1805600,
+      "makerFills": 169,
+      "takerFills": 0,
+      "commission": -0.04158456
+    },
+    {
+      "symbol": "XBTM18",
+      "currency": "USD",
+      "fills": 212,
+      "buys": 124,
+      "sells": 88,
+      "notionalUsd": 841388,
+      "makerFills": 54,
+      "takerFills": 158,
+      "commission": 0.06088248
+    },
+    {
+      "symbol": "XBTU18",
+      "currency": "USD",
+      "fills": 36,
+      "buys": 16,
+      "sells": 20,
+      "notionalUsd": 240000,
+      "makerFills": 11,
+      "takerFills": 25,
+      "commission": -0.00266325
+    },
+    {
+      "symbol": "YFIUSDTZ20",
+      "currency": "USDT",
+      "fills": 11,
+      "buys": 2,
+      "sells": 9,
+      "notionalUsd": 164460.18,
+      "makerFills": 8,
+      "takerFills": 3,
+      "commission": 0.00508395
+    },
+    {
+      "symbol": "BCHZ18",
+      "currency": "XBT",
+      "fills": 2467,
+      "buys": 1226,
+      "sells": 1241,
+      "notionalUsd": 3317.45,
+      "makerFills": 1583,
+      "takerFills": 884,
+      "commission": 1.52075207
+    },
+    {
+      "symbol": "XRPZ18",
+      "currency": "XBT",
+      "fills": 2849,
+      "buys": 1578,
+      "sells": 1271,
+      "notionalUsd": 1973.22,
+      "makerFills": 1539,
+      "takerFills": 1310,
+      "commission": 1.0507483
+    },
+    {
+      "symbol": "XRPU18",
+      "currency": "XBT",
+      "fills": 2000,
+      "buys": 1122,
+      "sells": 878,
+      "notionalUsd": 1689.56,
+      "makerFills": 1316,
+      "takerFills": 684,
+      "commission": 0.96931959
+    },
+    {
+      "symbol": "EOSU18",
+      "currency": "XBT",
+      "fills": 1085,
+      "buys": 414,
+      "sells": 671,
+      "notionalUsd": 805.88,
+      "makerFills": 848,
+      "takerFills": 237,
+      "commission": -0.13798244
+    },
+    {
+      "symbol": "TRXU18",
+      "currency": "XBT",
+      "fills": 776,
+      "buys": 301,
+      "sells": 475,
+      "notionalUsd": 397.43,
+      "makerFills": 739,
+      "takerFills": 37,
+      "commission": -0.14650116
+    },
+    {
+      "symbol": "ADAM18",
+      "currency": "XBT",
+      "fills": 526,
+      "buys": 133,
+      "sells": 393,
+      "notionalUsd": 325.8,
+      "makerFills": 484,
+      "takerFills": 42,
+      "commission": -0.07794512
+    },
+    {
+      "symbol": "ADAU18",
+      "currency": "XBT",
+      "fills": 654,
+      "buys": 297,
+      "sells": 357,
+      "notionalUsd": 254.49,
+      "makerFills": 560,
+      "takerFills": 94,
+      "commission": -0.08289754
+    },
+    {
+      "symbol": "EOSZ18",
+      "currency": "XBT",
+      "fills": 384,
+      "buys": 144,
+      "sells": 240,
+      "notionalUsd": 234.64,
+      "makerFills": 223,
+      "takerFills": 161,
+      "commission": 0.07803386
+    },
+    {
+      "symbol": "XRPH21",
+      "currency": "XBT",
+      "fills": 1809,
+      "buys": 410,
+      "sells": 1399,
+      "notionalUsd": 222.31,
+      "makerFills": 1726,
+      "takerFills": 83,
+      "commission": 0.15517366
+    },
+    {
+      "symbol": "EOSM18",
+      "currency": "XBT",
+      "fills": 276,
+      "buys": 164,
+      "sells": 112,
+      "notionalUsd": 188.24,
+      "makerFills": 246,
+      "takerFills": 30,
+      "commission": 0.00990959
+    },
+    {
+      "symbol": "LTCH19",
+      "currency": "XBT",
+      "fills": 109,
+      "buys": 75,
+      "sells": 34,
+      "notionalUsd": 169.64,
+      "makerFills": 46,
+      "takerFills": 63,
+      "commission": 0.00116663
+    },
+    {
+      "symbol": "ETHU18",
+      "currency": "XBT",
+      "fills": 158,
+      "buys": 36,
+      "sells": 122,
+      "notionalUsd": 133.23,
+      "makerFills": 122,
+      "takerFills": 36,
+      "commission": 0.01065451
+    },
+    {
+      "symbol": "TRXU19",
+      "currency": "XBT",
+      "fills": 497,
+      "buys": 302,
+      "sells": 195,
+      "notionalUsd": 130.3,
+      "makerFills": 371,
+      "takerFills": 126,
+      "commission": 0.05684684
+    },
+    {
+      "symbol": "BCHM19",
+      "currency": "XBT",
+      "fills": 46,
+      "buys": 28,
+      "sells": 18,
+      "notionalUsd": 124.65,
+      "makerFills": 46,
+      "takerFills": 0,
+      "commission": -0.062325
+    },
+    {
+      "symbol": "XRPM18",
+      "currency": "XBT",
+      "fills": 138,
+      "buys": 25,
+      "sells": 113,
+      "notionalUsd": 123.05,
+      "makerFills": 128,
+      "takerFills": 10,
+      "commission": -0.02327427
+    },
+    {
+      "symbol": "ADAZ18",
+      "currency": "XBT",
+      "fills": 253,
+      "buys": 143,
+      "sells": 110,
+      "notionalUsd": 107.12,
+      "makerFills": 184,
+      "takerFills": 69,
+      "commission": 0.02394801
+    },
+    {
+      "symbol": "BCHM18",
+      "currency": "XBT",
+      "fills": 70,
+      "buys": 31,
+      "sells": 39,
+      "notionalUsd": 84.92,
+      "makerFills": 64,
+      "takerFills": 6,
+      "commission": 0.00471803
+    },
+    {
+      "symbol": "XRPH19",
+      "currency": "XBT",
+      "fills": 72,
+      "buys": 20,
+      "sells": 52,
+      "notionalUsd": 81.73,
+      "makerFills": 58,
+      "takerFills": 14,
+      "commission": -0.0316122
+    },
+    {
+      "symbol": "TRXZ18",
+      "currency": "XBT",
+      "fills": 147,
+      "buys": 57,
+      "sells": 90,
+      "notionalUsd": 71.58,
+      "makerFills": 115,
+      "takerFills": 32,
+      "commission": 0.02875294
+    },
+    {
+      "symbol": "EOSH21",
+      "currency": "XBT",
+      "fills": 2020,
+      "buys": 5,
+      "sells": 2015,
+      "notionalUsd": 61.3,
+      "makerFills": 1923,
+      "takerFills": 97,
+      "commission": 0.02015273
+    },
+    {
+      "symbol": "XRPM19",
+      "currency": "XBT",
+      "fills": 59,
+      "buys": 1,
+      "sells": 58,
+      "notionalUsd": 39.16,
+      "makerFills": 59,
+      "takerFills": 0,
+      "commission": -0.01958077
+    },
+    {
+      "symbol": "BCHU18",
+      "currency": "XBT",
+      "fills": 33,
+      "buys": 6,
+      "sells": 27,
+      "notionalUsd": 28.98,
+      "makerFills": 27,
+      "takerFills": 6,
+      "commission": -0.00534102
+    },
+    {
+      "symbol": "TRXH19",
+      "currency": "XBT",
+      "fills": 38,
+      "buys": 9,
+      "sells": 29,
+      "notionalUsd": 25.25,
+      "makerFills": 32,
+      "takerFills": 6,
+      "commission": 0.00300882
+    },
+    {
+      "symbol": "LTCU18",
+      "currency": "XBT",
+      "fills": 12,
+      "buys": 9,
+      "sells": 3,
+      "notionalUsd": 22.81,
+      "makerFills": 12,
+      "takerFills": 0,
+      "commission": -0.01026579
+    },
+    {
+      "symbol": "ADAM19",
+      "currency": "XBT",
+      "fills": 17,
+      "buys": 1,
+      "sells": 16,
+      "notionalUsd": 18.49,
+      "makerFills": 1,
+      "takerFills": 16,
+      "commission": 0.01842427
+    },
+    {
+      "symbol": "ETHM18",
+      "currency": "XBT",
+      "fills": 5,
+      "buys": 2,
+      "sells": 3,
+      "notionalUsd": 3.4,
+      "makerFills": 2,
+      "takerFills": 3,
+      "commission": 0.00305972
+    },
+    {
+      "symbol": "XBT7D_U110",
+      "currency": "XBT",
+      "fills": 11,
+      "buys": 7,
+      "sells": 4,
+      "notionalUsd": 0.09,
+      "makerFills": 9,
+      "takerFills": 2,
+      "commission": 0
+    }
+  ]
+}

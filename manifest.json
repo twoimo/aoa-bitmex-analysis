@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-09-22T10:08:48.110Z",
+  "files": [
+    {
+      "name": "aoa-execution-2018-03-01-2018-12-31.csv",
+      "bytes": 67993490,
+      "sha256": "8f2aa1af3caaeaeffff0375ce4d10b21e88ab22c624976d9031ddd0e715653b1"
+    },
+    {
+      "name": "aoa-execution-2019-01-01-2020-12-31.csv",
+      "bytes": 219076835,
+      "sha256": "ebbd90935d8e609e6371fec69babbfea13c0458a94748b05f3f795cecd814b5a"
+    },
+    {
+      "name": "aoa-execution-2021-01-01-2021-06-30.csv",
+      "bytes": 191784153,
+      "sha256": "a51f070c9e00aed72720b9029567d4adf32656d06594b87dff3b56360564ca37"
+    },
+    {
+      "name": "aoa-execution-2021-07-01-2021-12-31.csv",
+      "bytes": 122612445,
+      "sha256": "3bd436edb68c60bd17eb3b0c307c68baf56ad79c1da9a21a0433031f4ea7a071"
+    },
+    {
+      "name": "aoa-wallet-2018-03-01-2021-12-31.csv",
+      "bytes": 318791,
+      "sha256": "db0a8e6180faa093a7843ec09b1f673417252b2a7b6cac50ac96db426f2f3452"
+    },
+    {
+      "name": "90일 서한.txt",
+      "bytes": 8798,
+      "sha256": "237d3bf22cf4897d6049b1bd4be5552eb735229c834423255c50522f7d00d5f4"
+    }
+  ]
+}

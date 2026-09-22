@@ -1,0 +1,10 @@
+# Raw dataset (large, third-party source). Fetch with `npm run fetch`.
+.work/
+*.zip
+data/
+raw/
+
+node_modules/
+.DS_Store
+
+# Generated reports are committed on purpose (results/*.json, results/*.csv, REPORT.md)
