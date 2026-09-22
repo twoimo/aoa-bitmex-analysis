@@ -201,3 +201,40 @@ re-deriving these numbers should avoid:
 3. A statement from the account holder about export completeness and time zone.
 4. Position and margin history, without which leverage, liquidation risk, and true exposure
    cannot be recovered from fills alone.
+
+---
+
+## Addendum: what he said, checked against what the files show
+
+`docs/stated-vs-measured.md` compares his published statements with the ledger. The short version:
+
+**His own disclosure announcement is accurate on every count.** Cumulative deposits 14.4 BTC
+(measured 14.48925714), realised PnL 3,537 BTC (measured 3,537.32369404), return ~24,400%
+(measured 24,414%), ~23,000 orders (23,416), ~1.4M fills (1,439,207), ~3,200 positions
+(**3,185**). The position figure is the one worth pausing on: the ledger has only 2,172
+`RealisedPNL` entries, so a naive read calls it inflated. Counting every new directional
+position, including long↔short reversals that never pass through flat, gives 3,185. The claim
+survives a stricter test than the ledger's own event count.
+
+**Five stated principles leave a measurable footprint, and all five match.**
+
+| Stated | Measured |
+| --- | --- |
+| "출금해라" and stop re-depositing after a loss | 79.6% of profit withdrawn; total deposits 14.49 XBt over four years |
+| "보통 하루 정도 들고 있음" | FIFO round-trip median 13.2 h |
+| "승률에 더 신경 써라" | win rate 66.99%, payoff ratio 0.84 |
+| "시총이 큰 코인 위주로 매매" | BTC+ETH = 80.2% of profit |
+| "자본의 최대 30% 이상을 잃지 않도록" | 97.5% of losing closes cost under 30% of that day's equity |
+
+**One number does not reconcile.** His two 2019 progress posts state cumulative withdrawals ~43.1
+BTC below the ledger at both dates, with an identical offset six months apart. Something the
+ledger counts as a withdrawal was not counted as one by him. The file cannot tell whether that is
+an internal transfer or an error, so it stays open.
+
+**What this changes about the conclusion above.** It raises confidence in the risk-posture
+findings (sections 2–5) because they are now corroborated by an independent source — his own
+statements, made years before the data was public — rather than only by my reading of the files.
+It does not change section 8: none of the confirmed statements is an entry rule. The one post
+where he gave an actual method (2020-01-08, the $6,500 entry using inverse head-and-shoulders,
+support lines, and analogous-shape reading) is a single after-the-fact anecdote that he labels
+himself as unschooled analysis.

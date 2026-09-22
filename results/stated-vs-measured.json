@@ -1,0 +1,181 @@
+{
+  "generatedAt": "2026-09-22T10:17:11.304Z",
+  "disclosureAnnouncement": {
+    "stated": {
+      "cumulativeDepositsBTC": 14.4,
+      "cumulativeRealisedPnlBTC": 3537,
+      "cumulativeReturnPct": 24400,
+      "orders": 23000,
+      "fills": 1400000,
+      "positions": 3200
+    },
+    "measured": {
+      "cumulativeDepositsXBt": 14.48925714,
+      "cumulativeRealisedPnlXBt": 3537.32369404,
+      "cumulativeReturnPct": 24413,
+      "orders": 23416,
+      "fills": 1439207,
+      "positions": 3185,
+      "positionsBreakdown": {
+        "flatToOpen": 1184,
+        "longShortReversals": 2001,
+        "returnsToFlat": 1183
+      }
+    }
+  },
+  "ledgerVsClaims": [
+    {
+      "date": "2019-05-06",
+      "label": "16빗 → 345빗 (158빗 출금)",
+      "statedTotal": 345,
+      "statedWithdrawn": 158,
+      "balanceXBt": 171.056,
+      "cumulativeWithdrawnXBt": 201.038,
+      "cumulativeDepositedXBt": 14.4893,
+      "cumulativeRealisedXBt": 357.6048,
+      "impliedBalanceFromClaim": 187,
+      "statedWithdrawnVsLedgerXBt": -43.038,
+      "bitmexShareOfStatedTotal": 0.4958
+    },
+    {
+      "date": "2019-11-26",
+      "label": "16빗 → 600빗 (298빗 출금)",
+      "statedTotal": 600,
+      "statedWithdrawn": 298,
+      "balanceXBt": 300.9973,
+      "cumulativeWithdrawnXBt": 341.125,
+      "cumulativeDepositedXBt": 14.4893,
+      "cumulativeRealisedXBt": 627.6331,
+      "impliedBalanceFromClaim": 302,
+      "statedWithdrawnVsLedgerXBt": -43.125,
+      "bitmexShareOfStatedTotal": 0.5017
+    },
+    {
+      "date": "2021-05-31",
+      "label": "비트 환산 2,290 btc",
+      "statedTotal": 2290,
+      "statedWithdrawn": null,
+      "balanceXBt": 795.6462,
+      "cumulativeWithdrawnXBt": 1214.3222,
+      "cumulativeDepositedXBt": 14.4893,
+      "cumulativeRealisedXBt": 1995.4792,
+      "impliedBalanceFromClaim": null,
+      "statedWithdrawnVsLedgerXBt": null,
+      "bitmexShareOfStatedTotal": 0.3474
+    },
+    {
+      "date": "2021-06-30",
+      "label": "비트 환산 2,870 btc",
+      "statedTotal": 2870,
+      "statedWithdrawn": null,
+      "balanceXBt": 1139.87,
+      "cumulativeWithdrawnXBt": 1514.3432,
+      "cumulativeDepositedXBt": 14.4893,
+      "cumulativeRealisedXBt": 2639.7265,
+      "impliedBalanceFromClaim": null,
+      "statedWithdrawnVsLedgerXBt": null,
+      "bitmexShareOfStatedTotal": 0.3972
+    },
+    {
+      "date": "2021-07-31",
+      "label": "비트 환산 3,270 btc",
+      "statedTotal": 3270,
+      "statedWithdrawn": null,
+      "balanceXBt": 987.4911,
+      "cumulativeWithdrawnXBt": 1814.3932,
+      "cumulativeDepositedXBt": 14.4893,
+      "cumulativeRealisedXBt": 2787.3951,
+      "impliedBalanceFromClaim": null,
+      "statedWithdrawnVsLedgerXBt": null,
+      "bitmexShareOfStatedTotal": 0.302
+    }
+  ],
+  "riskProfile": {
+    "losingCloses": 717,
+    "medianPct": 0.213,
+    "p90Pct": 6.396,
+    "p99Pct": 63.399,
+    "maxPct": 521.49,
+    "shareLosingMoreThan20PctOfEquity": 0.0432,
+    "shareLosingMoreThan30PctOfEquity": 0.0251,
+    "note": "Equity is the day-end wallet balance (rounded, day-level snapshot) and the loss is a ledger close event, not the risk taken at entry."
+  },
+  "positions": {
+    "opens": 1184,
+    "flips": 2001,
+    "returnsToFlat": 1183,
+    "episodes": 3185,
+    "bySymbol": [
+      {
+        "symbol": "XBTUSD",
+        "opens": 829,
+        "flips": 1761,
+        "returnsToFlat": 828,
+        "openPositionAtEnd": -29080100
+      },
+      {
+        "symbol": "ETHUSD",
+        "opens": 118,
+        "flips": 177,
+        "returnsToFlat": 118,
+        "openPositionAtEnd": 0
+      },
+      {
+        "symbol": "BCHZ18",
+        "opens": 51,
+        "flips": 14,
+        "returnsToFlat": 51,
+        "openPositionAtEnd": 0
+      },
+      {
+        "symbol": "XRPZ18",
+        "opens": 22,
+        "flips": 3,
+        "returnsToFlat": 22,
+        "openPositionAtEnd": 0
+      },
+      {
+        "symbol": "XRPU18",
+        "opens": 21,
+        "flips": 26,
+        "returnsToFlat": 21,
+        "openPositionAtEnd": 0
+      },
+      {
+        "symbol": "XBTM18",
+        "opens": 15,
+        "flips": 0,
+        "returnsToFlat": 15,
+        "openPositionAtEnd": 0
+      },
+      {
+        "symbol": "ADAM18",
+        "opens": 14,
+        "flips": 0,
+        "returnsToFlat": 14,
+        "openPositionAtEnd": 0
+      },
+      {
+        "symbol": "XRPUSD",
+        "opens": 14,
+        "flips": 4,
+        "returnsToFlat": 14,
+        "openPositionAtEnd": 0
+      },
+      {
+        "symbol": "TRXU18",
+        "opens": 11,
+        "flips": 6,
+        "returnsToFlat": 11,
+        "openPositionAtEnd": 0
+      },
+      {
+        "symbol": "EOSU18",
+        "opens": 8,
+        "flips": 5,
+        "returnsToFlat": 8,
+        "openPositionAtEnd": 0
+      }
+    ]
+  }
+}
