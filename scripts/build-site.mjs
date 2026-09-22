@@ -19,6 +19,7 @@
 
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -295,6 +296,17 @@ async function main() {
   if (!marker.test(html)) throw new Error('index.html is missing the offline data marker');
   const embedded = JSON.stringify(payloads).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
   await fsp.writeFile(indexPath, html.replace(marker, (_match, before, after) => before + embedded + after));
+  // Cache-bust the two assets. GitHub Pages serves them with a 10-minute
+  // max-age, so without this a content change can sit invisible behind a stale
+  // copy for minutes after a deploy.
+  const assetHash = (file) => crypto.createHash('sha256')
+    .update(fs.readFileSync(path.join(ROOT, 'site', file)))
+    .digest('hex').slice(0, 10);
+  let assetHtml = await fsp.readFile(indexPath, 'utf8');
+  assetHtml = assetHtml.replace(/(href="styles\.css)(\?v=[0-9a-f]+)?(")/, `$1?v=${assetHash('styles.css')}$3`);
+  assetHtml = assetHtml.replace(/(src="app\.js)(\?v=[0-9a-f]+)?(")/, `$1?v=${assetHash('app.js')}$3`);
+  await fsp.writeFile(indexPath, assetHtml);
+
   const sizes = Object.keys(payloads).map((n) => `${n} ${(fs.statSync(path.join(OUT, n)).size / 1024).toFixed(1)}kB`);
   console.log('wrote site/data:\n  ' + sizes.join('\n  '));
 }
