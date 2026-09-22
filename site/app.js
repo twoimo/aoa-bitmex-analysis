@@ -399,8 +399,9 @@
           if (marks === 'range') {
             const xx = x(startMs);
             const w = Math.max(bodyWidth, 1.6);
-            if (bLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(bHigh).toFixed(2)}" y2="${y(bLow).toFixed(2)}" stroke="var(--profit)" stroke-width="${w.toFixed(2)}" opacity=".26"/>`;
-            if (sLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(sHigh).toFixed(2)}" y2="${y(sLow).toFixed(2)}" stroke="var(--loss)" stroke-width="${w.toFixed(2)}" opacity=".26"/>`;
+            const bandOpacity = withMa.length > 250 ? 0.15 : 0.26;
+            if (bLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(bHigh).toFixed(2)}" y2="${y(bLow).toFixed(2)}" stroke="var(--profit)" stroke-width="${w.toFixed(2)}" opacity="${bandOpacity}"/>`;
+            if (sLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(sHigh).toFixed(2)}" y2="${y(sLow).toFixed(2)}" stroke="var(--loss)" stroke-width="${w.toFixed(2)}" opacity="${bandOpacity}"/>`;
             // Explicit buy / sell markers so the chart says which side the fill
             // was, not just where the price range sat.
             const tri = Math.max(2.4, Math.min(6, bodyWidth * 0.9));

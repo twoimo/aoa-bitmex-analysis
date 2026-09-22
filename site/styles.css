@@ -35,3 +35,48 @@ svg .fill-mark:hover{stroke:var(--text);stroke-width:1}
 svg .fill-label{font:600 9px var(--mono);text-anchor:middle}
 svg .fill-label.buy-label{fill:var(--profit)}
 svg .fill-label.sell-label{fill:var(--loss)}
+
+/* ---- density pass: remove the sidebar-era gutter and tighten spacing ---- */
+.topbar{height:48px}
+.topbar-inner{gap:24px;padding:0 14px}
+.ticker-strip{top:48px;height:54px}
+.ticker-item{padding:7px 16px;min-width:140px}
+.ticker-item strong{font-size:14px}
+.ticker-item small{margin-bottom:3px}
+main{margin:102px 0 0;padding:10px 14px}
+.footer{margin:14px 14px 0;padding:14px 0}
+.report-section{padding:16px 0 0}
+.section-head{margin-bottom:9px}
+.section-intro{margin-bottom:9px}
+.chart{padding:12px 13px;margin-bottom:8px}
+.chart-heading{padding-bottom:8px;margin-bottom:8px;gap:8px}
+.chart-grid,.record-grid,.repro-grid,.fees-grid{gap:8px}
+.limitations{gap:8px}
+.limit-item{padding:11px 12px}
+.stat-strip{margin-bottom:8px}
+.stat-item{padding:11px 12px}
+.hero-strip{padding:10px 12px;gap:12px}
+.hero-strip .ledger-row{padding:8px 10px}
+.hero-stats{padding-top:9px}
+.market-list{padding:10px}
+.market-list td,.market-list th{padding:6px 6px;font-size:10px}
+caption{padding:3px 0 7px}
+td,th{padding:6px 9px}
+.replay-bar{margin:8px 0 4px;padding:7px 9px;gap:8px}
+.replay-readout{margin-bottom:7px}
+.replay-readout>div{padding:8px 10px}
+.replay-readout strong{font-size:15px}
+.reconstruction-notice{padding:7px 9px;margin:6px 0}
+.candle-legend{margin:7px 0}
+.candle-toolbar{margin-bottom:7px}
+.chart-readout{margin-top:5px}
+.chart figcaption{padding-top:7px;margin-top:6px}
+.evidence-link{margin-top:6px}
+.panel-toolbar{margin-bottom:7px}
+.segmented button{min-height:27px;padding:4px 9px}
+.replay-btn{padding:5px 10px;min-height:27px}
+@media(max-width:700px){
+  main{margin:98px 0 0;padding:8px 10px}
+  .footer{margin:10px 10px 0}
+  .chart{padding:10px}
+}
