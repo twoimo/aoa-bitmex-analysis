@@ -112,6 +112,10 @@ async function scanExecutions(files) {
   let outOfOrder = 0;
   let makerRebateSatoshi = 0;
   let takerFeeSatoshi = 0;
+  const dayFills = new Map();
+  const dayOrders = new Map();
+  const hourDow = Array.from({ length: 7 }, () => new Array(24).fill(0));
+  const hourDowNotional = Array.from({ length: 7 }, () => new Array(24).fill(0));
 
   const symbolRec = (s, ccy) => {
     if (!symbols.has(s)) {
@@ -131,7 +135,7 @@ async function scanExecutions(files) {
 
   const processFill = (f) => {
     const {
-      ts, day, symbol, ccy, notional, dir, fee, liquidity, settlCurrency, xbtNotional,
+      ts, day, symbol, ccy, notional, dir, fee, liquidity, settlCurrency, xbtNotional, orderid,
     } = f;
     const rec = symbolRec(symbol, ccy);
     rec.fills += 1;
@@ -149,6 +153,11 @@ async function scanExecutions(files) {
     const w = dow(day);
     dowFills[w] += 1;
     dowNotional[w] += notional;
+    hourDow[w][h] += 1;
+    hourDowNotional[w][h] += notional;
+    dayFills.set(day, (dayFills.get(day) ?? 0) + 1);
+    if (!dayOrders.has(day)) dayOrders.set(day, new Set());
+    if (f.orderid) dayOrders.get(day).add(f.orderid);
     dayNotional.set(day, (dayNotional.get(day) ?? 0) + notional);
     feesByDay.set(day, (feesByDay.get(day) ?? 0) + fee);
     if (fee !== 0) {
@@ -215,6 +224,7 @@ async function scanExecutions(files) {
         settlCurrency: r[EXEC_COL.settlcurrency] || '',
         notional: Math.abs(num(r[EXEC_COL.foreignNotional])),
         xbtNotional: Math.abs(num(r[EXEC_COL.homeNotional])),
+        orderid: r[EXEC_COL.orderid] || '',
         dir: r[EXEC_COL.side] === 'Buy' ? 1 : -1,
         fee: Math.abs(num(r[EXEC_COL.execComm])),
         liquidity: r[EXEC_COL.liquidity],
@@ -232,7 +242,7 @@ async function scanExecutions(files) {
   return {
     symbols, hourFills, hourNotional, dowFills, dowNotional, dayNotional,
     dayXbtNotional, fundingByDay, feesByDay, trips, openLots, outOfOrder,
-    makerRebateSatoshi, takerFeeSatoshi,
+    makerRebateSatoshi, takerFeeSatoshi, dayFills, dayOrders, hourDow, hourDowNotional,
   };
 }
 
@@ -479,6 +489,33 @@ async function main() {
 
   const monthly = monthlyTable(wallet, exec.dayNotional, exec.feesByDay, exec.fundingByDay);
 
+  // Hold-time histogram with log-ish buckets: the distribution is extremely
+  // right-skewed, so linear buckets would put almost everything in the first bin.
+  const HOLD_BUCKETS = [
+    ['<1m', 0, 60e3], ['1-5m', 60e3, 300e3], ['5-30m', 300e3, 1800e3],
+    ['30m-2h', 1800e3, 7200e3], ['2-6h', 7200e3, 21600e3], ['6-24h', 21600e3, 86400e3],
+    ['1-3d', 86400e3, 259200e3], ['3-7d', 259200e3, 604800e3], ['7-30d', 604800e3, 2592000e3],
+    ['>30d', 2592000e3, Infinity],
+  ];
+  const holdHistogram = HOLD_BUCKETS.map(([label, lo, hi]) => ({
+    label,
+    trips: durationsMs.filter((m) => m >= lo && m < hi).length,
+  }));
+
+  // Daily activity: answers "when did he trade" directly, and drives the
+  // calendar heatmap on the site.
+  const activityDays = [...exec.dayFills.keys()].sort();
+  const dailyActivity = activityDays.map((day) => ({
+    day,
+    fills: exec.dayFills.get(day) ?? 0,
+    orders: exec.dayOrders.get(day)?.size ?? 0,
+    notionalXbt: round(exec.dayXbtNotional.get(day) ?? 0, 4),
+    notionalUsd: round(exec.dayNotional.get(day) ?? 0, 2),
+    realisedXBt: round(satToXbt(dailyPnl.get(day) ?? 0), 8),
+    fundingXBt: round(satToXbt(exec.fundingByDay.get(day) ?? 0), 8),
+  }));
+  const fillsPerDay = activityDays.map((d) => exec.dayFills.get(d)).sort((a, b) => a - b);
+
   // Two different drawdown questions, kept apart on purpose:
   //  - balance-based: what the wallet column shows (contaminated by withdrawals
   //    and by the column being a rounded day-level snapshot)
@@ -574,6 +611,7 @@ async function main() {
         median: msToStr(percentile(dirStats.short.ms.sort((a, b) => a - b), 0.5)),
       },
       bySymbol: holdBySymbol.slice(0, 10),
+      histogram: holdHistogram,
     },
     withdrawalDiscipline: {
       withdrawals: withdrawals.length,
@@ -603,6 +641,17 @@ async function main() {
       hourNotionalKST: exec.hourNotional.map((v) => round(v, 0)),
       dowFills: exec.dowFills,
       dowNotional: exec.dowNotional.map((v) => round(v, 0)),
+      hourDow: exec.hourDow,
+      hourDowNotional: exec.hourDowNotional.map((row) => row.map((v) => round(v, 0))),
+      dowLabels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    },
+    activity: {
+      tradingDays: activityDays.length,
+      firstDay: activityDays[0] ?? null,
+      lastDay: activityDays[activityDays.length - 1] ?? null,
+      medianFillsPerActiveDay: Math.round(percentile(fillsPerDay, 0.5)),
+      p90FillsPerActiveDay: Math.round(percentile(fillsPerDay, 0.9)),
+      maxFillsPerActiveDay: fillsPerDay[fillsPerDay.length - 1],
     },
     drawdowns: ddPnl.map((d) => ({
       drawdownPct: round(d.dd, 4),
@@ -635,6 +684,12 @@ async function main() {
 
   await fsp.mkdir(OUT_DIR, { recursive: true });
   await fsp.writeFile(path.join(OUT_DIR, 'insights.json'), JSON.stringify(insights, null, 2) + '\n');
+
+  await fsp.writeFile(
+    path.join(OUT_DIR, 'daily-activity.csv'),
+    'date,fills,orders,notional_xbt,notional_usd,realised_xbt,funding_xbt\n'
+      + dailyActivity.map((d) => [d.day, d.fills, d.orders, d.notionalXbt, d.notionalUsd, d.realisedXBt, d.fundingXBt].join(',')).join('\n') + '\n',
+  );
 
   const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
   await fsp.writeFile(

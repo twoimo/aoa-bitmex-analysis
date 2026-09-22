@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>aoa · BitMEX record, checked</title>
+<meta name="description" content="Independent consistency analysis of the 2018–2021 BitMEX export published under the account name aoa: what reconciles, what does not, and when he actually traded.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <span class="mark">aoa<span class="mark-dot">·</span>bitmex</span>
+    <nav class="topnav">
+      <a href="#record">The record</a>
+      <a href="#checks">Checks</a>
+      <a href="#said">Said vs done</a>
+      <a href="#harvest">Harvest</a>
+      <a href="#edge">Where the money came from</a>
+      <a href="#limits">Limits</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ── hero ───────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <p class="eyebrow">Ledger reconciliation · 2018-03-05 → 2021-12-31</p>
+    <h1>The record balances<br>to the satoshi.</h1>
+    <p class="lede">
+      On 22 September 2026 a Korean trader known as <em>워뇨띠</em> published four years of his own
+      BitMEX fills and wallet history. This is an independent check of that file: every row audited,
+      every claim he made about it recomputed, and the parts that do not hold up left standing as
+      open questions.
+    </p>
+
+    <div class="ledger" id="heroLedger" aria-label="Ledger reconciliation">
+      <div class="ledger-row"><span class="lk">completed deposits</span><span class="lv" data-v="14.48925714">0</span><span class="lu">XBt</span></div>
+      <div class="ledger-row"><span class="lk">completed withdrawals</span><span class="lv neg" data-v="-2814.54321713">0</span><span class="lu">XBt</span></div>
+      <div class="ledger-row"><span class="lk">ledger realised PnL</span><span class="lv pos" data-v="3537.32369404">0</span><span class="lu">XBt</span></div>
+      <div class="ledger-rule" aria-hidden="true"></div>
+      <div class="ledger-row total"><span class="lk">final balance</span><span class="lv" data-v="737.26973405">0</span><span class="lu">XBt</span></div>
+      <div class="stamp" id="heroStamp">difference 0</div>
+    </div>
+
+    <ul class="kpis" id="heroKpis"></ul>
+  </section>
+
+  <!-- ── 01 the record ──────────────────────────────────────────────────── -->
+  <section id="record" class="band">
+    <div class="band-head">
+      <span class="num">01</span>
+      <h2>The record</h2>
+      <p class="band-sub">What was published, what is in it, and what it covers.</p>
+    </div>
+    <div class="band-body" id="recordBody"></div>
+  </section>
+
+  <!-- ── 02 when he traded ──────────────────────────────────────────────── -->
+  <section id="when" class="band">
+    <div class="band-head">
+      <span class="num">02</span>
+      <h2>When he traded</h2>
+      <p class="band-sub">Every day of the window, shaded by fill count. Hover a day for detail.</p>
+    </div>
+    <div class="band-body">
+      <figure class="chart wide">
+        <div id="calendar" class="calendar"></div>
+        <figcaption id="calendarNote" class="figcap"></figcaption>
+      </figure>
+      <div class="chart-grid">
+        <figure class="chart">
+          <h3>Fill count by hour and weekday</h3>
+          <p class="figsub">KST. Execution timestamps are UTC; these buckets are shifted to Korean time.</p>
+          <div id="hourDow"></div>
+        </figure>
+        <figure class="chart">
+          <h3>Fills per active day</h3>
+          <p class="figsub">Only days with at least one fill.</p>
+          <div id="fillsHist"></div>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 03 checks ──────────────────────────────────────────────────────── -->
+  <section id="checks" class="band">
+    <div class="band-head">
+      <span class="num">03</span>
+      <h2>Does the file hold up</h2>
+      <p class="band-sub">Every check I ran, with the verdict. “Consistent” means internally consistent — not that the exchange issued it.</p>
+    </div>
+    <div class="band-body" id="checksBody"></div>
+  </section>
+
+  <!-- ── 04 said vs done ────────────────────────────────────────────────── -->
+  <section id="said" class="band">
+    <div class="band-head">
+      <span class="num">04</span>
+      <h2>What he said, next to what the files show</h2>
+      <p class="band-sub">He published specific numbers about the dataset and years of statements about how he trades. Both can be checked.</p>
+    </div>
+    <div class="band-body" id="saidBody"></div>
+  </section>
+
+  <!-- ── 05 harvest ─────────────────────────────────────────────────────── -->
+  <section id="harvest" class="band">
+    <div class="band-head">
+      <span class="num">05</span>
+      <h2>The harvest</h2>
+      <p class="band-sub">The clearest behaviour in the file: profit left the venue, in round lots, at the highs.</p>
+    </div>
+    <div class="band-body">
+      <div class="stat-strip" id="harvestStats"></div>
+      <figure class="chart wide">
+        <h3>Cumulative realised profit vs cumulative withdrawn</h3>
+        <p class="figsub">Monthly steps, XBt. The green staircase is what left the exchange.</p>
+        <div id="harvestChart"></div>
+      </figure>
+      <div class="table-wrap">
+        <table class="data" id="ladderTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 06 edge ────────────────────────────────────────────────────────── -->
+  <section id="edge" class="band">
+    <div class="band-head">
+      <span class="num">06</span>
+      <h2>Where the money came from</h2>
+      <p class="band-sub">Attribution by instrument, by month, and by how long positions were held.</p>
+    </div>
+    <div class="band-body">
+      <div class="chart-grid">
+        <figure class="chart">
+          <h3>Ledger PnL by instrument</h3>
+          <p class="figsub">Top 12 by absolute contribution. XBt.</p>
+          <div id="attrChart"></div>
+        </figure>
+        <figure class="chart">
+          <h3>Round-trip holding period</h3>
+          <p class="figsub">FIFO queue matching of 1,417,925 round trips. An approximation, not an exchange position lifetime.</p>
+          <div id="holdChart"></div>
+        </figure>
+      </div>
+      <figure class="chart wide">
+        <h3>Monthly net PnL</h3>
+        <p class="figsub">Realised ledger PnL per month, XBt.</p>
+        <div id="monthlyChart"></div>
+      </figure>
+      <div class="table-wrap">
+        <table class="data" id="monthlyTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 07 limits ──────────────────────────────────────────────────────── -->
+  <section id="limits" class="band">
+    <div class="band-head">
+      <span class="num">07</span>
+      <h2>What this cannot tell you</h2>
+      <p class="band-sub">The limits are part of the result. Each finding above carries a confidence label.</p>
+    </div>
+    <div class="band-body" id="limitsBody"></div>
+  </section>
+
+  <!-- ── 08 reproduce ───────────────────────────────────────────────────── -->
+  <section id="reproduce" class="band">
+    <div class="band-head">
+      <span class="num">08</span>
+      <h2>Reproduce it</h2>
+      <p class="band-sub">Plain Node, no dependencies. The raw CSVs are not redistributed.</p>
+    </div>
+    <div class="band-body" id="reproBody"></div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <p id="footNote"></p>
+    <p class="foot-fine">Code MIT. The dataset, the author's letter and quoted material are not covered by that licence and remain the property of their owners.</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
