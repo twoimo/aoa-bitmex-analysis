@@ -64,6 +64,24 @@ See `FINDINGS.md` for what these numbers imply and how much weight each claim ca
 `docs/stated-vs-measured.md` for the same figures next to what the account holder published
 about them.
 
+## Publication scope
+
+This repository is public. What it deliberately does **not** contain:
+
+- the raw export files (600 MB unpacked) or the archive they came from
+- any execution, order or transaction identifier
+- the full text of any post by the account holder
+
+What it *does* contain, and why: the analysis code, the documentation, and derived aggregates
+including day-level balances, activity and cash flow. Every figure in those aggregates is already
+present in the source the account holder published himself in order to have his deposit,
+withdrawal, PnL and balance flows checked, and nothing here adds a field he withheld. The raw
+files stay out because they are large and because his letter asks that the data not be turned
+into paid products, not because the aggregates would reveal anything new.
+
+`README.md`, `FINDINGS.md` and `docs/*` are written to be read by someone who wants to disagree
+with the conclusions.
+
 ## License
 
 The code in this repository is MIT (`LICENSE`). The dataset, the author's letter, and any
