@@ -17,6 +17,7 @@
     "market": "node scripts/fetch-market-history.mjs",
     "footprint": "node scripts/fill-footprint.mjs",
     "replay": "node scripts/replay.mjs",
+    "trades": "node scripts/trades.mjs",
     "withdrawals": "node scripts/withdrawals.mjs",
     "site": "node scripts/build-site.mjs",
     "test": "node --test tests/*.test.mjs",

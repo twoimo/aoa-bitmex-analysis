@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>aoa — 비트멕스 거래기록</title>
 <meta name="description" content="aoa 명의로 공개된 2018–2021 비트멕스 거래기록. 원장 대사, 전 역사 차트, 계좌가 매매한 위치.">
-<link rel="stylesheet" href="styles.css?v=b0ee3723ab">
+<link rel="stylesheet" href="styles.css?v=3a4be55426">
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -14,13 +14,7 @@
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="#main"><span class="brand-mark">a</span><span class="mono">aoa · BITMEX</span></a>
-    <nav class="topnav" aria-label="섹션">
-      <a href="#chart">차트</a>
-      <a href="#findings">발견</a>
-      <a href="#wisdom">지혜</a>
-      <a href="#verify">검증</a>
-    </nav>
-    <span class="archive-badge" id="data-status">집계 불러오는 중</span>
+    <span class="topbar-meta mono" id="data-status">집계 불러오는 중</span>
   </div>
 </header>
 
@@ -31,13 +25,7 @@
 <main id="main" tabindex="-1">
 
   <section id="chart" class="report-section terminal-section">
-    <div class="terminal-title">
-      <div>
-        <p class="eyebrow" id="chart-eyebrow">BTC · ETH 전 역사</p>
-        <h2>시장 차트와 계좌가 매매한 위치</h2>
-      </div>
-      <span class="confidence directional">시장 시세 + 계좌 체결</span>
-    </div>
+    <p class="section-line" id="chart-eyebrow">시장 차트 · 계좌가 매매한 위치</p>
     <div class="chart-main">
       <figure class="chart candle-panel">
         <div class="chart-heading">
@@ -72,6 +60,14 @@
         </div>
         <div class="replay-readout" id="replay-readout" aria-live="polite"></div>
         <div id="candle-chart" class="plot-scroll"></div>
+        <aside id="market-trades" class="market-trades" aria-label="체결 테이프">
+          <div class="tape-head">
+            <h3>Market Trades</h3>
+            <span class="mono" id="tape-day">—</span>
+            <span class="mono" id="tape-stats">—</span>
+          </div>
+          <div class="tape-grid" id="market-trades-body"></div>
+        </aside>
         <p class="chart-readout" aria-live="polite">방향키로 캔들을 이동하고 Escape로 툴팁을 닫습니다.</p>
         <figcaption id="candle-note"></figcaption>
       </figure>
@@ -152,6 +148,18 @@
 <script>window.__dataVersion="5dea17322960"</script>
 <script>window.__dataVersion="5dea17322960"</script>
 <script>window.__dataVersion="5dea17322960"</script>
-<script src="app.js?v=a7abb7cdbb"></script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="5dea17322960"</script>
+<script>window.__dataVersion="6d06e7bf1554"</script>
+<script>window.__dataVersion="6d06e7bf1554"</script>
+<script>window.__dataVersion="6d06e7bf1554"</script>
+<script>window.__dataVersion="cdc8fb584c78"</script>
+<script src="app.js?v=a65dedb5f9"></script>
 </body>
 </html>

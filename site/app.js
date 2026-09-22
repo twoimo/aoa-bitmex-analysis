@@ -32,6 +32,8 @@
   // Bar replay, TradingView style: the cursor is a date, and stepping moves one
   // bar of whatever resolution the chart is currently drawing. null = live.
   let replayDays = null;      // daily state rows from replay.json
+  let tape = null;            // per-day fills from trades.json (http only)
+  let lastBarDay = null;      // day of the rightmost bar the chart drew
   let replayDate = null;      // replay cursor
   let currentBars = [];       // bar days of the series the chart is drawing
   let replayTimer = null;
@@ -223,8 +225,13 @@
       { key: 'pnlXBt', label: '손익 BTC', numeric: true, signed: true, format: (v) => signed(v, 2) },
       { key: 'shareOfPnl', label: '기여 %', numeric: true, signed: true, format: (v) => percent(v, 1) },
     ], [...d.attribution].sort((a, b) => b.pnlXBt - a.pnlXBt).slice(0, 6), 1, true);
-    let symbol = 'XBTUSD', range = '1Y';
+    // Default to the whole history: the account only traded 2018-2021, so a
+    // recent-window default would hide everything this chart is for.
+    let symbol = 'XBTUSD', range = 'all';
     const RANGES = [['1M', '1M'], ['3M', '3M'], ['6M', '6M'], ['1Y', '1Y'], ['2Y', '2Y'], ['3Y', '3Y'], ['5Y', '5Y'], ['10Y', '10Y'], ['all', 'ALL']];
+    // Three months of daily bars: wide enough to see the position being built,
+    // narrow enough that individual buy/sell arrows stay legible.
+    const REPLAY_WINDOW_DAYS = 90;
     const RANGE_DAYS = { '1M': 30, '3M': 91, '6M': 182, '1Y': 365, '2Y': 730, '3Y': 1095, '5Y': 1826, '10Y': 3652 };
     // Real charts change resolution with the range: a decade of daily candles is
     // sub-pixel mush, so long ranges are aggregated from the same daily series.
@@ -296,23 +303,37 @@
       const entry = source.get(symbol);
       const meta = entry.meta || {};
       const cutoff = replayCutoff();
-      const spanDays0 = range === 'all' ? Math.round((dateMs(entry.bars.at(-1).day) - dateMs(entry.bars[0].day)) / DAY) : (RANGE_DAYS[range] || 365);
+      const replaying = !!cutoff;
+      // The replay steps through the account's own daily record, so while it runs
+      // the chart is forced to daily bars over a rolling window that ends at the
+      // cursor. The range selector drives the ordinary view.
+      const spanDays0 = replaying
+        ? REPLAY_WINDOW_DAYS
+        : range === 'all'
+          ? Math.round((dateMs(entry.bars.at(-1).day) - dateMs(entry.bars[0].day)) / DAY)
+          : RANGE_DAYS[range] || 365;
       const res0 = resolutionFor(spanDays0);
       const resFull = bucketBars(entry.bars, res0);
-      // The replay slider covers the account's own window. Steps before the
-      // account existed would have no state to show, so they are context only.
+      // The replay slider covers the account's own window, one step per day. Bars
+      // before the account existed would have no state to show, so they stay as
+      // context rather than as steps.
       const winFrom = replayDays ? replayDays[0].d : null;
       const winTo = replayDays ? replayDays[replayDays.length - 1].d : null;
-      const replayBars = winFrom ? resFull.filter((b) => b.day >= winFrom && b.day <= winTo) : [];
-      currentBars = (replayBars.length >= 2 ? replayBars : resFull).map((b) => b.day);
+      const replayBars = winFrom ? entry.bars.filter((b) => b.day >= winFrom && b.day <= winTo) : [];
+      currentBars = (replayBars.length >= 2 ? replayBars : entry.bars).map((b) => b.day);
       const all = cutoff ? resFull.filter((b) => b.day <= cutoff) : resFull;
       if (!all.length) return;
       const last = all.at(-1), previous = all.at(-2) || last;
+      lastBarDay = last.day;
       const end = dateMs(last.day);
-      const spanDays = range === 'all' ? Math.round((end - dateMs(all[0].day)) / DAY) : (RANGE_DAYS[range] || 365);
+      const spanDays = replaying
+        ? REPLAY_WINDOW_DAYS
+        : range === 'all'
+          ? Math.round((end - dateMs(all[0].day)) / DAY)
+          : RANGE_DAYS[range] || 365;
       // While replaying, the cursor stays at the right edge and the window
       // extends back only as far as there is data.
-      const from = Math.max(range === 'all' ? dateMs(all[0].day) : end - spanDays * DAY, dateMs(all[0].day));
+      const from = Math.max(end - spanDays * DAY, dateMs(all[0].day));
       const res = resolutionFor(spanDays);
       const rows = bucketBars(all.filter((r) => dateMs(r.day) >= from), res);
       const withMa = rows.map((r, i, arr) => ({
@@ -321,6 +342,27 @@
         ma20: i < 19 ? null : sum(arr.slice(i - 19, i + 1), 'close') / 20,
       }));
       const barSides = new Map();
+      if (footprint && marks !== 'off') {
+        const rows0 = footprint.daysBySymbol.get(symbol) || [];
+        let r0 = 0;
+        for (const bar of withMa) {
+          let bf = 0, sf = 0;
+          while (r0 < rows0.length && rows0[r0].day <= bar.day) { bf += rows0[r0].buyFills; sf += rows0[r0].sellFills; r0 += 1; }
+        }
+      }
+      const maxSideN = Math.max(1, ...[...barSides.values()].map((v) => Math.max(v.bf, v.sf)));
+      const sizeOf = (n) => 2.2 + 3.4 * Math.min(1, Math.sqrt((n || 0) / maxSideN));
+      const dense = withMa.length > 120;
+      let gid = 0;
+      const tri = (xx, yy, dir, size, color, label) => {
+        const h = size * 1.45;
+        const gap = size * 1.9;
+        const tipY = dir > 0 ? yy + gap - h / 2 : yy - gap + h / 2;
+        const base = dir > 0 ? yy + gap + h / 2 : yy - gap - h / 2;
+        const pts = `${(xx - size).toFixed(2)},${base.toFixed(2)} ${(xx + size).toFixed(2)},${base.toFixed(2)} ${xx.toFixed(2)},${tipY.toFixed(2)}`;
+        return `<circle class="fill-halo" cx="${xx.toFixed(2)}" cy="${yy.toFixed(2)}" r="${(size * 2.2).toFixed(2)}" fill="${color}" opacity=".13"/>`
+          + `<polygon class="fill-mark" points="${pts}" fill="${color}" stroke="var(--panel)" stroke-width="1.1" stroke-linejoin="round" ${tip(label)}/>`;
+      };
       const W = 900, H = 372, L = 12, R = 78, T = 30, B = 244, VT = 280, VB = 334;
       const x = (ms) => L + 5 + (ms - from) / (end - from || DAY) * (W - L - R - 10);
       const prices = withMa.flatMap((r) => [r.low, r.high, ...(r.ma7 === null ? [] : [r.ma7]), ...(r.ma20 === null ? [] : [r.ma20])]);
@@ -399,23 +441,29 @@
           if (marks === 'range') {
             const xx = x(startMs);
             const w = Math.max(bodyWidth, 1.6);
-            const bandOpacity = withMa.length > 250 ? 0.15 : 0.26;
-            if (bLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(bHigh).toFixed(2)}" y2="${y(bLow).toFixed(2)}" stroke="var(--profit)" stroke-width="${w.toFixed(2)}" opacity="${bandOpacity}"/>`;
-            if (sLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(sHigh).toFixed(2)}" y2="${y(sLow).toFixed(2)}" stroke="var(--loss)" stroke-width="${w.toFixed(2)}" opacity="${bandOpacity}"/>`;
-            // Explicit buy / sell markers so the chart says which side the fill
-            // was, not just where the price range sat.
-            const tri = Math.max(2.4, Math.min(6, bodyWidth * 0.9));
-            if (bLow !== null) {
-              const my = y((bLow + bHigh) / 2);
-              body += `<polygon class="fill-mark" data-side="buy" data-day="${bar.day}" points="${(xx - tri).toFixed(2)},${(my + tri).toFixed(2)} ${(xx + tri).toFixed(2)},${(my + tri).toFixed(2)} ${xx.toFixed(2)},${(my - tri).toFixed(2)}" fill="var(--profit)" ${tip(`${symbol} · ${bar.day}\n매수 ${number(bf)}건\n가격 ${number(bLow, 2)} ~ ${number(bHigh, 2)}`) }/>`;
-            }
-            if (sLow !== null) {
-              const my = y((sLow + sHigh) / 2);
-              body += `<polygon class="fill-mark" data-side="sell" data-day="${bar.day}" points="${(xx - tri).toFixed(2)},${(my - tri).toFixed(2)} ${(xx + tri).toFixed(2)},${(my - tri).toFixed(2)} ${xx.toFixed(2)},${(my + tri).toFixed(2)}" fill="var(--loss)" ${tip(`${symbol} · ${bar.day}\n매도 ${number(sf)}건\n가격 ${number(sLow, 2)} ~ ${number(sHigh, 2)}`) }/>`;
-            }
-            if (withMa.length <= 90) {
-              if (bLow !== null) body += text(xx, y(bHigh) - 4, 'B', 'fill-label buy-label');
-              if (sLow !== null) body += text(xx, y(sLow) + 10, 'S', 'fill-label sell-label');
+            // Two densities, two jobs. Zoomed in, the chart marks individual
+            // trades the way a trading terminal does: a size-scaled arrow with a
+            // dark outline pointing at the price that side traded at, plus a
+            // letter when there is room for one. Zoomed out, arrows would pile
+            // into mush, so each bar becomes one green-to-red ribbon spanning the
+            // prices the account touched, read as bought-low sold-high.
+            if (dense) {
+              const lo2 = bLow === null ? sLow : sLow === null ? bLow : Math.min(bLow, sLow);
+              const hi2 = bHigh === null ? sHigh : sHigh === null ? bHigh : Math.max(bHigh, sHigh);
+              if (lo2 !== null) {
+                body += `<linearGradient id="rg${gid}" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="var(--profit)"/><stop offset="1" stop-color="var(--loss)"/></linearGradient>`
+                  + `<line class="fill-ribbon" data-side="${bf > sf ? 'buy' : 'sell'}" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(hi2).toFixed(2)}" y2="${y(lo2).toFixed(2)}" stroke="url(#rg${gid})" stroke-width="${w.toFixed(2)}" opacity=".62" ${tip(`${symbol} · ${bar.day}\n매수 ${number(bf)}건 · ${number(bLow, 2)} ~ ${number(bHigh, 2)}\n매도 ${number(sf)}건 · ${number(sLow, 2)} ~ ${number(sHigh, 2)}`)}/>`;
+                gid += 1;
+              }
+            } else {
+              if (bLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(bHigh).toFixed(2)}" y2="${y(bLow).toFixed(2)}" stroke="var(--profit)" stroke-width="${w.toFixed(2)}" opacity=".3"/>`;
+              if (sLow !== null) body += `<line class="fill-band" x1="${xx.toFixed(2)}" x2="${xx.toFixed(2)}" y1="${y(sHigh).toFixed(2)}" y2="${y(sLow).toFixed(2)}" stroke="var(--loss)" stroke-width="${w.toFixed(2)}" opacity=".3"/>`;
+              const sideN = barSides.get(bar.day) || { bf: 0, sf: 0 };
+              if (bLow !== null) body += tri(xx, y((bLow + bHigh) / 2), 1, sizeOf(sideN.bf), 'var(--profit)', `${symbol} · ${bar.day}\n매수 ${number(bf)}건\n가격 ${number(bLow, 2)} ~ ${number(bHigh, 2)}`);
+              if (sLow !== null) body += tri(xx, y((sLow + sHigh) / 2), -1, sizeOf(sideN.sf), 'var(--loss)', `${symbol} · ${bar.day}\n매도 ${number(sf)}건\n가격 ${number(sLow, 2)} ~ ${number(sHigh, 2)}`);
+              // Letters only when there is room between bars for one.
+              if (bLow !== null) body += text(xx, y(bHigh) - 5, 'B', 'fill-label buy-label');
+              if (sLow !== null) body += text(xx, y(sLow) + 11, 'S', 'fill-label sell-label');
             }
           }
         }
@@ -461,7 +509,49 @@
       if (readout) readout.textContent = `${symbol} · ${last.day} 마지막 봉 · O ${number(last.open, 2)} / H ${number(last.high, 2)} / L ${number(last.low, 2)} / C ${number(last.close, 2)} USD`;
     };
 
-    renderChart = () => { render(); renderReplay(); };
+    // The tape prints the fills behind whatever the chart is currently showing:
+    // the replay cursor's day while replaying, otherwise the last drawn bar.
+    const renderTape = () => {
+      const body = $('market-trades-body');
+      if (!body) return;
+      // While replaying, the cursor's day. Otherwise the latest day the account
+      // actually traded at or before the rightmost bar, so the tape is never
+      // empty just because the chart runs to today.
+      let day = replayDate || lastBarDay;
+      if (!replayDate && tape && day) {
+        const prefix = `${symbol}|`;
+        let best = null;
+        for (const key of Object.keys(tape.days)) {
+          if (!key.startsWith(prefix)) continue;
+          const d = key.slice(prefix.length);
+          if (d <= day && (!best || d > best)) best = d;
+        }
+        if (best) day = best;
+      }
+      const label = $('tape-day');
+      const stats = $('tape-stats');
+      if (label) label.textContent = day ? `${symbol} · ${day}` : '—';
+      if (!tape) {
+        if (stats) stats.textContent = '온라인에서 불러옵니다';
+        body.innerHTML = '<p class="tape-empty">체결 테이프는 네트워크로 불러오는 페이로드입니다. 오프라인에서는 표시하지 않습니다.</p>';
+        return;
+      }
+      const rec = day ? tape.days[`${symbol}|${day}`] : null;
+      if (!rec) {
+        if (stats) stats.textContent = '체결 없음';
+        body.innerHTML = `<p class="tape-empty">${esc(symbol)} 은 ${esc(day || '이 봉')}에 체결이 없습니다.</p>`;
+        return;
+      }
+      if (stats) {
+        stats.textContent = `체결 ${number(rec.f)}건 · 매수 ${number(rec.b)} / 매도 ${number(rec.s)} · VWAP ${number(rec.v, 2)} USD · 명목 ${number(rec.usd)} USD · ${esc(rec.t0)}~${esc(rec.t1)} UTC`;
+      }
+      body.innerHTML = rec.x.map((f, i) => `<div class="tape-row ${f.b ? 'buy' : 'sell'}${i === 0 ? ' newest' : ''}">`
+        + `<span class="t">${esc(f.t)}</span>`
+        + `<span class="p">${number(f.p, 2)}</span>`
+        + `<span class="q">${number(f.q, 4)}</span>`
+        + `</div>`).join('');
+    };
+    renderChart = () => { render(); renderReplay(); renderTape(); };
     tabGroup($('symbol-filter'), 'candle-chart', [['XBTUSD', 'XBTUSD'], ['ETHUSD', 'ETHUSD']], symbol, (next) => { symbol = next; render(); }, 'symbol');
     tabGroup($('candle-periods'), 'candle-chart', RANGES, range, (next) => { range = next; render(); });
     tabGroup($('candle-scale'), 'candle-chart', [['auto', 'AUTO'], ['log', 'LOG'], ['lin', 'LIN']], scaleMode, (next) => { scaleMode = next; render(); }, 'scale');
@@ -471,7 +561,12 @@
     // The full daily history is ~9,400 bars, too large to embed for offline use.
     // It is fetched over http(s) only; under file:// the embedded weekly series
     // is what the chart shows, and the caption says so.
+    renderTape();
     if (/^https?:/.test(location.protocol)) {
+      fetch(`data/trades.json${DATA_VERSION}`, { cache: 'no-cache' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((payload) => { if (payload && payload.days) { tape = payload; renderTape(); } })
+        .catch(() => {});
       fetch(`data/replay.json${DATA_VERSION}`, { cache: 'no-cache' })
         .then((r) => (r.ok ? r.json() : null))
         .then((payload) => {
@@ -903,7 +998,7 @@
       if (failed.length) {
         audit.state = 'error';
         audit.error = failed.join(' / ');
-        $('data-status').textContent = '데이터 확인 실패';
+        if ($('data-status')) $('data-status').textContent = '데이터 확인 실패';
         const stamp = $('reconcile-stamp');
         stamp.classList.remove('verified');
         stamp.querySelector('strong').textContent = '—';
@@ -911,11 +1006,17 @@
         return;
       }
       check(![...document.querySelectorAll('svg')].some((s) => /(?:NaN|Infinity|undefined)/.test(s.innerHTML)), 'SVG 좌표와 레이블 유효성');
-      $('foot-meta').textContent = `${esc(d.meta.window.firstFill.slice(0, 10))} → ${esc(d.meta.window.lastFill.slice(0, 10))} · sha256 ${esc(d.meta.source.sha256.slice(0, 12))}…`;
+      $('foot-meta').textContent = `sha256 ${esc(d.meta.source.sha256.slice(0, 16))}… · 원본 CSV 미포함`;
+      $('data-status').textContent = `${esc(d.meta.window.firstFill.slice(0, 10))} → ${esc(d.meta.window.lastFill.slice(0, 10))} · ${number(d.headline.fills)} 체결`;
       $('repo-link').href = d.meta.repository;
-      $('chart-eyebrow').textContent = `BTC ${esc((d.candles.sources || []).find((s2) => s2.panel === 'BTC')?.first || '')} → 오늘 · ETH ${esc((d.candles.sources || []).find((s2) => s2.panel === 'ETH')?.first || '')} → 오늘`;
+      if ($('chart-eyebrow')) {
+        const src = d.candles.sources || [];
+        const b = src.find((s2) => s2.panel === 'BTC') || {};
+        const e = src.find((s2) => s2.panel === 'ETH') || {};
+        $('chart-eyebrow').textContent = `시장 차트 · BTC ${esc(b.venue || '')} ${esc(b.first || '')} → 오늘 · ETH ${esc(e.venue || '')} ${esc(e.first || '')} → 오늘 · 초록·빨강은 계좌 체결`;
+      }
       audit.state = 'ready';
-      $('data-status').textContent = loaded.mode === 'json' ? '공개 JSON 교차 검사 완료' : loaded.mode === 'file' ? '오프라인 · 내장 집계 교차 검사 완료' : '내장 스냅샷 사용 · JSON 요청 실패';
+      if ($('data-status')) $('data-status').textContent = `${esc(d.meta.window.firstFill.slice(0, 10))} → ${esc(d.meta.window.lastFill.slice(0, 10))} · ${number(d.headline.fills)} 체결`;
       if (loaded.mode === 'snapshot' && $('load-notice')) {
         $('load-notice').hidden = false;
         $('load-notice').textContent = `JSON을 읽지 못해 HTML에 포함된 ${d.meta.generatedAt} 집계 스냅샷을 표시합니다. 최신 집계와 다를 수 있습니다.`;
@@ -924,7 +1025,7 @@
       audit.state = 'error';
       audit.error = error.message;
       console.error('보고서 렌더링 실패:', error);
-      $('data-status').textContent = '데이터 확인 실패';
+      if ($('data-status')) $('data-status').textContent = '데이터 확인 실패';
       $('hero-ledger').setAttribute('aria-busy', 'false');
       $('reconcile-stamp').classList.remove('verified');
       $('reconcile-stamp').querySelector('strong').textContent = '—';
