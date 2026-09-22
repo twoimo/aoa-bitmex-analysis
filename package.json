@@ -13,6 +13,7 @@
     "analyze": "node scripts/analyze.mjs",
     "insights": "node scripts/insights.mjs",
     "stated": "node scripts/stated-vs-measured.mjs",
+    "verify:public": "node scripts/verify-public-trades.mjs",
     "withdrawals": "node scripts/withdrawals.mjs",
     "site": "node scripts/build-site.mjs",
     "test": "node --test tests/*.test.mjs",

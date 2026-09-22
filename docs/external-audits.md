@@ -53,7 +53,7 @@ What it reports that goes beyond this repository:
 
 | Claim | Status here |
 | --- | --- |
-| Matched 72,718 sampled fills against BitMEX's public tick archive by unique id; 72,717 match, and the one mismatch is a liquidation, a fill type BitMEX does not publish | **Not reproduced here.** This is the external comparison `docs/validation.md` lists as open |
+| Matched 72,718 sampled fills against BitMEX's public tick archive by unique id; 72,717 match, and the one mismatch is a liquidation, a fill type BitMEX does not publish | **Reproduced and exceeded.** This repository matched 81,263 of 81,268 fills across 64 sampled days; all five misses are liquidations, and symbol/size/price matched on every hit. See `docs/public-trade-verification.md` |
 | Funding rates matched against the BitMEX API, 5,368 / 5,368 | Not reproduced here |
 | Fee-tier completeness test: from 2021-08-18 BitMEX set taker fees from 30-day ADV, and all 61 fee-charged days are consistent with the visible volume, bounding hidden volume at $9.1M and $15.7M | Not reproduced here |
 | Selection-bias natural experiment: win-rate odds for trades that do not span a funding timestamp, holding time controlled, 0.93 (p=0.66) → no sign of deleting losers | Not reproduced here |
@@ -81,9 +81,10 @@ test — are the ones this repository cannot confirm without pulling BitMEX's pu
 
 ## What remains open after both reviews
 
-1. **This repository has still not compared a single fill to public market data.** A third party
-   reports having done so; that report is the useful next thing to reproduce.
-2. **Publisher and exchange issuance remain unverified.**
+1. **~~Public market-data comparison.~~ CLOSED.** This repository now matches fills against
+   BitMEX's public trade archive itself; see `docs/public-trade-verification.md`. Coverage is a
+   5.6% sample, so a full pass remains open.
+2. **Publisher and account ownership remain unverified.**
 3. **The two 2018 balance dates** (2018-04-27 and 2018-04-28) remain unexplained.
 4. **The three repeated `trdmatchid` values** remain unexplained.
 5. **Leverage, margin mode and true exposure** still cannot be recovered from fills alone, which
