@@ -109,26 +109,26 @@ npm run site                         # regenerate site/data from results/
 python3 -m http.server -d site 8899  # then open http://127.0.0.1:8899
 ```
 
-The report is split into four pages so no single screen carries everything. `index.html` is the
-one-screen summary: the ledger reconciliation with its zero-satoshi stamp, the six headline numbers
-and the five findings. `chart.html` holds the market chart, the replay and the fill tape.
-`study.html` is the study platform. `verify.html` carries the verification summary, the full
-fourteen-item audit checklist, the reproduction commands and the publication scope.
+The landing page (`index.html`) is a chart-first workspace. Its market candles are limited to
+the account's public-data window, 2018-03-05 through 2021-12-31. The plot uses a 1.618:1
+golden-rectangle frame; playback, timeframe, scale and fill overlays sit beside the chart, while
+replay values and secondary trade tables are revealed one at a time. `summary.html` holds the
+ledger and findings, `study.html` the principles and cases, and `verify.html` the audit checklist,
+reproduction commands and publication scope. Old `chart.html` links redirect to the landing chart.
 
 Each page embeds only the payloads it renders and fetches the rest, so the split does not
-duplicate the snapshot. `site/.build/` holds the shell and the section inventory the pages are
-assembled from; edit those, then run `npm run site`.
+duplicate the snapshot. `site/.build/` holds the shell and section inventory; edit those, then
+run `npm run site`.
 
-The chart draws the market from its inception, marks where the account traded with exchange-style
-buy and sell arrows, prints a Market Trades tape for the day under the cursor, and steps bar by
-bar in replay. The study section turns the eight stated principles into units with a dated case
-and a self-check quiz; its answers and every case figure are read from the analysed payloads at
-build time, so authored prose never carries a number of its own.
+The chart uses the market candles only as reference prices, not BitMEX prices, and overlays the
+account's buy/sell footprint. Its replay steps through the account window, with a selector that
+focuses one balance, PnL, withdrawal, position or fill measure at a time. The study section turns
+the eight stated principles into units with dated cases and a self-check quiz; answers and case
+figures are read from analysed payloads at build time.
 
-`site/.qa/verify.mjs` is a 103-check harness (per-page rendering, embedded payload sets, charts,
-markers, fill tape, replay stepping, study progress and quiz, cross-page deep links, responsive
-widths, keyboard navigation, offline mode) and `site/.qa/verification.json` holds its last result.
-Both are local-only, not part of the published site.
+`site/.qa/verify.mjs` covers page payloads, the golden plot ratio, the 2018-2021 candle boundary,
+chart controls, exclusive detail panels, replay, study, responsive widths, keyboard navigation and
+offline mode. `site/.qa/verification.json` holds its last result. Both files are local-only.
 
 The site deliberately excludes the raw CSVs, every execution/order/transaction identifier, and
 the day-by-day withdrawal ledger (`results/withdrawals-daily.csv`). Those stay in this

@@ -1,60 +1,72 @@
 <section id="chart" class="report-section terminal-section">
-    <p class="section-line" id="chart-eyebrow">시장 차트 · 계좌가 매매한 위치</p>
     <div class="chart-main">
       <figure class="chart candle-panel">
-        <div class="chart-heading">
-          <div>
-            <div id="symbol-filter" class="segmented symbol-tabs" role="tablist" aria-label="종목"></div>
-            <p class="chart-sub">시장 마지막 종가 · USD</p>
+        <div class="chart-controls" role="group" aria-label="차트·시세 한 줄 제어">
+          <div class="compact-control" id="symbol-filter" aria-label="종목"></div>
+          <div class="market-quote compact-market-quote" aria-live="polite">
+            <span class="quote-unit">USD</span>
+            <strong id="candle-last">—</strong>
+            <span id="candle-change">전일 대비 확인 중</span>
           </div>
-          <div class="market-quote"><strong id="candle-last">—</strong><span id="candle-change">전일 대비 확인 중</span></div>
-        </div>
-        <div class="candle-toolbar">
-          <span class="segmented" id="candle-marks" aria-label="계좌 체결 표시"></span>
-          <span class="segmented" id="candle-scale" aria-label="가격 축"></span>
-          <div id="candle-periods" class="segmented" aria-label="기간"></div>
-        </div>
-        <p class="reconstruction-notice"><span class="verdict note">시장 데이터</span> 캔들은 Binance·Bitstamp·Bitfinex 공개 API의 실제 일봉입니다. 계좌가 거래한 거래소(BitMEX)가 아니므로 가격은 조금 다릅니다. 초록·빨강 세로 막대는 그 봉에서 계좌가 <b>매수한 가격 범위</b>와 <b>매도한 가격 범위</b>, 오른쪽 가로 막대는 <b>가격대별 체결 금액</b>입니다.</p>
-        <div class="line-legend candle-legend">
-          <span><i class="key-line profit"></i>매수 범위 <b class="positive">B</b></span>
-          <span><i class="key-line loss"></i>매도 범위 <b class="negative">S</b></span>
-          <span><i class="key-line brass"></i>MA 7</span>
-          <span><i class="key-line dashed neutral"></i>MA 20</span>
-          <span><i class="key-box profit"></i>매수한 봉</span>
-          <span><i class="key-box loss"></i>매도한 봉</span>
-        </div>
-        <div class="replay-bar">
-          <button type="button" id="replay-toggle" class="replay-btn">▶ 리플레이</button>
+          <div class="compact-control" id="candle-periods" aria-label="기간"></div>
+          <div class="compact-control" id="candle-marks" aria-label="계좌 체결 표시"></div>
+          <div class="compact-control" id="candle-scale" aria-label="가격 축"></div>
+          <button type="button" id="replay-toggle" class="replay-btn" aria-label="리플레이 재생 또는 일시 정지">▶</button>
           <button type="button" id="replay-prev" class="replay-btn" aria-label="이전 봉">◀</button>
           <button type="button" id="replay-next" class="replay-btn" aria-label="다음 봉">▶</button>
           <input type="range" id="replay-range" min="0" max="0" value="0" step="1" aria-label="리플레이 봉 위치">
           <span class="mono" id="replay-date">전체 보기</span>
-          <span class="segmented" id="replay-speed" aria-label="재생 속도"></span>
-          <button type="button" id="replay-reset" class="replay-btn">전체</button>
+          <label class="metric-picker">수치
+            <select id="replay-metric" aria-label="리플레이에서 강조할 계좌 지표">
+              <option value="eq">잔고</option>
+              <option value="pnl">손익</option>
+              <option value="wd">출금</option>
+              <option value="pos">포지션</option>
+              <option value="fills">체결</option>
+            </select>
+          </label>
+          <div class="compact-control" id="replay-speed" aria-label="재생 속도"></div>
+          <button type="button" id="replay-reset" class="replay-btn" aria-label="리플레이 전체 구간으로 초기화">전체</button>
         </div>
-        <div class="replay-readout" id="replay-readout" aria-live="polite"></div>
         <div id="candle-chart" class="plot-scroll"></div>
-        <aside id="market-trades" class="market-trades" aria-label="체결 테이프">
+        <div class="replay-readout" id="replay-readout" aria-live="polite"></div>
+        <details class="reconstruction-notice chart-detail" name="chart-details">
+          <summary id="chart-eyebrow">범례 · 시장 캔들 2018-03-05 → 2021-12-31 · 외부 가격</summary>
+          <p>Binance·Bitstamp·Bitfinex 공개 API의 실제 일봉입니다. 계좌가 거래한 BitMEX의 가격은 아니므로 수치는 다를 수 있습니다. 초록·빨강 표시는 해당 봉에서 계좌가 매수·매도한 가격 범위입니다.</p>
+          <div class="line-legend candle-legend">
+            <span><i class="key-line profit"></i>매수 범위 <b class="positive">B</b></span>
+            <span><i class="key-line loss"></i>매도 범위 <b class="negative">S</b></span>
+            <span><i class="key-line brass"></i>MA 7</span>
+            <span><i class="key-line dashed neutral"></i>MA 20</span>
+            <span><i class="key-box profit"></i>매수한 봉</span>
+            <span><i class="key-box loss"></i>매도한 봉</span>
+          </div>
+        </details>
+        <details id="market-trades" class="market-trades" name="chart-details" aria-label="체결 테이프">
+          <summary>선택 날짜의 체결 · Market Trades</summary>
           <div class="tape-head">
             <h3>Market Trades</h3>
             <span class="mono" id="tape-day">—</span>
             <span class="mono" id="tape-stats">—</span>
           </div>
           <div class="tape-grid" id="market-trades-body"></div>
-        </aside>
+        </details>
         <p class="chart-readout" aria-live="polite">방향키로 캔들을 이동하고 Escape로 툴팁을 닫습니다.</p>
         <figcaption id="candle-note"></figcaption>
       </figure>
     </div>
-    <div class="chart-grid">
-      <div class="market-list">
+    <p class="inspector-hint">보조 자료 · 한 번에 하나씩 펼쳐보기</p>
+    <div class="chart-grid" aria-label="보조 분석 자료">
+      <details class="market-list chart-detail" name="chart-details">
+        <summary>계좌 성과 · BTC</summary>
         <div class="ledger-heading"><h2>손익 상위 종목</h2><span class="mono">BTC</span></div>
         <div class="table-scroll"><table id="market-table"></table></div>
-      </div>
-      <div class="market-list">
+      </details>
+      <details class="market-list chart-detail" name="chart-details">
+        <summary>거래한 종목 · 전 종목</summary>
         <div class="ledger-heading"><h2>체결 종목 전체</h2><span class="mono">전 종목</span></div>
         <div class="table-scroll"><table id="symbol-table"></table></div>
-      </div>
+      </details>
     </div>
   </section>
 

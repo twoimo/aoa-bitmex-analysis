@@ -60,6 +60,10 @@ async function main() {
 
   const activityByDay = new Map(dailyActivity.map((r) => [r.date, { fills: Number(r.fills), notionalXbt: Number(r.notional_xbt) }]));
   const dayMs = 86400000;
+  // The public account record spans 2018-03-05 through 2021-12-31. Market bars
+  // outside that window add visual context but no evidence about these trades.
+  const CHART_FIRST_DAY = '2018-03-05';
+  const CHART_LAST_DAY = '2021-12-31';
   const toDay = (sec) => new Date(sec * 1000).toISOString().slice(0, 10);
   const px2 = (v) => Number(v.toFixed(2));
   const vol3 = (v) => Number(v.toFixed(3));
@@ -111,7 +115,8 @@ async function main() {
     const panel = panelOf(s3.panel);
     const daily = s3.bars
       .map((b) => ({ symbol: panel, day: toDay(b.t), open: b.open, high: b.high, low: b.low, close: b.close, volume: b.volume }))
-      .filter((b) => b.low > 0 && b.high >= Math.max(b.open, b.close) && b.low <= Math.min(b.open, b.close));
+      .filter((b) => b.low > 0 && b.high >= Math.max(b.open, b.close) && b.low <= Math.min(b.open, b.close))
+      .filter((b) => b.day >= CHART_FIRST_DAY && b.day <= CHART_LAST_DAY);
     weeklySeries.push(...bucket(daily, weekKey).map((b) => withAccount(b, 7)));
     const flat = [];
     let prev = null;
@@ -125,8 +130,8 @@ async function main() {
       return d2 ? [d2.fills, Number(d2.notionalXbt.toFixed(3))] : null;
     });
     dailySeries.push({
-      panel, venue: s3.venue, label: s3.label, first: s3.first, last: s3.last,
-      t0: Math.floor(Date.parse(`${s3.first}T00:00:00Z`) / dayMs),
+      panel, venue: s3.venue, label: s3.label, first: daily[0]?.day, last: daily.at(-1)?.day,
+      t0: Math.floor(Date.parse(`${daily[0].day}T00:00:00Z`) / dayMs),
       bars: flat, account,
     });
   }
@@ -344,13 +349,13 @@ async function main() {
       notes: insights.definitions,
     },
     'activity.json': activity,
-    // Two payloads, because the full daily history is too large to embed:
-    //   candles.json       weekly, whole history, small, embedded for offline use
-    //   candles-daily.json daily, whole history, fetched at runtime only
+    // Two payloads, limited to the account's public-data window:
+    //   candles.json       weekly 2018-03-05..2021-12-31, embedded for offline use
+    //   candles-daily.json daily in the same window, fetched at runtime only
     // Both carry the account's own activity per bar so the chart can mark it.
     'candles.json': {
       resolution: '1W',
-      sources: marketHistory.series.map((s2) => ({ panel: s2.panel, venue: s2.venue, label: s2.label, first: s2.first, last: s2.last })),
+      sources: marketHistory.series.map((s2) => ({ panel: s2.panel, venue: s2.venue, label: s2.label, first: CHART_FIRST_DAY, last: CHART_LAST_DAY })),
       fetchedAt: marketHistory.fetchedAt,
       note: marketHistory.note,
       offlineFallback: true,
@@ -372,7 +377,7 @@ async function main() {
     },
     'candles-daily.json': {
       resolution: '1D',
-      sources: marketHistory.series.map((s2) => ({ panel: s2.panel, venue: s2.venue, label: s2.label, first: s2.first, last: s2.last })),
+      sources: marketHistory.series.map((s2) => ({ panel: s2.panel, venue: s2.venue, label: s2.label, first: CHART_FIRST_DAY, last: CHART_LAST_DAY })),
       fetchedAt: marketHistory.fetchedAt,
       note: marketHistory.note,
       packing: '[dayOffset, open, high, low, close, volume] repeated; dayOffset is days since t0, first bar is 0',
@@ -411,18 +416,18 @@ async function main() {
   // screen has to carry the whole report.
   const PAGES = [
     {
-      file: 'index.html', page: 'summary', nav: '요약',
+      file: 'index.html', page: 'chart', nav: '차트',
+      title: 'aoa — 계좌 체결을 따라가는 BTC·ETH 차트',
+      description: '2018-03-05~2021-12-31 시장 캔들과 공개 계좌의 체결 위치를 한 화면에서 탐색합니다.',
+      sections: ['chart'],
+      files: ['meta', 'headline', 'candles', 'symbols', 'attribution', 'monthly'],
+    },
+    {
+      file: 'summary.html', page: 'summary', nav: '요약',
       title: 'aoa — 비트멕스 거래기록 요약',
       description: 'aoa 명의로 공개된 2018~2021 비트멕스 거래기록의 원장 대사와 핵심 수치.',
       sections: ['ledger', 'numbers', 'findings'],
       files: ['meta', 'headline', 'validation', 'stated', 'withdrawals', 'symbols', 'attribution', 'monthly', 'insights', 'activity', 'balance'],
-    },
-    {
-      file: 'chart.html', page: 'chart', nav: '차트',
-      title: 'aoa — 시장 차트와 계좌가 매매한 위치',
-      description: 'BTC·ETH 전 역사 차트 위에 계좌가 실제로 체결한 위치와 리플레이.',
-      sections: ['chart'],
-      files: ['meta', 'headline', 'candles', 'symbols', 'attribution', 'monthly'],
     },
     {
       file: 'study.html', page: 'study', nav: '학습',
@@ -494,6 +499,10 @@ async function main() {
     html2 = html2.replace(/(src="app\.js)(\?v=[0-9a-f]+)?(")/, `$1?v=${scriptVersion}$3`);
     await fsp.writeFile(file, html2);
   }
+  // Keep old chart.html links working while index.html becomes the chart-first
+  // landing page. Preserve study-case date query parameters through the redirect.
+  const chartRedirect = `<!doctype html><html lang="ko"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=index.html"><title>차트로 이동</title><script>const target=new URL('index.html',location.href);target.search=location.search;target.hash=location.hash;location.replace(target.href)</script><a href="index.html">차트 열기</a></html>`;
+  await fsp.writeFile(path.join(ROOT, 'site', 'chart.html'), chartRedirect);
   void FETCHED;
 
   const sizes = Object.keys(payloads).map((n) => `${n} ${(fs.statSync(path.join(OUT, n)).size / 1024).toFixed(1)}kB`);

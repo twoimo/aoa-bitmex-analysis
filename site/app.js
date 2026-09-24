@@ -125,7 +125,9 @@
           && Number.isInteger(r.accountFills) && r.accountFills >= 0), '주봉 스냅샷 필수 필드·OHLC·거래량 유효성');
       const btcDays = candles.filter((r) => r.symbol === 'XBTUSD').length;
       const ethDays = candles.filter((r) => r.symbol === 'ETHUSD').length;
-      check(btcDays >= 700 && ethDays >= 500, '주봉이 전 역사를 덮는지 (BTC 2011~, ETH 2016~)');
+      const candleDays = candles.map((r) => r.day).sort();
+      check(btcDays >= 190 && btcDays <= 205 && ethDays >= 190 && ethDays <= 205, 'BTC·ETH 주봉이 공개 계좌 기간을 덮는지');
+      check(candleDays[0] === '2018-03-05' && candleDays.at(-1) === '2021-12-27' && candles.every((r) => r.day <= '2021-12-31'), '캔들이 계좌 공개 기간 안에 한정되는지');
       check(new Set(candles.map((r) => r.symbol + '/' + r.day)).size === candles.length, '캔들 종목·날짜 중복 없음');
     }
     if (has('candles', 'activity')) {
@@ -222,6 +224,24 @@
     });
     activate(buttons.find((b) => b.dataset[field] === selected));
   }
+  // Native selects keep the chart's controls in one compact row and remain
+  // usable by keyboard, touch, and narrow horizontal viewports.
+  function selectGroup(container, panelId, options, selected, change, label) {
+    container.setAttribute('role', 'group');
+    const selectId = `${container.id}-select`;
+    container.innerHTML = `<label class="compact-picker"><span>${esc(label)}</span><select id="${selectId}" aria-label="${esc(label)}" aria-controls="${panelId}">`
+      + options.map(([key, optionLabel]) => `<option value="${esc(key)}">${esc(optionLabel)}</option>`).join('')
+      + `</select></label>`;
+    const select = container.querySelector('select');
+    select.value = selected;
+    const activate = () => {
+      change(select.value);
+      if ($('chart-tooltip')) $('chart-tooltip').hidden = true;
+      bindCharts();
+    };
+    select.addEventListener('change', activate);
+    activate();
+  }
   const YEARS = [['all', '전체'], ['2018', '2018'], ['2019', '2019'], ['2020', '2020'], ['2021', '2021']];
   function panelControls(id, render, scoped = true) {
     const figure = $(id).closest('figure');
@@ -267,10 +287,10 @@
       { key: 'pnlXBt', label: '손익 BTC', numeric: true, signed: true, format: (v) => signed(v, 2) },
       { key: 'shareOfPnl', label: '기여 %', numeric: true, signed: true, format: (v) => percent(v, 1) },
     ], [...d.attribution].sort((a, b) => b.pnlXBt - a.pnlXBt).slice(0, 6), 1, true);
-    // Default to the whole history: the account only traded 2018-2021, so a
-    // recent-window default would hide everything this chart is for.
+    // The market chart is deliberately bounded to the account's public-data
+    // window, so ALL means all the candles that can actually contextualize it.
     let symbol = 'XBTUSD', range = 'all';
-    const RANGES = [['1M', '1M'], ['3M', '3M'], ['6M', '6M'], ['1Y', '1Y'], ['2Y', '2Y'], ['3Y', '3Y'], ['5Y', '5Y'], ['10Y', '10Y'], ['all', 'ALL']];
+    const RANGES = [['1M', '1M'], ['3M', '3M'], ['6M', '6M'], ['1Y', '1Y'], ['2Y', '2Y'], ['3Y', '3Y'], ['all', 'ALL']];
     // Three months of daily bars: wide enough to see the position being built,
     // narrow enough that individual buy/sell arrows stay legible.
     const REPLAY_WINDOW_DAYS = 90;
@@ -331,9 +351,8 @@
     let source = fromWeekly(d.candles);
     let resolution = '1W';
     let resolutionLabel = '주봉 · 오프라인 스냅샷';
-    // A linear price axis over 2011-2026 is useless: BTC's first years collapse
-    // onto the baseline because the range spans four orders of magnitude. The
-    // axis therefore switches to log automatically and can be forced either way.
+    // A log axis remains useful across the account window's BTC price cycle;
+    // auto mode chooses it only when the visible range needs it.
     let scaleMode = 'auto';
     // Where the account actually traded. 'range' draws the price band it bought
     // and sold in for each bar; 'profile' draws notional by price level.
@@ -406,7 +425,9 @@
         return `<circle class="fill-halo" cx="${xx.toFixed(2)}" cy="${yy.toFixed(2)}" r="${(size * 2.2).toFixed(2)}" fill="${color}" opacity=".13"/>`
           + `<polygon class="fill-mark" points="${pts}" fill="${color}" stroke="var(--panel)" stroke-width="1.1" stroke-linejoin="round" ${tip(label)}/>`;
       };
-      const W = 900, H = 372, L = 12, R = 78, T = 30, B = 244, VT = 280, VB = 334;
+      // A 900:556 plot is a golden rectangle (1.619:1): enough vertical room
+      // to study price structure without letting volume steal the focus.
+      const W = 900, H = 556, L = 12, R = 78, T = 38, B = 365, VT = 410, VB = 510;
       const x = (ms) => L + 5 + (ms - from) / (end - from || DAY) * (W - L - R - 10);
       const prices = withMa.flatMap((r) => [r.low, r.high, ...(r.ma7 === null ? [] : [r.ma7]), ...(r.ma20 === null ? [] : [r.ma20]), ...(r.ma99 === null ? [] : [r.ma99])]);
       const low = Math.min(...prices), high = Math.max(...prices), padding = (high - low || high * .01) * .08;
@@ -557,7 +578,8 @@
       const delta = (last.close - previous.close) / previous.close;
       $('candle-last').textContent = number(last.close, 2);
       $('candle-last').className = delta >= 0 ? 'positive' : 'negative';
-      $('candle-change').textContent = `${signed(delta * 100, 2)}% · ${res} 기준 전봉 대비`;
+      $('candle-change').className = delta >= 0 ? 'positive' : 'negative';
+      $('candle-change').textContent = `${signed(delta * 100, 2)}% · ${res}`;
       const markLabel = marks === 'range' ? '세로 막대는 그 봉에 계좌가 매수한 가격 범위(초록)와 매도한 가격 범위(빨강)입니다' : marks === 'profile' ? '오른쪽 가로 막대는 계좌 체결 명목금액을 가격대별로 모은 것입니다' : '체결 표시를 껐습니다';
       $('candle-note').textContent = `${meta.label || symbol} · ${meta.venue || '시장'} · ${isoDay(from)} → ${last.day} · ${number(withMa.length)}봉 (${res}) · ${resolutionLabel}. MA7/20은 봉 기준 단순이동평균. 금색 눈금은 계좌가 체결된 봉이고 이 구간에서 ${number(traded.length)}봉. ${markLabel}. ${footprintNote}. 출처는 실행내역(체결)이며 호가 주문은 파일에 없습니다.`;
       const readout = host.closest('figure').querySelector('.chart-readout');
@@ -607,15 +629,14 @@
         + `</div>`).join('');
     };
     renderChart = () => { render(); renderReplay(); renderTape(); };
-    tabGroup($('symbol-filter'), 'candle-chart', [['XBTUSD', 'XBTUSD'], ['ETHUSD', 'ETHUSD']], symbol, (next) => { symbol = next; render(); }, 'symbol');
-    tabGroup($('candle-periods'), 'candle-chart', RANGES, range, (next) => { range = next; render(); });
-    tabGroup($('candle-scale'), 'candle-chart', [['auto', 'AUTO'], ['log', 'LOG'], ['lin', 'LIN']], scaleMode, (next) => { scaleMode = next; render(); }, 'scale');
-    tabGroup($('candle-marks'), 'candle-chart', [['range', '체결 범위'], ['profile', '가격대'], ['off', '끔']], marks, (next) => { marks = next; render(); }, 'marks');
+    selectGroup($('symbol-filter'), 'candle-chart', [['XBTUSD', 'BTC'], ['ETHUSD', 'ETH']], symbol, (next) => { symbol = next; render(); }, '종목');
+    selectGroup($('candle-periods'), 'candle-chart', RANGES, range, (next) => { range = next; render(); }, '기간');
+    selectGroup($('candle-marks'), 'candle-chart', [['range', '체결'], ['profile', '가격대'], ['off', '끔']], marks, (next) => { marks = next; render(); }, '표시');
+    selectGroup($('candle-scale'), 'candle-chart', [['auto', 'AUTO'], ['log', 'LOG'], ['lin', 'LIN']], scaleMode, (next) => { scaleMode = next; render(); }, '축');
     renderReplay();
     render();
-    // The full daily history is ~9,400 bars, too large to embed for offline use.
-    // It is fetched over http(s) only; under file:// the embedded weekly series
-    // is what the chart shows, and the caption says so.
+    // The in-window daily series stays fetch-only to keep the offline snapshot
+    // compact. Under file:// the embedded weekly series is used instead.
     renderTape();
     if (/^https?:/.test(location.protocol)) {
       fetch(`data/trades.json${DATA_VERSION}`, { cache: 'no-cache' })
@@ -653,10 +674,10 @@
           // step count is derived from it, so redraw the chart once it lands.
           renderChart();
           try {
-            tabGroup($('replay-speed'), 'candle-chart', [['400', '1×'], ['90', '4×'], ['25', '16×']], '90', (next) => {
+            selectGroup($('replay-speed'), 'candle-chart', [['400', '1×'], ['90', '4×'], ['25', '16×']], '90', (next) => {
               replayStepMs = Number(next);
               if (replayTimer) { stopReplay(); startReplay(); }
-            }, 'speed');
+            }, '속도');
           } catch (error) { audit.missingFields.push(`replay-speed: ${error.message}`); }
         })
         .catch(() => {});
@@ -950,7 +971,13 @@
     const readout = $('replay-readout');
     const label = $('replay-date');
     const range2 = $('replay-range');
+    const metricSelect = $('replay-metric');
     if (!readout) return;
+    if (metricSelect && metricSelect.dataset.bound !== 'true') {
+      metricSelect.dataset.bound = 'true';
+      metricSelect.addEventListener('change', () => renderReplay());
+    }
+    const metricKey = metricSelect?.value || 'eq';
     if (!replayDays) {
       readout.innerHTML = '';
       if (label) label.textContent = '리플레이 준비 중';
@@ -965,21 +992,21 @@
     const at = replayDate === null ? currentBars[max] : replayDate;
     if (label) label.textContent = replayDate === null ? '전체 보기' : `${at} · ${replayIndex() + 1}/${currentBars.length}봉`;
     const day = replayRow(at);
-    if (!day || day.d > at) {
-      readout.innerHTML = `<div><strong>0.00 BTC</strong><span>장부 잔고 · 거래 시작 전</span></div>`
-        + `<div><strong>0건</strong><span>체결 · ${esc(at)}</span></div>`
-        + `<div><strong>—</strong><span>누적 실현손익</span></div>`
-        + `<div><strong>—</strong><span>누적 출금</span></div>`
-        + `<div><strong>—</strong><span>순포지션</span></div>`;
-      return;
-    }
-    readout.innerHTML = [
-      ['장부 잔고', `${number(day.eq, 2)} BTC`, `${esc(day.d)} 기준`],
-      ['누적 실현손익', `${number(day.pnl, 1)} BTC`, `입금 ${number(day.dep, 2)}`],
-      ['누적 출금', `${number(day.wd, 0)} BTC`, `잔고 + 출금 = ${number(day.eq + day.wd, 1)}`],
-      ['순포지션', `${signed(day.pos, 1)} BTC`, 'BTC·ETH 합산 · 음수는 숏'],
-      ['그날 체결', `${number(day.f)}건`, `명목 ${shortNumber(day.n)} USD`],
-    ].map(([label2, value, sub]) => `<div><strong>${value}</strong><span>${esc(label2)} · ${esc(sub)}</span></div>`).join('');
+    const fields = !day || day.d > at ? {
+      eq: ['장부 잔고', '0.00 BTC', `${esc(at)} · 거래 시작 전`],
+      pnl: ['누적 실현손익', '—', '거래 시작 전'],
+      wd: ['누적 출금', '—', '거래 시작 전'],
+      pos: ['순포지션', '—', '거래 시작 전'],
+      fills: ['그날 체결', `0건`, esc(at)],
+    } : {
+      eq: ['장부 잔고', `${number(day.eq, 2)} BTC`, `${esc(day.d)} 기준`],
+      pnl: ['누적 실현손익', `${number(day.pnl, 1)} BTC`, `입금 ${number(day.dep, 2)}`],
+      wd: ['누적 출금', `${number(day.wd, 0)} BTC`, `잔고 + 출금 = ${number(day.eq + day.wd, 1)}`],
+      pos: ['순포지션', `${signed(day.pos, 1)} BTC`, 'BTC·ETH 합산 · 음수는 숏'],
+      fills: ['그날 체결', `${number(day.f)}건`, `명목 ${shortNumber(day.n)} USD`],
+    };
+    const [title, value, note] = fields[metricKey] || fields.eq;
+    readout.innerHTML = `<div class="metric-focus" data-metric="${esc(metricKey)}"><strong>${value}</strong><span>${esc(title)} · ${esc(note)}</span></div>`;
   }
 
   function stepReplay(delta) {
@@ -1005,7 +1032,7 @@
     if (replayTimer) clearInterval(replayTimer);
     replayTimer = null;
     const button = $('replay-toggle');
-    if (button) { button.dataset.playing = 'false'; button.textContent = '▶ 리플레이'; }
+    if (button) { button.dataset.playing = 'false'; button.textContent = '▶'; button.setAttribute('aria-label', '리플레이 재생'); }
   }
 
   function startReplay() {
@@ -1017,7 +1044,7 @@
       replayDate = currentBars.find((d) => d >= first) || currentBars[0];
     }
     const button = $('replay-toggle');
-    if (button) { button.dataset.playing = 'true'; button.textContent = '❚❚ 정지'; }
+    if (button) { button.dataset.playing = 'true'; button.textContent = 'Ⅱ'; button.setAttribute('aria-label', '리플레이 일시 정지'); }
     if (replayTimer) clearInterval(replayTimer);
     replayTimer = setInterval(() => {
       if (!replayDays || !currentBars.length) { stopReplay(); return; }
@@ -1117,7 +1144,7 @@
       const chart = $('chart');
       if (!chart) {
         // The study page has no chart, so the case carries the day across.
-        location.href = `chart.html?d=${encodeURIComponent(day)}`;
+        location.href = `index.html?d=${encodeURIComponent(day)}`;
         return;
       }
       if (replayDays && currentBars.length) {
@@ -1206,8 +1233,10 @@
         audit.error = failed.join(' / ');
         if ($('data-status')) $('data-status').textContent = '데이터 확인 실패';
         const stamp = $('reconcile-stamp');
-        stamp.classList.remove('verified');
-        stamp.querySelector('strong').textContent = '—';
+        if (stamp) {
+          stamp.classList.remove('verified');
+          if (stamp.querySelector('strong')) stamp.querySelector('strong').textContent = '—';
+        }
         if ($('load-notice')) { $('load-notice').hidden = false; $('load-notice').textContent = `표시하지 못한 항목이 있습니다. ${failed.join(' / ')}`; }
         return;
       }
@@ -1219,7 +1248,7 @@
         const src = d.candles.sources || [];
         const b = src.find((s2) => s2.panel === 'BTC') || {};
         const e = src.find((s2) => s2.panel === 'ETH') || {};
-        $('chart-eyebrow').textContent = `시장 차트 · BTC ${esc(b.venue || '')} ${esc(b.first || '')} → 오늘 · ETH ${esc(e.venue || '')} ${esc(e.first || '')} → 오늘 · 초록·빨강은 계좌 체결`;
+        $('chart-eyebrow').textContent = `BTC·ETH 시장 캔들 · ${esc(b.first || '')} → ${esc(b.last || '')} · 초록·빨강은 계좌 체결`;
       }
       audit.state = 'ready';
       if ($('data-status')) $('data-status').textContent = `${esc(d.meta.window.firstFill.slice(0, 10))} → ${esc(d.meta.window.lastFill.slice(0, 10))} · ${number(d.headline.fills)} 체결`;
@@ -1232,9 +1261,11 @@
       audit.error = error.message;
       console.error('보고서 렌더링 실패:', error);
       if ($('data-status')) $('data-status').textContent = '데이터 확인 실패';
-      $('hero-ledger').setAttribute('aria-busy', 'false');
-      $('reconcile-stamp').classList.remove('verified');
-      $('reconcile-stamp').querySelector('strong').textContent = '—';
+      if ($('hero-ledger')) $('hero-ledger').setAttribute('aria-busy', 'false');
+      if ($('reconcile-stamp')) {
+        $('reconcile-stamp').classList.remove('verified');
+        if ($('reconcile-stamp').querySelector('strong')) $('reconcile-stamp').querySelector('strong').textContent = '—';
+      }
       if ($('load-notice')) {
         $('load-notice').hidden = false;
         $('load-notice').textContent = `보고서를 표시하지 못했습니다. ${error.message} 공개 JSON 또는 내장 스냅샷을 확인해 주세요.`;
